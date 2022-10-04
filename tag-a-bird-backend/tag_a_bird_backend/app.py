@@ -9,6 +9,10 @@ app = Flask(__name__)
 
 app.config.from_prefixed_env()
 
+db = SQLAlchemy(app)
+
+api = Api(app)
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
