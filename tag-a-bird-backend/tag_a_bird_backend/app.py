@@ -5,6 +5,7 @@ from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
+import json
 
 load_dotenv()
 
@@ -27,11 +28,12 @@ def verify_password(username, password):
     if username in users and check_password_hash(users.get(username), password):
         return username
 
+class Records(Resource):
+    @auth.login_required
+    def get(self):
+        return json.dumps({'Hello': 'World'})
 
-@app.route("/")
-@auth.login_required
-def hello_world():
-    return "<p>Hello, World!</p>"
+api.add_resource(Records, "/api/records")
 
 if __name__ == '__main__':
     app.run()
