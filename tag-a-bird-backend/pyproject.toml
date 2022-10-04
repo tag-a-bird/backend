@@ -6,6 +6,8 @@ authors = ["Can"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+Flask = "^2.2.2"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
