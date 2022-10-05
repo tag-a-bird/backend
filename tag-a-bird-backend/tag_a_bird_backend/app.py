@@ -3,11 +3,10 @@ from dotenv import load_dotenv
 from os import getenv
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.ext.declarative import declarative_base
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+from .models import Base, User, Annotation
 
 load_dotenv()
 
@@ -15,7 +14,9 @@ app = Flask(__name__)
 
 app.config.from_prefixed_env()
 
-db = SQLAlchemy(app)
+db = create_engine(app.config["DATABASE_URI"])
+
+Base.metadata.create_all(db)
 
 api = Api(app)
 
