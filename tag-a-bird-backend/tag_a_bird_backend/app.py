@@ -2,7 +2,9 @@ from flask import Flask
 from dotenv import load_dotenv
 from os import getenv
 from flask_restful import Api, Resource
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.ext.declarative import declarative_base
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import json

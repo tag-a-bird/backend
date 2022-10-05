@@ -97,18 +97,6 @@ six = ">=1.3.0"
 docs = ["sphinx"]
 
 [[package]]
-name = "flask-sqlalchemy"
-version = "3.0.0"
-description = "Add SQLAlchemy support to your Flask application."
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-Flask = ">=2.2"
-SQLAlchemy = ">=1.4.18"
-
-[[package]]
 name = "greenlet"
 version = "1.1.3"
 description = "Lightweight in-process concurrent programming"
@@ -312,7 +300,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a85360803546c8565ef7b740d93b51ae38361129b69f043dff92686109e6f621"
+content-hash = "5776e2ab1743c974312bbca69a53638bf7bf1c0242f7e4f212df9fe78f65641b"
 
 [metadata.files]
 aniso8601 = [
@@ -345,10 +333,6 @@ flask-httpauth = [
 flask-restful = [
     {file = "Flask-RESTful-0.3.9.tar.gz", hash = "sha256:ccec650b835d48192138c85329ae03735e6ced58e9b2d9c2146d6c84c06fa53e"},
     {file = "Flask_RESTful-0.3.9-py2.py3-none-any.whl", hash = "sha256:4970c49b6488e46c520b325f54833374dc2b98e211f1b272bd4b0c516232afe2"},
-]
-flask-sqlalchemy = [
-    {file = "Flask-SQLAlchemy-3.0.0.tar.gz", hash = "sha256:b54939fd5f48184742b7d5b222d86983e233b43140c1071a36327353e86f3b56"},
-    {file = "Flask_SQLAlchemy-3.0.0-py3-none-any.whl", hash = "sha256:741dabf0903569a89e4793667e25be5bb9581e614fa0eeb81a395cc7dee40c4b"},
 ]
 greenlet = [
     {file = "greenlet-1.1.3-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:8c287ae7ac921dfde88b1c125bd9590b7ec3c900c2d3db5197f1286e144e712b"},
