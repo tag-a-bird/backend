@@ -31,12 +31,12 @@ def verify_password(username, password):
     if username in users and check_password_hash(users.get(username), password):
         return username
 
-class Records(Resource):
+class Annotations(Resource):
     @auth.login_required
     def get(self):
         return json.dumps({'Hello': 'World'})
 
-api.add_resource(Records, "/api/records")
+api.add_resource(Records, "/api/annotation")
 
 if __name__ == '__main__':
     app.run()
