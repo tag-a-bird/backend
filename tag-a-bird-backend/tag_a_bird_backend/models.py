@@ -1,15 +1,56 @@
-from sqlalchemy import Table, Column, Integer, String, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import  sessionmaker, scoped_session, declarative_base, relationship
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = "user"
 
-    id = Column(Integer, primary_key=True)
-    username = Column(String)
-    email = Column(String)
-    password = Column(String)
+    id = Column(
+        Integer,
+        primary_key=True
+    )
+    name = Column(
+        String(100),
+        nullable=False,
+        unique=False
+    )
+    email = Column(
+        String(40),
+        unique=True,
+        nullable=False
+    )
+    password = Column(
+        String(200),
+        primary_key=False,
+        unique=False,
+        nullable=False
+	)
+    created_on = Column(
+        DateTime,
+        index=False,
+        unique=False,
+        nullable=True
+    )
+    last_login = Column(
+        DateTime,
+        index=False,
+        unique=False,
+        nullable=True
+    )
+
+    def set_password(self, password):
+        """Create hashed password."""
+        self.password = generate_password_hash(
+            password,
+            method='sha256'
+        )
+
+    def check_password(self, password):
+        """Check hashed password."""
+        return check_password_hash(self.password, password)
 
     annotations = relationship("Annotation", back_populates="user")
 
