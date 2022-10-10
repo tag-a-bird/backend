@@ -36,7 +36,7 @@ class Annotations(Resource):
     def get(self):
         return json.dumps({'Hello': 'World'})
 
-api.add_resource(Records, "/api/annotation")
+api.add_resource(Annotations, "/api/annotation")
 
 if __name__ == '__main__':
     app.run()
