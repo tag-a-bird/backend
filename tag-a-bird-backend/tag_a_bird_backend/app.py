@@ -38,5 +38,17 @@ class Annotations(Resource):
 
 api.add_resource(Annotations, "/api/annotation")
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    user = User(
+                name="test",
+                email="test@test.test"
+            )
+    return user.name
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    pass
+
 if __name__ == '__main__':
     app.run()
