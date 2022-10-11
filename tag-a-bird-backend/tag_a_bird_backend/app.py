@@ -1,6 +1,6 @@
 from flask import Flask, request
 from dotenv import load_dotenv
-from os import getenv
+from os import error, getenv
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -44,6 +44,7 @@ api.add_resource(Annotations, "/api/annotation")
 
 @app.route('/signup', methods=['POST'])
 def signup():
+    session.rollback()
     res = request.get_json()
     user = User(
             id  = res['id'],
@@ -55,9 +56,13 @@ def signup():
     session.commit()
     return user.username + " created!"
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    pass
+# @app.route('/login', methods=["POST"])
+# def login():
+#     res = request.get_json()
+#     email_entered = res['email']
+#     password_entered = res['password']
+#     user = User.query.filter_by(email=email_entered).first()
+#     return user
 
 if __name__ == '__main__':
     app.run()
