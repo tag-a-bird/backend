@@ -1,4 +1,5 @@
-from flask import Flask, request
+from crypt import methods
+from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from os import error, getenv
 from flask_restful import Api, Resource
@@ -26,14 +27,28 @@ api = Api(app)
 
 auth = HTTPBasicAuth()
 
+def dict_helper(objlist):
+    dict = [item.obj_to_dict() for item in objlist]
+    return dict
+
+@app.route('/users', methods = ["GET"])
+def get_users():
+    users_info = session.query(User).all()
+    users_list_dict = dict_helper(users_info)
+    return users_list_dict
+
 users = {
     str(getenv("USERNAME")): generate_password_hash(str(getenv("PASSWORD")))
 }
 
 @auth.verify_password
 def verify_password(username, password):
+    # users_info = session.query(User).all()
+    # users = dict_helper(users_info)
+    # if username in users:
     if username in users and check_password_hash(users.get(username), password):
         return username
+
 
 class Annotations(Resource):
     @auth.login_required

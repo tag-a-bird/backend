@@ -2,7 +2,6 @@ from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import  sessionmaker, scoped_session, declarative_base, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 Base = declarative_base()
 
 class User(Base):
@@ -51,6 +50,14 @@ class User(Base):
     def check_password(self, password):
         """Check hashed password."""
         return check_password_hash(self.password, password)
+
+    def obj_to_dict(self):  # to build json format
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email" : self.email,
+            "password" : self.password
+        }
 
     annotations = relationship("Annotation", back_populates="user")
 
