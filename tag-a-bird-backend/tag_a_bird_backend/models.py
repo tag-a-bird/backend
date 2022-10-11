@@ -12,7 +12,7 @@ class User(Base):
         Integer,
         primary_key=True
     )
-    name = Column(
+    username = Column(
         String(100),
         nullable=False,
         unique=False
@@ -28,18 +28,18 @@ class User(Base):
         unique=False,
         nullable=False
 	)
-    created_on = Column(
-        DateTime,
-        index=False,
-        unique=False,
-        nullable=True
-    )
-    last_login = Column(
-        DateTime,
-        index=False,
-        unique=False,
-        nullable=True
-    )
+    # created_on = Column(
+    #     DateTime,
+    #     index=False,
+    #     unique=False,
+    #     nullable=True
+    # )
+    # last_login = Column(
+    #     DateTime,
+    #     index=False,
+    #     unique=False,
+    #     nullable=True
+    # )
 
     def set_password(self, password):
         """Create hashed password."""
