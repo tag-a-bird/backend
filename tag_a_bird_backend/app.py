@@ -1,10 +1,10 @@
 from crypt import methods
-from flask import Flask, request, jsonify
+from flask import Flask, request, g
 from dotenv import load_dotenv
 from os import error, getenv
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
@@ -19,12 +19,16 @@ app = Flask(__name__)
 
 app.config.from_prefixed_env()
 
-db = create_engine(app.config["DATABASE_URI"])
+engine = create_engine(app.config["DATABASE_URI"])
 
-Session = sessionmaker(db)  
-session = Session()
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=engine))
+# Session = sessionmaker(db)  
+# session = Session()
+Base.query = db_session.query_property()
 
-Base.metadata.create_all(db)
+Base.metadata.create_all(engine)
 
 api = Api(app)
 
@@ -36,24 +40,23 @@ def dict_helper(objlist):
 
 @app.route('/api/users', methods = ["GET"])
 def get_users():
-    users_info = session.query(User).all()
+    users_info = db_session.query(User).all()
     users_list_dict = dict_helper(users_info)
     return users_list_dict
 
-users = {
-    str(getenv("USERNAME")): generate_password_hash(str(getenv("PASSWORD")))
-}
+# users = {
+#     str(getenv("USERNAME")): generate_password_hash(str(getenv("PASSWORD")))
+# }
 
-# users = get_users()
+# # users = get_users()
 
 @auth.verify_password
 def verify_password(username, password):
-    # users_info = session.query(User).all()
-    # users = dict_helper(users_info)
-    # if username in users:
-    if username in users and check_password_hash(users.get(username), password):
-        return username
-
+    user = User.query.filter_by(username = username).first()
+    if not user or not user.verify_password(password):
+        return False
+    g.user = user
+    return True
 
 class Annotations(Resource):
     @auth.login_required
@@ -64,7 +67,7 @@ api.add_resource(Annotations, "/api/annotation")
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
-    session.rollback()
+    db_session.rollback()
     user = User(
             id  = uuid.uuid4(),
             username = request.json.get('username'),
@@ -72,8 +75,8 @@ def signup():
             created_on = datetime.datetime.now()
             )
     user.set_password(request.json.get('password'))
-    session.add(user)
-    session.commit()
+    db_session.add(user)
+    db_session.commit()
     return user.username + " created!" 
 
 # @app.route('/login', methods=["POST"])

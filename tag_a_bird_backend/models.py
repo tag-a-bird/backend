@@ -49,7 +49,7 @@ class User(Base):
             method='sha256'
         )
 
-    def check_password(self, password):
+    def verify_password(self, password):
         """Check hashed password."""
         return check_password_hash(self.password_hash, password)
 
