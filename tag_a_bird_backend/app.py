@@ -1,19 +1,13 @@
 from crypt import methods
 from flask import Flask, request, g
-from dotenv import load_dotenv
-from os import error, getenv
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from flask_httpauth import HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from .models import Base, User, Annotation
 import datetime
 import uuid
-
-
-load_dotenv()
 
 app = Flask(__name__)
 
@@ -21,11 +15,13 @@ app.config.from_prefixed_env()
 
 engine = create_engine(app.config["DATABASE_URI"])
 
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-# Session = sessionmaker(db)  
-# session = Session()
+db_session = scoped_session(
+    sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=engine)
+    )
+
 Base.query = db_session.query_property()
 
 Base.metadata.create_all(engine)
