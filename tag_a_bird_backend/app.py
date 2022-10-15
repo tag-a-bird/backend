@@ -65,8 +65,8 @@ def signup():
             id  = res['id'],
             username = res['username'],
             email = res['email'],
-            password = res['password']
             )
+    user.set_password(res['password'])
     session.add(user)
     session.commit()
     return user.username + " created!"

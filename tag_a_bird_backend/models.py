@@ -21,7 +21,7 @@ class User(Base):
         unique=True,
         nullable=False
     )
-    password = Column(
+    password_hash = Column(
         String(200),
         primary_key=False,
         unique=False,
@@ -42,21 +42,21 @@ class User(Base):
 
     def set_password(self, password):
         """Create hashed password."""
-        self.password = generate_password_hash(
+        self.password_hash = generate_password_hash(
             password,
             method='sha256'
         )
 
     def check_password(self, password):
         """Check hashed password."""
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password_hash, password)
 
     def obj_to_dict(self):  # to build json format
         return {
             "id": self.id,
             "username": self.username,
             "email" : self.email,
-            "password" : self.password
+            "password_hash" : self.password_hash
         }
 
     annotations = relationship("Annotation", back_populates="user")
