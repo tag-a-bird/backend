@@ -44,12 +44,6 @@ def get_users():
     users_list_dict = dict_helper(users_info)
     return users_list_dict
 
-# users = {
-#     str(getenv("USERNAME")): generate_password_hash(str(getenv("PASSWORD")))
-# }
-
-# # users = get_users()
-
 @auth.verify_password
 def verify_password(username, password):
     user = User.query.filter_by(username = username).first()
@@ -78,14 +72,6 @@ def signup():
     db_session.add(user)
     db_session.commit()
     return user.username + " created!" 
-
-# @app.route('/login', methods=["POST"])
-# def login():
-#     res = request.get_json()
-#     email_entered = res['email']
-#     password_entered = res['password']
-#     user = User.query.filter_by(email=email_entered).first()
-#     return user
 
 if __name__ == '__main__':
     app.run()

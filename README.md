@@ -9,6 +9,7 @@ flask run
 ```
 ## API routes
 `api/users` Send a `GET` request to check all users.
+
 `api/signup` Send a `POST` request to sign up a new user, usage:
 ```
 {
