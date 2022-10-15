@@ -1,5 +1,7 @@
+import uuid
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import  sessionmaker, scoped_session, declarative_base, relationship
+from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
 
 Base = declarative_base()
@@ -8,7 +10,7 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(
-        Integer,
+        UUID(as_uuid=True),
         primary_key=True
     )
     username = Column(
@@ -27,12 +29,12 @@ class User(Base):
         unique=False,
         nullable=False
 	)
-    # created_on = Column(
-    #     DateTime,
-    #     index=False,
-    #     unique=False,
-    #     nullable=True
-    # )
+    created_on = Column(
+        DateTime,
+        index=False,
+        unique=False,
+        nullable=True
+    )
     # last_login = Column(
     #     DateTime,
     #     index=False,
@@ -56,7 +58,8 @@ class User(Base):
             "id": self.id,
             "username": self.username,
             "email" : self.email,
-            "password_hash" : self.password_hash
+            "password_hash" : self.password_hash,
+            "created_on": self.created_on
         }
 
     annotations = relationship("Annotation", back_populates="user")

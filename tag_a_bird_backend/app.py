@@ -9,6 +9,9 @@ from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from .models import Base, User, Annotation
+import datetime
+import uuid
+
 
 load_dotenv()
 
@@ -31,7 +34,7 @@ def dict_helper(objlist):
     dict = [item.obj_to_dict() for item in objlist]
     return dict
 
-@app.route('/users', methods = ["GET"])
+@app.route('/api/users', methods = ["GET"])
 def get_users():
     users_info = session.query(User).all()
     users_list_dict = dict_helper(users_info)
@@ -40,6 +43,8 @@ def get_users():
 users = {
     str(getenv("USERNAME")): generate_password_hash(str(getenv("PASSWORD")))
 }
+
+# users = get_users()
 
 @auth.verify_password
 def verify_password(username, password):
@@ -57,19 +62,19 @@ class Annotations(Resource):
 
 api.add_resource(Annotations, "/api/annotation")
 
-@app.route('/signup', methods=['POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
     session.rollback()
-    res = request.get_json()
     user = User(
-            id  = res['id'],
-            username = res['username'],
-            email = res['email'],
+            id  = uuid.uuid4(),
+            username = request.json.get('username'),
+            email = request.json.get('email'),
+            created_on = datetime.datetime.now()
             )
-    user.set_password(res['password'])
+    user.set_password(request.json.get('password'))
     session.add(user)
     session.commit()
-    return user.username + " created!"
+    return user.username + " created!" 
 
 # @app.route('/login', methods=["POST"])
 # def login():
