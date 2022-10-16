@@ -18,6 +18,7 @@ flask run
     "password": "12345"
 }
 ```
+`/api/annotation` protected route for annotation.
 
 ## Testing
 for running tests, type 

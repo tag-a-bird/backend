@@ -1,6 +1,6 @@
-import uuid
+from concurrent.futures import process
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import  sessionmaker, scoped_session, declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
 
