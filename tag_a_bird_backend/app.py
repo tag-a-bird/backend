@@ -2,12 +2,12 @@ from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
+from flask_httpauth import HTTPBasicAuth
 import datetime
 import uuid
 from dotenv import load_dotenv
 import json
-import jwt
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 from .models import Base, User, Annotation
 
@@ -16,6 +16,8 @@ app = Flask(__name__)
 load_dotenv()
 
 app.config.from_prefixed_env()
+
+jwt = JWTManager(app)
 
 engine = create_engine(app.config["DATABASE_URI"])
 
@@ -34,17 +36,9 @@ api = Api(app)
 
 auth = HTTPBasicAuth()
 
-token = HTTPTokenAuth(scheme = "Bearer")
-
 def dict_helper(objlist):
     dict = [item.obj_to_dict() for item in objlist]
     return dict
-
-@app.route('/api/users', methods = ["GET"])
-def get_users():
-    users_info = db_session.query(User).all()
-    users_list_dict = dict_helper(users_info)
-    return users_list_dict
 
 @auth.verify_password
 def verify_password(username, password):
@@ -55,17 +49,19 @@ def verify_password(username, password):
 
 class Annotations(Resource):
     @auth.login_required
+    # @jwt_required()
     def get(self):
         return json.dumps({'Hello': 'World'})
 
 class Test(Resource):
-    @auth.login_required
+    @jwt_required()
     def get(self):
-        return json.dumps({'ok': 'ay'})
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        return json.dumps({ "username": user.username }), 200
 
 api.add_resource(Annotations, "/api/annotation")
 api.add_resource(Test, "/api/test")
-
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -88,34 +84,37 @@ def signup():
 
         return "Error: " + str(e), 500
 
-@app.route("/api/login", methods = ["POST"])
+# Create a route to authenticate your users and return JWT Token. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route("/api/authenticate", methods = ["POST"])
 def login():
-    d = request.json
-    # if "username" not in d or "password" not in d:
-    #     raise Exception("Unable to authenticate")
-    if not verify_password(d["username"], d["password"]):
-        raise Exception("Unable to authenticate")
-    encoded_jwt = jwt.encode(
-        {"username" : d["username"]},
-        app.config["SECRET_KEY"],
-        algorithm="HS256"
-    )
-    return jsonify({"token": encoded_jwt})
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.verify_password(password):
+        return jsonify({"msg": "Bad username or password"}), 401
+    
+    # create a new token with the user id inside
+    access_token = create_access_token(identity=user.id)
+    return jsonify({ "token": access_token, "user_id": user.id })
 
-@token.verify_token
-def verify_token(token):
-    try:
-        decoded_jwt = jwt.decode(
-            token, 
-            app.config["SECRET_KEY"],
-            algorithm=["HS256"])
-    except Exception as e:
-        return None
-    all_users = db_session.query(User).all()
-    all_users_list_dict = dict_helper(all_users)
-    if decoded_jwt["username"] in all_users_list_dict:
-        return decoded_jwt["username"]
-    return None
+# example proteceted endpoint
+@app.route("/api/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    return jsonify({"id": user.id, "username": user.username }), 200
+
+@app.route('/api/users', methods = ["GET"])
+@jwt_required()
+def get_users():
+    users_info = db_session.query(User).all()
+    users_list_dict = dict_helper(users_info)
+    return users_list_dict
+
 
 if __name__ == '__main__':
     app.run()
