@@ -1,13 +1,13 @@
-from crypt import methods
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 import datetime
 import uuid
 from dotenv import load_dotenv
 import json
+import jwt
 
 from .models import Base, User, Annotation
 
@@ -33,6 +33,8 @@ Base.metadata.create_all(engine)
 api = Api(app)
 
 auth = HTTPBasicAuth()
+
+token = HTTPTokenAuth(scheme = "Bearer")
 
 def dict_helper(objlist):
     dict = [item.obj_to_dict() for item in objlist]
@@ -85,6 +87,35 @@ def signup():
         print(e)
 
         return "Error: " + str(e), 500
+
+@app.route("/api/login", methods = ["POST"])
+def login():
+    d = request.json
+    # if "username" not in d or "password" not in d:
+    #     raise Exception("Unable to authenticate")
+    if not verify_password(d["username"], d["password"]):
+        raise Exception("Unable to authenticate")
+    encoded_jwt = jwt.encode(
+        {"username" : d["username"]},
+        app.config["SECRET_KEY"],
+        algorithm="HS256"
+    )
+    return jsonify({"token": encoded_jwt})
+
+@token.verify_token
+def verify_token(token):
+    try:
+        decoded_jwt = jwt.decode(
+            token, 
+            app.config["SECRET_KEY"],
+            algorithm=["HS256"])
+    except Exception as e:
+        return None
+    all_users = db_session.query(User).all()
+    all_users_list_dict = dict_helper(all_users)
+    if decoded_jwt["username"] in all_users_list_dict:
+        return decoded_jwt["username"]
+    return None
 
 if __name__ == '__main__':
     app.run()
