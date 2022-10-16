@@ -91,7 +91,7 @@ def signup():
         user = User(
                 id  = uuid.uuid4(),
                 username = request.get_json(force = True)['username'],
-                email = request.get_json(force = True)['password'],
+                email = request.get_json(force = True)['email'],
                 created_on = datetime.datetime.now()
                 )
         user.set_password(request.json.get('password'))
