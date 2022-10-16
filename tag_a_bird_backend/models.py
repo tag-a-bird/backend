@@ -72,7 +72,7 @@ class Annotation(Base):
 
     id = Column(Integer, primary_key=True)
     recording_id = Column(Integer)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(UUID, ForeignKey("user.id"))
     user = relationship("User", back_populates="annotations")
     start_time = Column(Integer)
     end_time = Column(Integer)
