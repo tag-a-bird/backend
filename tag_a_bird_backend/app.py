@@ -62,16 +62,23 @@ api.add_resource(Annotations, "/api/annotation")
 @app.route('/api/signup', methods=['POST'])
 def signup():
     db_session.rollback()
-    user = User(
-            id  = uuid.uuid4(),
-            username = request.json.get('username'),
-            email = request.json.get('email'),
-            created_on = datetime.datetime.now()
-            )
-    user.set_password(request.json.get('password'))
-    db_session.add(user)
-    db_session.commit()
-    return user.username + " created!" 
+    try:
+        user = User(
+                id  = uuid.uuid4(),
+                username = request.get_json(force = True)['username'],
+                email = request.get_json(force = True)['password'],
+                created_on = datetime.datetime.now()
+                )
+        user.set_password(request.json.get('password'))
+        db_session.add(user)
+        db_session.commit()
+        print("User added")
+
+        return user.username + " created!", 201
+    except Exception as e:
+        print(e)
+
+        return "Error: " + str(e), 500
 
 if __name__ == '__main__':
     app.run()
