@@ -86,7 +86,7 @@ def signup():
 
 # Create a route to authenticate your users and return JWT Token. The
 # create_access_token() function is used to actually generate the JWT.
-@app.route("/api/authenticate", methods = ["POST"])
+@app.route("/api/signin", methods = ["POST"])
 def login():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
