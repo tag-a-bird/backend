@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import json
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 
-from .models import Base, User, Annotation
+from .models import Base, TokenBlocklist, User, Annotation
 
 app = Flask(__name__)
 
@@ -54,7 +54,7 @@ class Annotations(Resource):
         return json.dumps({'Hello': 'World'})
 
 class Test(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self):
         current_user_id = get_jwt_identity()
         user = User.query.get(current_user_id)
@@ -98,15 +98,47 @@ def login():
     access_token = create_access_token(identity=user.id)
     return jsonify({ "token": access_token, "user_id": user.id })
 
-blacklist = set()
+# blocklist = set()
 
-# Endpoint for revoking the current users access token
-@app.route("/api/signout", methods=['DELETE'])
+# @jwt.token_in_blocklist_loader
+# def check_if_token_in_blacklist(jwt_header, jwt_payload):
+#     jti = jwt_payload['jti']
+#     token_in_blocklist = blocklist.get(jti)
+#     return token_in_blocklist is not False
+
+# ACCESS_EXPIRES = 30
+
+# # Endpoint for revoking the current users access token
+# @app.route("/api/signout", methods=['DELETE'])
+# @jwt_required()
+# def logout():
+#     jti = get_jwt()["jti"]
+#     blocklist.set(jti, "", ex = ACCESS_EXPIRES)
+#     return jsonify(msg = "Access token revoked")
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    token = db_session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+
+    return token is not None
+
+# @jwt.revoked_token_loader
+# def revoked_token_response(jwt_header, jwt_payload):
+#     return jsonify(msg=f"I'm sorry {jwt_payload['sub']} I can't let you do that")
+
+
+# Endpoint for revoking the current users access token. Saved the unique
+# identifier (jti) for the JWT into our database.
+@app.route("/api/signout", methods=["DELETE"])
 @jwt_required()
-def logout():
-    jti = get_jwt()['jti']
-    blacklist.add(jti)
-    return jsonify({"msg": "Successfully logged out"}), 200
+def modify_token():
+    id  = "12345"
+    jti = get_jwt()["jti"]
+    now = "now"
+    db_session.add(TokenBlocklist(id=id, jti=str(jti), created_at=now))
+    db_session.commit()
+    return jsonify(msg="JWT revoked")
 
 # example proteceted endpoint
 @app.route("/api/protected", methods=["GET"])

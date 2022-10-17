@@ -80,3 +80,14 @@ class Annotation(Base):
 
     def __repr__(self):
         return f"Annotation(id={self.id!r}, recording_id={self.recording_id!r}, user_id={self.user_id!r}, start_time={self.start_time!r}, end_time={self.end_time!r}, label={self.label!r})"
+
+
+class TokenBlocklist(Base):
+    __tablename__ = "blocklist"
+
+    id = Column(Integer, primary_key=True)
+    jti = Column(UUID, nullable=False, index=True)
+    created_at = Column(String(32), nullable=False)
+
+def __repr__(self):
+    return f"Annotation(id={self.id!r}, jti={self.jti!r})"
