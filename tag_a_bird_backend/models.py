@@ -85,9 +85,19 @@ class Annotation(Base):
 class TokenBlocklist(Base):
     __tablename__ = "blocklist"
 
-    id = Column(Integer, primary_key=True)
-    jti = Column(UUID, nullable=False, index=True)
-    created_at = Column(String(32), nullable=False)
+    id = Column(
+        UUID(as_uuid=True), 
+        primary_key=True
+        )
+    jti = Column(
+        UUID(as_uuid=True)
+        )
+    created_at = Column(
+        DateTime,
+        index=False,
+        unique=False,
+        nullable=True
+        )
 
 def __repr__(self):
     return f"Annotation(id={self.id!r}, jti={self.jti!r})"

@@ -49,7 +49,6 @@ def verify_password(username, password):
 
 class Annotations(Resource):
     @auth.login_required
-    # @jwt_required()
     def get(self):
         return json.dumps({'Hello': 'World'})
 
@@ -86,7 +85,7 @@ def signup():
 
 # Create a route to authenticate your users and return JWT Token. The
 # create_access_token() function is used to actually generate the JWT.
-@app.route("/api/signin", methods = ["POST"])
+@app.route('/api/signin', methods = ["POST"])
 def login():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
@@ -98,24 +97,6 @@ def login():
     access_token = create_access_token(identity=user.id)
     return jsonify({ "token": access_token, "user_id": user.id })
 
-# blocklist = set()
-
-# @jwt.token_in_blocklist_loader
-# def check_if_token_in_blacklist(jwt_header, jwt_payload):
-#     jti = jwt_payload['jti']
-#     token_in_blocklist = blocklist.get(jti)
-#     return token_in_blocklist is not False
-
-# ACCESS_EXPIRES = 30
-
-# # Endpoint for revoking the current users access token
-# @app.route("/api/signout", methods=['DELETE'])
-# @jwt_required()
-# def logout():
-#     jti = get_jwt()["jti"]
-#     blocklist.set(jti, "", ex = ACCESS_EXPIRES)
-#     return jsonify(msg = "Access token revoked")
-
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
     jti = jwt_payload["jti"]
@@ -123,25 +104,20 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 
     return token is not None
 
-# @jwt.revoked_token_loader
-# def revoked_token_response(jwt_header, jwt_payload):
-#     return jsonify(msg=f"I'm sorry {jwt_payload['sub']} I can't let you do that")
-
-
 # Endpoint for revoking the current users access token. Saved the unique
 # identifier (jti) for the JWT into our database.
-@app.route("/api/signout", methods=["DELETE"])
+@app.route('/api/signout', methods=["DELETE"])
 @jwt_required()
 def modify_token():
-    id  = "12345"
+    id  = uuid.uuid4()
     jti = get_jwt()["jti"]
-    now = "now"
-    db_session.add(TokenBlocklist(id=id, jti=str(jti), created_at=now))
+    now = datetime.datetime.now()
+    db_session.add(TokenBlocklist(id=id, jti=jti, created_at=now))
     db_session.commit()
     return jsonify(msg="JWT revoked")
 
 # example proteceted endpoint
-@app.route("/api/protected", methods=["GET"])
+@app.route('/api/protected', methods=["GET"])
 @jwt_required()
 def protected():
     # Access the identity of the current user with get_jwt_identity
