@@ -7,7 +7,7 @@ import datetime
 import uuid
 from dotenv import load_dotenv
 import json
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 
 from .models import Base, User, Annotation
 
@@ -97,6 +97,16 @@ def login():
     # create a new token with the user id inside
     access_token = create_access_token(identity=user.id)
     return jsonify({ "token": access_token, "user_id": user.id })
+
+blacklist = set()
+
+# Endpoint for revoking the current users access token
+@app.route("/api/signout", methods=['DELETE'])
+@jwt_required()
+def logout():
+    jti = get_jwt()['jti']
+    blacklist.add(jti)
+    return jsonify({"msg": "Successfully logged out"}), 200
 
 # example proteceted endpoint
 @app.route("/api/protected", methods=["GET"])
