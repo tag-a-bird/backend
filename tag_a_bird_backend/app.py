@@ -17,6 +17,10 @@ load_dotenv()
 
 app.config.from_prefixed_env()
 
+ACCESS_EXPIRES = datetime.timedelta(hours=2)
+
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+
 jwt = JWTManager(app)
 
 engine = create_engine(app.config["DATABASE_URI"])
