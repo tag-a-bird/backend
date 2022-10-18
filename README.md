@@ -16,7 +16,7 @@ flask run
     "password": "12345"
 }
 ```
-`api/signup` Send a `POST` request to sign in with the credentials of an existing user. At this step a JWT gets generated. 
+`api/signin` Send a `POST` request to sign in with the credentials of an existing user. At this step a JWT gets generated. 
 
 `api/users` Send a `GET` request to check all users. Protected route, only with JWT can be accessed. 
 
