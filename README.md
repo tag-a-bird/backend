@@ -20,10 +20,10 @@ flask run
 
 `api/users` Send a `GET` request to check all users. Protected route, only with JWT can be accessed. 
 
-`'/api/signout'` Send a `DELETE` request to revoke current JWT. 
+`/api/signout` Send a `DELETE` request to revoke current JWT. 
 
 ### Test routes
-`'/api/protected'` Send a `GET` request - only for testing. 
+`/api/protected` Send a `GET` request - only for testing. 
 
 `/api/annotation` open Resource for annotation, `GET` enabled.
 
