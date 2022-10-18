@@ -8,7 +8,7 @@ cd tag_a_bird_backend
 flask run
 ```
 ## API routes
-`api/signup` Send a `POST` request to sign up a new user, usage:
+`/api/signup` Send a `POST` request to sign up a new user, usage:
 ```
 {
     "username": "test",
@@ -16,9 +16,9 @@ flask run
     "password": "12345"
 }
 ```
-`api/signin` Send a `POST` request to sign in with the credentials of an existing user. At this step a JWT gets generated. 
+`/api/signin` Send a `POST` request to sign in with the credentials of an existing user. At this step a JWT gets generated. 
 
-`api/users` Send a `GET` request to check all users. Protected route, only with JWT can be accessed. 
+`/api/users` Send a `GET` request to check all users. Protected route, only with JWT can be accessed. 
 
 `/api/signout` Send a `DELETE` request to revoke current JWT. 
 
