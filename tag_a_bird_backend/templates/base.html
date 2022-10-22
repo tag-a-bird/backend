@@ -17,7 +17,7 @@
     <ul>
         {% if g.user %}
         <li><span>{{ g.user['username'] }}</span>
-        <li><a href="{{ url_for('signout') }}"">Log Out</a>
+        <li><a href="{{ url_for('signout') }}">Log Out</a>
             {% else %}
         <li><a href=" {{ url_for('signup') }}">Sign Up</a>
         <li><a href="{{ url_for('login') }}">Log In</a>
