@@ -147,6 +147,8 @@ class Record(Base):
             record.advanced_audio_equipment = json.get('advanced_audio_equipment')
             return record
 
+        annotations = relationship("Annotation", back_populates="record")
+
         
 
         
