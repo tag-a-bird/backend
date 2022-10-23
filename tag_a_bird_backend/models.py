@@ -75,7 +75,8 @@ class Annotation(Base):
         __tablename__ = "annotation"
 
         id = Column(Integer, primary_key=True)
-        recording_id = Column(Integer)
+        recording_id = Column(UUID, ForeignKey("record.id"))
+        record = relationship("Record", back_populates="annotation")
         user_id = Column(UUID, ForeignKey("user.id"))
         user = relationship("User", back_populates="annotations")
         start_time = Column(Integer)
@@ -88,7 +89,7 @@ class Annotation(Base):
 class Record(Base):
         __tablename__ = "record"
 
-        id = Column(Integer, primary_key=True)
+        id = Column(UUID, primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow())
         audio_url = Column(String)
         photo_url = Column(String)
