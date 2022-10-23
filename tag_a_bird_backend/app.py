@@ -99,7 +99,7 @@ def signup():
         if current_user.is_authenticated:
             flash('You are already logged in. You would be redirected to annotation page if it would be there ')
             return render_template('base.html')  #redirect(url_for('annotate'))
-        return render_template('auth/register.html')
+        return render_template('auth/signup.html')
         
 
 # Create a route to authenticate your users and return JWT Token. The
