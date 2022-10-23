@@ -10,8 +10,8 @@ import json
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_toastr import Toastr
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-
-from .models import Base, TokenBlocklist, User, Annotation
+from .helpers import populate_db_from_coreo
+from .models import Base, User, Annotation
 
 app = Flask(__name__)
 
@@ -170,6 +170,21 @@ def get_users():
     users_info = db_session.query(User).all()
     users_list_dict = dict_helper(users_info)
     return users_list_dict
+
+@app.route('/admin/populate_db', methods = ["GET", "POST"])
+def populate_db():
+    if request.method == "GET":
+        return render_template('admin/populate_db.html')
+    elif request.method == "POST":
+        try:
+            country = request.form['country']
+            populate_db_from_coreo(db_session=db_session, country=country)
+            flash("Database populated successfully")
+        except Exception as e:
+            flash('Error: ' + str(e))
+            print(e)
+        return render_template('admin/populate_db.html')
+
 
 
 if __name__ == '__main__':

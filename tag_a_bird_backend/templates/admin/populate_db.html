@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Populate DB{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <label for="country">Country</label>
+    <input name="country" id="country" required>
+    <button type="submit">Populate</button>
+</form>
+{% endblock %}
