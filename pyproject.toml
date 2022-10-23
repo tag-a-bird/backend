@@ -16,6 +16,7 @@ Flask-JWT-Extended = "^4.4.4"
 PyJWT = "^2.5.0"
 Flask-Toastr = "^0.5.8"
 Flask-Login = "^0.6.2"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
