@@ -110,7 +110,7 @@ def signup():
 
 # Create a route to authenticate your users and return JWT Token. The
 # create_access_token() function is used to actually generate the JWT.
-@app.route("/api/signin", methods = ["POST", "GET"])
+@app.route('/api/signin', methods = ["POST", "GET"])
 def login():
     if request.method == 'POST':
         try:
