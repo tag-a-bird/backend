@@ -7,7 +7,7 @@ import datetime
 import uuid
 from dotenv import load_dotenv
 import json
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_toastr import Toastr
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -18,6 +18,12 @@ app = Flask(__name__)
 load_dotenv()
 
 app.config.from_prefixed_env()
+
+ACCESS_EXPIRES = datetime.timedelta(hours=2)
+
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+
+jwt = JWTManager(app)
 
 login_manager = LoginManager(app)
 
