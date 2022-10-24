@@ -1,3 +1,5 @@
+### BRANCH-NOTE
+in this version, we are implementing a JWT based authentication and blocklist for revoked tokens
 
 to run the app, type in root
 
