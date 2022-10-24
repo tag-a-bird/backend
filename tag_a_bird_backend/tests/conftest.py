@@ -1,5 +1,5 @@
 import pytest
-from tag_a_bird_backend.app import app as flask_app
+from tag_a_bird_backend import app as flask_app
 
 @pytest.fixture
 def app():
