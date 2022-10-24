@@ -48,7 +48,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         while len(response["data"]["records"]) == limit:
             try:
                 for record in response["data"]["records"]:
-                    new_record = Record.from_json(json=record["data"])
+                    new_record = Record.from_json(json=record["data"], id=record["id"])
                     db_session.add(new_record)
                     count += 1
             except Exception as e:
