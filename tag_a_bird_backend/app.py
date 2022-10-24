@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, request, jsonify, render_template, flash, url_for, redirect
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
@@ -102,6 +103,11 @@ def login():
             return "Error: " + str(e), 500
     elif request.method == 'GET':
         return render_template('auth/login.html')
+
+@app.route('/api/admin', methods=['GET'])
+@auth.login_required
+def about():
+    return 'hello admin'
 
 @app.route('/api/signout', methods=['GET'])
 def signout():
