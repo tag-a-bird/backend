@@ -6,18 +6,14 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from flask_httpauth import HTTPBasicAuth
 import datetime
 import uuid
-from dotenv import load_dotenv
 import json
 from flask_toastr import Toastr
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 from .models import Base, User, Annotation
+from . import create_app
 
-app = Flask(__name__)
-
-load_dotenv()
-
-app.config.from_prefixed_env()
+app = create_app()
 
 login_manager = LoginManager(app)
 
