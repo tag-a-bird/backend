@@ -11,7 +11,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask_toastr import Toastr
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
-from .models import Base, User, Annotation
+from .models import Base, TokenBlocklist, User, Annotation
 
 app = Flask(__name__)
 
@@ -65,12 +65,11 @@ def verify_password(username, password):
 
 class Annotations(Resource):
     @auth.login_required
-    # @jwt_required()
     def get(self):
         return json.dumps({'Hello': 'World'})
 
 class Test(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self):
         current_user_id = get_jwt_identity()
         user = User.query.get(current_user_id)
@@ -136,8 +135,27 @@ def signout():
     return redirect(url_for('base.html'))
 
 
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    token = db_session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+
+    return token is not None
+
+# Endpoint for revoking the current users access token. Saved the unique
+# identifier (jti) for the JWT into our database.
+@app.route('/api/signout', methods=["DELETE"])
+@jwt_required()
+def modify_token():
+    id  = uuid.uuid4()
+    jti = get_jwt()["jti"]
+    now = datetime.datetime.now()
+    db_session.add(TokenBlocklist(id=id, jti=jti, created_at=now))
+    db_session.commit()
+    return jsonify(msg="JWT revoked")
+
 # example proteceted endpoint
-@app.route("/api/protected", methods=["GET"])
+@app.route('/api/protected', methods=["GET"])
 @jwt_required()
 def protected():
     # Access the identity of the current user with get_jwt_identity
