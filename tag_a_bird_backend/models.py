@@ -39,12 +39,6 @@ class User(Base, UserMixin):
         unique=False,
         nullable=True
     )
-    # last_login = Column(
-    #     DateTime,
-    #     index=False,
-    #     unique=False,
-    #     nullable=True
-    # )
 
     def set_password(self, password):
         """Create hashed password."""
@@ -56,15 +50,6 @@ class User(Base, UserMixin):
     def verify_password(self, password):
         """Check hashed password."""
         return check_password_hash(self.password_hash, password)
-
-    def obj_to_dict(self):  # to build json format
-        return {
-            "id": self.id,
-            "username": self.username,
-            "email" : self.email,
-            "password_hash" : self.password_hash,
-            "created_on": self.created_on
-        }
 
     annotations = relationship("Annotation", back_populates="user")
 

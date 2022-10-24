@@ -3,8 +3,6 @@ import requests
 from json import loads
 from .models import Record
 
-
-
 def populate_db_from_coreo(db_session, country: str) -> str:
     """Populates the database with records from the coreo API"""
 
@@ -31,7 +29,8 @@ def populate_db_from_coreo(db_session, country: str) -> str:
 
         request_body: dict = {"query": query}
         response = requests.post(api_url, headers=request_header, json=request_body)
-        #print(f'this request sent > body:{response.request.body}, headers:{response.request.headers} // this response came back > status_code:{response.status_code}, text:{response.text}')
+        # print(f'this request sent > body:{response.request.body}, headers:{response.request.headers} 
+        # this response came back > status_code:{response.status_code}, text:{response.text}')
         print('request made')
         try:
             response_json = loads(response.text)
@@ -42,7 +41,6 @@ def populate_db_from_coreo(db_session, country: str) -> str:
 
     # find the record in response that matches the last record in the database from the same country and add all records after that one to the database
     # if there are no records in the database from that country, add all records from that country to the database
-
     if Record.query.filter_by(country=country).first() is None:
         count = 0
         response = coreo_request(limit=limit, offset=offset)
@@ -79,10 +77,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             db_session.rollback()
             count = 0
             print(e)
-            return f"Error: {e}"
-
-        
-        
+            return f"Error: {e}"   
         
     else:
         db_last_record = Record.query.filter_by(country=country).order_by(Record.created_at.desc()).first()
@@ -111,18 +106,4 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             count = 0
             response = coreo_request(offset=offset)
             
-
     return f"Database populated with {total_count} records from {country}"
-
-
-        
-
-        
-
-        
-    
-
-
-
-
-    

@@ -7,7 +7,6 @@ import datetime
 import uuid
 from dotenv import load_dotenv
 import json
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_toastr import Toastr
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
@@ -18,12 +17,6 @@ app = Flask(__name__)
 load_dotenv()
 
 app.config.from_prefixed_env()
-
-ACCESS_EXPIRES = datetime.timedelta(hours=2)
-
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
-
-jwt = JWTManager(app)
 
 login_manager = LoginManager(app)
 
@@ -50,12 +43,6 @@ toastr = Toastr(app)
 def load_user(user_id):
     return User.query.get(user_id)
 
-
-
-def dict_helper(objlist):
-    dict = [item.obj_to_dict() for item in objlist]
-    return dict
-
 @auth.verify_password
 def verify_password(username, password):
     user = User.query.filter_by(username = username).first()
@@ -68,15 +55,7 @@ class Annotations(Resource):
     def get(self):
         return json.dumps({'Hello': 'World'})
 
-class Test(Resource):
-    @jwt_required
-    def get(self):
-        current_user_id = get_jwt_identity()
-        user = User.query.get(current_user_id)
-        return json.dumps({ "username": user.username }), 200
-
 api.add_resource(Annotations, "/api/annotation")
-api.add_resource(Test, "/api/test")
 
 @app.route('/api/signup', methods=['GET', 'POST'])
 def signup():
@@ -98,17 +77,13 @@ def signup():
             db_session.rollback()
             flash('Error: ' + str(e))
             return render_template('base.html')
-
-            return "Error: " + str(e), 500
+            # return "Error: " + str(e), 500 
     elif request.method == 'GET':
         if current_user.is_authenticated:
             flash('You are already logged in. You would be redirected to annotation page if it would be there ')
             return render_template('base.html')  #redirect(url_for('annotate'))
         return render_template('auth/signup.html')
         
-
-# Create a route to authenticate your users and return JWT Token. The
-# create_access_token() function is used to actually generate the JWT.
 @app.route('/api/signin', methods = ["POST", "GET"])
 def login():
     if request.method == 'POST':
@@ -134,43 +109,6 @@ def signout():
     logout_user()
     return redirect(url_for('base.html'))
 
-
-@jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
-    jti = jwt_payload["jti"]
-    token = db_session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
-
-    return token is not None
-
-# Endpoint for revoking the current users access token. Saved the unique
-# identifier (jti) for the JWT into our database.
-@app.route('/api/signout', methods=["DELETE"])
-@jwt_required()
-def modify_token():
-    id  = uuid.uuid4()
-    jti = get_jwt()["jti"]
-    now = datetime.datetime.now()
-    db_session.add(TokenBlocklist(id=id, jti=jti, created_at=now))
-    db_session.commit()
-    return jsonify(msg="JWT revoked")
-
-# example proteceted endpoint
-@app.route('/api/protected', methods=["GET"])
-@jwt_required()
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
-    
-    return jsonify({"id": user.id, "username": user.username }), 200
-
-@app.route('/api/users', methods = ["GET"])
-@jwt_required()
-def get_users():
-    users_info = db_session.query(User).all()
-    users_list_dict = dict_helper(users_info)
-    return users_list_dict
-
 @app.route('/admin/populate_db', methods = ["GET", "POST"])
 def populate_db():
     if request.method == "GET":
@@ -184,8 +122,6 @@ def populate_db():
             flash('Error: ' + str(e))
             print(e)
         return render_template('admin/populate_db.html')
-
-
 
 if __name__ == '__main__':
     app.run()

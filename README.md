@@ -1,4 +1,3 @@
-
 to run the app, type in root
 
 ```
@@ -16,17 +15,11 @@ flask run
     "password": "12345"
 }
 ```
-`/api/signin` Send a `POST` request to sign in with the credentials of an existing user. At this step a JWT gets generated. 
+`/api/signin` Send a `POST` request to sign in with the credentials of an existing user. 
 
-`/api/users` Send a `GET` request to check all users. Protected route, only with JWT can be accessed. 
-
-`/api/signout` Send a `DELETE` request to revoke current JWT. 
+`/api/signout` Send a `GET` request. logout_user() of LoginManager will handle signing out. 
 
 ### Test routes
-`/api/protected` Send a `GET` request - only for testing. 
-
-`/api/annotation` open Resource for annotation, `GET` enabled.
-
 `/api/annotation` protected Resource for testing, `GET` enabled.
 
 ## Testing
