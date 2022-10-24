@@ -60,7 +60,7 @@ class Annotation(Base):
         __tablename__ = "annotation"
 
         id = Column(Integer, primary_key=True)
-        recording_id = Column(UUID, ForeignKey("record.id"))
+        recording_id = Column(Integer, ForeignKey("record.id"))
         record = relationship("Record", back_populates="annotations")
         user_id = Column(UUID, ForeignKey("user.id"))
         user = relationship("User", back_populates="annotations")
@@ -74,7 +74,7 @@ class Annotation(Base):
 class Record(Base):
         __tablename__ = "record"
 
-        id = Column(UUID, primary_key=True)
+        id = Column(Integer, primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow())
         audio_url = Column(String)
         photo_url = Column(String)
@@ -107,8 +107,9 @@ class Record(Base):
 
         #method to deserialize given json to Record object
         @staticmethod
-        def from_json(json):
+        def from_json(json, id):
             record = Record()
+            record.id = id
             record.audio_url = json.get('audio')
             record.photo_url = json.get('photo')
             record.comment = json.get('comment')
