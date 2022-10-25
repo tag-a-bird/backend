@@ -9,9 +9,14 @@ import uuid
 import json
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
-from .models import Base, User, Annotation
-from . import create_app
-from .database import db_session
+from .models import User, Annotation, Base
+from . import create_app, auth
+# from .database import db_session
+from dotenv import load_dotenv
+
+from flask import Blueprint
+
+route_blueprint = Blueprint('route_blueprint', __name__)
 
 app = create_app()
 
@@ -19,11 +24,24 @@ login_manager = LoginManager(app)
 
 api = Api(app)
 
-auth = HTTPBasicAuth()
+# auth = HTTPBasicAuth()
+
+engine = create_engine(app.config["DATABASE_URI"])
+
+db_session = scoped_session(
+    sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=engine)
+    )
+
+Base.query = db_session.query_property()
+
+Base.metadata.create_all(engine)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return db_session.query(User).get(user_id)
 
 @auth.verify_password
 def verify_password(username, password):
@@ -85,7 +103,7 @@ def login():
     elif request.method == 'GET':
         return render_template('auth/login.html')
 
-@app.route('/api/admin', methods=['GET'])
+@route_blueprint.route('/api/admin', methods=['GET'])
 @auth.login_required
 def about():
     return 'hello admin'
@@ -111,4 +129,5 @@ def populate_db():
         return render_template('admin/populate_db.html')
 
 if __name__ == '__main__':
+    # app = create_app()
     app.run()
