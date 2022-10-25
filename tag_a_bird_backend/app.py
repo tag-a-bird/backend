@@ -1,9 +1,8 @@
 from crypt import methods
-from flask import Flask, request, jsonify, render_template, flash, url_for, redirect
+from flask import Flask, request, jsonify, render_template, flash, url_for, redirect, Blueprint
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from flask_httpauth import HTTPBasicAuth
 import datetime
 import uuid
 import json
@@ -11,10 +10,6 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from .helpers import populate_db_from_coreo
 from .models import User, Annotation, Base
 from . import create_app, auth
-# from .database import db_session
-from dotenv import load_dotenv
-
-from flask import Blueprint
 
 route_blueprint = Blueprint('route_blueprint', __name__)
 
@@ -23,8 +18,6 @@ app = create_app()
 login_manager = LoginManager(app)
 
 api = Api(app)
-
-# auth = HTTPBasicAuth()
 
 engine = create_engine(app.config["DATABASE_URI"])
 
@@ -38,6 +31,11 @@ db_session = scoped_session(
 Base.query = db_session.query_property()
 
 Base.metadata.create_all(engine)
+
+@route_blueprint.route('/api/admin', methods=['GET'])
+@auth.login_required
+def about():
+    return 'hello admin'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -103,11 +101,6 @@ def login():
     elif request.method == 'GET':
         return render_template('auth/login.html')
 
-@route_blueprint.route('/api/admin', methods=['GET'])
-@auth.login_required
-def about():
-    return 'hello admin'
-
 @app.route('/api/signout', methods=['GET'])
 def signout():
     # remove users token from database
@@ -129,5 +122,4 @@ def populate_db():
         return render_template('admin/populate_db.html')
 
 if __name__ == '__main__':
-    # app = create_app()
     app.run()
