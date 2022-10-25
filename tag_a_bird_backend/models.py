@@ -7,7 +7,8 @@ from flask_login import UserMixin
 from datetime import datetime, timezone
 from sqlalchemy.types import Boolean, DateTime, Integer, String
 import json
-from tag_a_bird_backend.database import Base
+
+Base = declarative_base()
 
 class User(Base, UserMixin):
     __tablename__ = "user"
