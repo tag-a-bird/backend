@@ -25,5 +25,5 @@ flask run
 ## Testing
 for running tests, type 
 ```
-python -m pytest
+pytest -v
 ```

@@ -1,15 +1,25 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from .models import Base
+from flask_toastr import Toastr
+from tag_a_bird_backend.database import init_engine, init_db
+
+toastr = Toastr()
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__)
+    app = Flask(__name__, instance_relative_config=True)
 
     load_dotenv()
-
     app.config.from_prefixed_env()
+
+    # from . import db
+    # db.init_app(app)
+
+    init_engine(app.config['DATABASE_URI'])
+    init_db()
+
+    toastr.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
