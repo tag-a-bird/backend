@@ -1,21 +1,21 @@
 import base64
 import pytest
 from flask import g, session
-# from tag_a_bird_backend.app import app
 
 # from tag_a_bird_backend import app
 # from flaskr.db import get_db
 
 def test_admin(client):
     assert client.get('/api/admin').status_code == 401
-
+    # resp = client.get('/api/admin')
+    # assert resp.status == '401 UNAUTHORIZED'
 
 # def test_register(client, app):
 #     assert client.get('/api/signup').status_code == 200
-#     response = client.post(
-#         '/api/signup', data={'username': 'a', 'password': 'a'}
-#     )
-#     assert response.headers["Location"] == "/api/signin"
+    # response = client.post(
+    #     '/api/signup', data={'username': 'a', 'password': 'a'}
+    # )
+    # assert response.headers["Location"] == "/api/signin"
 
     # with app.app_context():
     #     assert get_db().execute(

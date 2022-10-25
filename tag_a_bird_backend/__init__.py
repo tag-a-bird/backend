@@ -10,8 +10,8 @@ auth = HTTPBasicAuth()
 toastr = Toastr()
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
     from tag_a_bird_backend.app import route_blueprint
     app.register_blueprint(route_blueprint)
 
