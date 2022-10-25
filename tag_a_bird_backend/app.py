@@ -7,34 +7,19 @@ from flask_httpauth import HTTPBasicAuth
 import datetime
 import uuid
 import json
-from flask_toastr import Toastr
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 from .models import Base, User, Annotation
 from . import create_app
+from .database import db_session
 
 app = create_app()
 
 login_manager = LoginManager(app)
 
-engine = create_engine(app.config["DATABASE_URI"])
-
-db_session = scoped_session(
-    sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=engine)
-    )
-
-Base.query = db_session.query_property()
-
-Base.metadata.create_all(engine)
-
 api = Api(app)
 
 auth = HTTPBasicAuth()
-
-toastr = Toastr(app)
 
 @login_manager.user_loader
 def load_user(user_id):
