@@ -6,18 +6,19 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 import datetime
 import uuid
 import json
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 from .models import User, Annotation, Base
-from . import create_app, auth
+from . import create_app, auth, api, login_manager
 
 route_blueprint = Blueprint('route_blueprint', __name__)
 
+@route_blueprint.route('/api/admin', methods=['GET'])
+@auth.login_required
+def about():
+    return 'hello admin'
+    
 app = create_app()
-
-login_manager = LoginManager(app)
-
-api = Api(app)
 
 engine = create_engine(app.config["DATABASE_URI"])
 
@@ -31,11 +32,6 @@ db_session = scoped_session(
 Base.query = db_session.query_property()
 
 Base.metadata.create_all(engine)
-
-@route_blueprint.route('/api/admin', methods=['GET'])
-@auth.login_required
-def about():
-    return 'hello admin'
 
 @login_manager.user_loader
 def load_user(user_id):

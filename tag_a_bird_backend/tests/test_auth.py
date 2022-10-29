@@ -6,9 +6,9 @@ from flask import g, session
 # from flaskr.db import get_db
 
 def test_admin(client):
-    assert client.get('/api/admin').status_code == 401
-    # resp = client.get('/api/admin')
-    # assert resp.status == '401 UNAUTHORIZED'
+    # assert client.get('/api/admin').status_code == 401
+    resp = client.get('/api/admin')
+    assert resp.status == '401 UNAUTHORIZED'
 
 # def test_register(client, app):
 #     assert client.get('/api/signup').status_code == 200
