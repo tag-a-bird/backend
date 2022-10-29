@@ -4,10 +4,12 @@ from flask import Flask
 from flask_toastr import Toastr
 from flask_restful import Api, Resource
 from flask_httpauth import HTTPBasicAuth
+from flask_login import LoginManager
 
 auth = HTTPBasicAuth()
-
 toastr = Toastr()
+api = Api()
+login_manager = LoginManager()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -19,7 +21,8 @@ def create_app(test_config=None):
     app.config.from_prefixed_env()
 
     toastr.init_app(app)
-    # api = Api(app)
+    api.init_app(app)
+    login_manager.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
