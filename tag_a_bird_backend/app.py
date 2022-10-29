@@ -1,25 +1,24 @@
 from crypt import methods
-from flask import Flask, request, jsonify, render_template, flash, url_for, redirect
+from flask import Flask, request, jsonify, render_template, flash, url_for, redirect, Blueprint
 from flask_restful import Api, Resource
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from flask_httpauth import HTTPBasicAuth
 import datetime
 import uuid
-from dotenv import load_dotenv
 import json
-from flask_toastr import Toastr
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
-from .models import Base, User, Annotation
+from .models import User, Annotation, Base
+from . import create_app, auth, api, login_manager
 
-app = Flask(__name__)
+route_blueprint = Blueprint('route_blueprint', __name__)
 
-load_dotenv()
-
-app.config.from_prefixed_env()
-
-login_manager = LoginManager(app)
+@route_blueprint.route('/api/admin', methods=['GET'])
+@auth.login_required
+def about():
+    return 'hello admin'
+    
+app = create_app()
 
 engine = create_engine(app.config["DATABASE_URI"])
 
@@ -34,15 +33,9 @@ Base.query = db_session.query_property()
 
 Base.metadata.create_all(engine)
 
-api = Api(app)
-
-auth = HTTPBasicAuth()
-
-toastr = Toastr(app)
-
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return db_session.query(User).get(user_id)
 
 @auth.verify_password
 def verify_password(username, password):
@@ -103,11 +96,6 @@ def login():
             return "Error: " + str(e), 500
     elif request.method == 'GET':
         return render_template('auth/login.html')
-
-@app.route('/api/admin', methods=['GET'])
-@auth.login_required
-def about():
-    return 'hello admin'
 
 @app.route('/api/signout', methods=['GET'])
 def signout():
