@@ -25,7 +25,5 @@ flask run
 ## Testing
 for running tests, type 
 ```
-pytest -v -p no:warnings
+pytest -v 
 ```
-
-Note: Blueprint registering return several warnings. "...Make sure all imports, decorators, functions, etc. needed to set up the blueprint are done before registering it. This warning will become an exception in Flask 2.3."
