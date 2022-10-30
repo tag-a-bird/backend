@@ -10,7 +10,6 @@ class Config:
     SECRET_KEY = getenv('FLASK_SECRET_KEY')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
-    DATABASE_URI = getenv('FLASK_DATABASE_URI')
 
 
 class ProdConfig(Config):

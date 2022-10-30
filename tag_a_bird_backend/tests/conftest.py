@@ -1,7 +1,7 @@
 import os
 import tempfile
 import pytest
-from tag_a_bird_backend import create_app
+from tag_a_bird_backend import config, create_app
 # from tag_a_bird_backend.database import init_db
 
 # read in SQL for populating test data
@@ -14,10 +14,8 @@ def app():
     # create a temporary file to isolate the database for each test
     # db_fd, db_path = tempfile.mkstemp()
     # create the app with common test config
-    app = create_app({
-        "TESTING": True, 
-        # "DATABASE": db_path
-        })
+    app = create_app(config.DevConfig)
+
 
     # create the database and load test data
     # with app.app_context():
