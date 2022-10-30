@@ -12,36 +12,16 @@ from .models import User, Annotation, Base
 from . import create_app, auth, api, login_manager, config
 from .db import db_session
 
-route_blueprint = Blueprint('route_blueprint', __name__)
+route_blueprint = Blueprint('route_blueprint', __name__,        
+    template_folder='templates',
+    static_folder='static')
 
 @route_blueprint.route('/api/admin', methods=['GET'])
 @auth.login_required
 def about():
     return 'hello admin'
-    
-app = create_app(config.DevConfig)
 
-Base.query = db_session.query_property()
-
-@login_manager.user_loader
-def load_user(user_id):
-    return db_session.query(User).get(user_id)
-
-@auth.verify_password
-def verify_password(username, password):
-    user = User.query.filter_by(username = username).first()
-    if not user or not user.verify_password(password):
-        return False
-    return user
-
-class Annotations(Resource):
-    @auth.login_required
-    def get(self):
-        return json.dumps({'Hello': 'World'})
-
-api.add_resource(Annotations, "/api/annotation")
-
-@app.route('/api/signup', methods=['GET', 'POST'])
+@route_blueprint.route('/api/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         db_session.rollback()
@@ -67,8 +47,8 @@ def signup():
             flash('You are already logged in. You would be redirected to annotation page if it would be there ')
             return render_template('base.html')  #redirect(url_for('annotate'))
         return render_template('auth/signup.html')
-        
-@app.route('/api/signin', methods = ["POST", "GET"])
+
+@route_blueprint.route('/api/signin', methods = ["POST", "GET"])
 def login():
     if request.method == 'POST':
         try:
@@ -87,13 +67,13 @@ def login():
     elif request.method == 'GET':
         return render_template('auth/login.html')
 
-@app.route('/api/signout', methods=['GET'])
+@route_blueprint.route('/api/signout', methods=['GET'])
 def signout():
     # remove users token from database
     logout_user()
     return redirect(url_for('base.html'))
 
-@app.route('/admin/populate_db', methods = ["GET", "POST"])
+@route_blueprint.route('/admin/populate_db', methods = ["GET", "POST"])
 def populate_db():
     if request.method == "GET":
         return render_template('admin/populate_db.html')
@@ -106,6 +86,28 @@ def populate_db():
             flash('Error: ' + str(e))
             print(e)
         return render_template('admin/populate_db.html')
+    
+app = create_app(config.DevConfig)
+
+Base.query = db_session.query_property()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db_session.query(User).get(user_id)
+
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username = username).first()
+    if not user or not user.verify_password(password):
+        return False
+    return user
+
+class Annotations(Resource):
+    @auth.login_required
+    def get(self):
+        return json.dumps({'Hello': 'World'})
+
+api.add_resource(Annotations, "/api/annotation")
 
 if __name__ == '__main__':
     app.run()

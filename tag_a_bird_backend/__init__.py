@@ -14,10 +14,8 @@ api = Api()
 login_manager = LoginManager()
 
 def create_app(test_config=None):
-    app = Flask(__name__, 
-        # instance_relative_config=True
-        )
-    app.config.from_object(config.DevConfig)
+    app = Flask(__name__)
+    app.config.from_object(config.DevConfig) # fix this later 
 
     from tag_a_bird_backend.app import route_blueprint
     app.register_blueprint(route_blueprint)
