@@ -1,16 +1,13 @@
 from crypt import methods
-from flask_restful import Api, Resource
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from flask_restful import Resource
 import json
 from .models import User, Annotation, Base
-from . import create_app, auth, api, login_manager, config
+from . import create_app, auth, api, config
 from .db import db_session
     
 app = create_app(config.DevConfig)
 
 Base.query = db_session.query_property()
-
 
 @auth.verify_password
 def verify_password(username, password):
