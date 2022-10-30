@@ -1,12 +1,11 @@
 from concurrent.futures import process
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime, timezone
 from sqlalchemy.types import Boolean, DateTime, Integer, String
-import json
 from .db import Base
 
 class User(Base, UserMixin):

@@ -1,8 +1,6 @@
-import os
-from dotenv import load_dotenv
 from flask import Flask
 from flask_toastr import Toastr
-from flask_restful import Api, Resource
+from flask_restful import Api
 from flask_httpauth import HTTPBasicAuth
 from flask_login import LoginManager
 from .db import init_engine, init_db
