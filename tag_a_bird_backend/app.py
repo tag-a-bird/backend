@@ -21,6 +21,7 @@ def about():
     
 app = create_app()
 
+Base.query = db_session.query_property()
 
 @login_manager.user_loader
 def load_user(user_id):

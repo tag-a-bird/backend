@@ -5,6 +5,9 @@ from flask_toastr import Toastr
 from flask_restful import Api, Resource
 from flask_httpauth import HTTPBasicAuth
 from flask_login import LoginManager
+from .db import init_engine, init_db
+from . import config
+
 
 auth = HTTPBasicAuth()
 toastr = Toastr()
@@ -13,16 +16,17 @@ login_manager = LoginManager()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object(config.Config)
 
     from tag_a_bird_backend.app import route_blueprint
     app.register_blueprint(route_blueprint)
 
-    load_dotenv()
-    app.config.from_prefixed_env()
-
     toastr.init_app(app)
     api.init_app(app)
     login_manager.init_app(app)
+
+    init_engine(app.config['DATABASE_URI'])
+    init_db()
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
