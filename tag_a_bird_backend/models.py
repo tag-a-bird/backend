@@ -7,8 +7,7 @@ from flask_login import UserMixin
 from datetime import datetime, timezone
 from sqlalchemy.types import Boolean, DateTime, Integer, String
 import json
-
-Base = declarative_base()
+from .db import Base
 
 class User(Base, UserMixin):
     __tablename__ = "user"

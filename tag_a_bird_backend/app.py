@@ -10,6 +10,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 from .models import User, Annotation, Base
 from . import create_app, auth, api, login_manager
+from .db import db_session
 
 route_blueprint = Blueprint('route_blueprint', __name__)
 
@@ -20,18 +21,6 @@ def about():
     
 app = create_app()
 
-engine = create_engine(app.config["DATABASE_URI"])
-
-db_session = scoped_session(
-    sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=engine)
-    )
-
-Base.query = db_session.query_property()
-
-Base.metadata.create_all(engine)
 
 @login_manager.user_loader
 def load_user(user_id):
