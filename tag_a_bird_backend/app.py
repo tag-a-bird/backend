@@ -9,7 +9,7 @@ import json
 from flask_login import login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 from .models import User, Annotation, Base
-from . import create_app, auth, api, login_manager
+from . import create_app, auth, api, login_manager, config
 from .db import db_session
 
 route_blueprint = Blueprint('route_blueprint', __name__)
@@ -19,7 +19,7 @@ route_blueprint = Blueprint('route_blueprint', __name__)
 def about():
     return 'hello admin'
     
-app = create_app()
+app = create_app(config.DevConfig)
 
 Base.query = db_session.query_property()
 
