@@ -15,8 +15,8 @@
 <nav>
     <h1>Tag a Bird</h1>
     <ul>
-        {% if g.user %}
-        <li><span>{{ g.user['username'] }}</span>
+        {% if current_user.username %}
+        <li><span>logged in as {{ current_user['username'] }}</span>
         <li><a href="{{ url_for('route_blueprint.signout') }}">Log Out</a>
             {% else %}
         <li><a href=" {{ url_for('route_blueprint.signup') }}">Sign Up</a>
