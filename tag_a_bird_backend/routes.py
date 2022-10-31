@@ -58,7 +58,8 @@ def login():
                 return jsonify({"msg": "Bad username or password"}), 401
             
             login_user(user)
-            return "you would be redirected to the annotation page if it was there" #redirect(url_for('annotate_page'))
+            flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
+            return render_template('base.html')
         except Exception as e:
             print(e)
 
@@ -66,11 +67,12 @@ def login():
     elif request.method == 'GET':
         return render_template('auth/login.html')
 
-@route_blueprint.route('/api/signout', methods=['GET'])
+@route_blueprint.route('/api/signout')
+@auth.login_required
 def signout():
     # remove users token from database
     logout_user()
-    return redirect(url_for('base.html'))
+    return redirect(url_for('route_blueprint.login'))
 
 @route_blueprint.route('/admin/populate_db', methods = ["GET", "POST"])
 def populate_db():
