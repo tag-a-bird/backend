@@ -1,16 +1,14 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, scoped_session, create_session
+from sqlalchemy.orm import declarative_base, scoped_session, create_session, sessionmaker
 
-engine = None
-db_session = scoped_session(lambda: create_session(bind=engine))
-  
 Base = declarative_base()
+engine = None
+sessionmaker = sessionmaker()
+db_session = scoped_session(sessionmaker)
 
-def init_engine(uri, **kwargs):
-  global engine
-  engine = create_engine(uri, **kwargs)
-  return engine
+def configure_engine(url):
+    global sessionmaker, engine, db_session
 
-def init_db():
-  Base.metadata.create_all(bind=engine)
-  
+    engine = create_engine(url)
+    db_session.remove()
+    sessionmaker.configure(bind=engine)
