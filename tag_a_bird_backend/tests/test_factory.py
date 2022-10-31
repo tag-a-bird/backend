@@ -1,9 +1,9 @@
-from tag_a_bird_backend import create_app
+from tag_a_bird_backend import config, create_app
 
 
 def test_config():
-    assert not create_app().testing
-    assert create_app({'TESTING': True}).testing
+    assert create_app().testing 
+    assert create_app(config.DevConfig).testing
 
 
 def test_hello(client):
