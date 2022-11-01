@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Set Parameters{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <input type="text" name="country" placeholder="Country" value="{{ country }}" />
+    <input type="radio" name="with_annotation" value="True" {% if with_annotation %}checked{% endif %} /> With
+    Annotation
+    <input type="radio" name="with_annotation" value="False" {% if with_annotation %}checked{% endif %} /> Without
+    <input type="text" name="in_status" placeholder="In Status" value="{{ in_status }}" />
+    <input type="text" name="not_in_status" placeholder="Not in Status" value="{{ not_in_status }}" />
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
