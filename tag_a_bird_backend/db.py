@@ -12,3 +12,4 @@ def configure_engine(url):
     engine = create_engine(url)
     db_session.remove()
     sessionmaker.configure(bind=engine)
+    Base.metadata.create_all(engine)
