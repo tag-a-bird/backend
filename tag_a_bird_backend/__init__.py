@@ -3,7 +3,7 @@ from flask_toastr import Toastr
 from flask_restful import Api
 from flask_httpauth import HTTPBasicAuth
 from flask_login import LoginManager
-from .db import configure_engine # init_engine, init_db 
+from .db import Base, configure_engine, engine
 from . import config
 
 auth = HTTPBasicAuth()
