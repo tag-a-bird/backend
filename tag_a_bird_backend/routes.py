@@ -34,8 +34,8 @@ def signup():
             user.set_password(request.form['password'])
             db_session.add(user)
             db_session.commit()
-            flash("User successfully registered. You are already logged in. You would be redirected to annotation page if it would be there") # redirect(url_for('login'))
-            return render_template('base.html') #redirect(url_for('annotate'))
+            # flash("User successfully registered. You are already logged in. You would be redirected to annotation page if it would be there") # redirect(url_for('login'))
+            return render_template('auth/login.html') #redirect(url_for('annotate'))
         except Exception as e:
             db_session.rollback()
             flash('Error: ' + str(e))
@@ -65,10 +65,12 @@ def login():
 
             return "Error: " + str(e), 500
     elif request.method == 'GET':
+        if current_user.is_authenticated:
+            flash('You are already logged in. You would be redirected to annotation page if it would be there ')
+            return render_template('base.html')  #redirect(url_for('annotate'))
         return render_template('auth/login.html')
 
 @route_blueprint.route('/api/signout')
-@auth.login_required
 def signout():
     # remove users token from database
     logout_user()
