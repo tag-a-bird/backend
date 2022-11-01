@@ -54,6 +54,22 @@ class User(Base, UserMixin):
     def __repr__(self):
         return f"User(id={self.id!r}, username={self.username!r}, email={self.email!r}, password={self.password!r})"
 
+class QueryConfig(Base):
+    __tablename__ = "query_config"
+
+    parameter = Column(
+        String(100),
+        primary_key=True,
+        unique=True,
+        nullable=False
+    )
+    value = Column(
+        String(100),
+        nullable=True,)
+
+    def __repr__(self):
+        return f"QueryConfig(parameter={self.parameter!r}, value={self.value!r})"
+
 class Annotation(Base):
         __tablename__ = "annotation"
 

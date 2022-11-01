@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import declarative_base, scoped_session, create_session, sessionmaker
 
 Base = declarative_base()
