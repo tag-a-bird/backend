@@ -13,7 +13,8 @@ login_manager = LoginManager()
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    app.config.from_object(config.DevConfig) # fix this later 
+    app.config.from_object(config.DevConfig) # fix this later
+    configure_engine(app.config['DATABASE_URI']) 
 
     from tag_a_bird_backend.routes import route_blueprint
     app.register_blueprint(route_blueprint)
@@ -23,8 +24,6 @@ def create_app(test_config=None):
 
     with app.app_context():
         login_manager.init_app(app)
-
-    configure_engine(app.config['DATABASE_URI'])
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
