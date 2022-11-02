@@ -134,10 +134,13 @@
     </div>
 
     <div id="wave-spectrogram"></div>
+    <div id="wave-timeline"></div>
 
     <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.spectrogram.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
     <script>
         var wavesurfer = WaveSurfer.create({
             waveColor: 'red',
@@ -148,7 +151,9 @@
             container: '#waveform',
             normalize: true,
             scrollParent: true,
-            minPxPerSec: 80,
+            minPxPerSec: 88,
+            autoCenter: true,
+            autoCenterImmediately: true,
             plugins: [
                 WaveSurfer.spectrogram.create({
                     wavesurfer: wavesurfer,
@@ -156,16 +161,28 @@
                     labels: true,
                     height: 256,
                 }),
+                WaveSurfer.minimap.create({
+                    wavesurfer: wavesurfer,
+                    height: 30,
+                    waveColor: '#ddd',
+                    progressColor: '#999',
+                    cursorColor: '#999'
+                }),
                 WaveSurfer.regions.create({
-                    regionsMinLength: 2,
+                    regionsMinLength: 1,
                     regions: [
                         {
                             start: 0,
                             end: 10,
                             loop: true,
+                            drag: false,
                             color: 'hsla(400, 100%, 30%, 0.5)'
                         }
                     ]
+                }),
+                WaveSurfer.timeline.create({
+                    container: '#wave-timeline',
+                    fontSize: 14,
                 })
             ]
         });
@@ -180,6 +197,7 @@
             '[data-action="play-region-1"]'
         ).addEventListener('click', function () {
             let region = Object.values(wavesurfer.regions.list)[0];
+            wavesurfer.params.scrollParent = false;
             region.play();
         });
 
@@ -195,6 +213,11 @@
         ).addEventListener('click', function () {
             let region = Object.values(wavesurfer.regions.list)[0];
             region.onDrag(10);
+            let regionMiddle = region.start + (region.end - region.start) / 2;
+            wavesurfer.drawer.recenterOnPosition((regionMiddle * 88), true);
+            document.querySelector(
+                '[data-action="play-region-1"]'
+            ).click();
         });
 
         document.querySelector(
@@ -202,6 +225,11 @@
         ).addEventListener('click', function () {
             let region = Object.values(wavesurfer.regions.list)[0];
             region.onDrag(-10);
+            let regionMiddle = (region.start + (region.end - region.start) / 2);
+            wavesurfer.drawer.recenterOnPosition((regionMiddle * 88), true);
+            document.querySelector(
+                '[data-action="play-region-1"]'
+            ).click();
         });
 
         wavesurfer.on('ready', () => {
@@ -210,6 +238,7 @@
                 var end = obj.end;
                 document.getElementById("start").innerHTML = "Start Time: " + start.toFixed(2);
                 document.getElementById("end").innerHTML = "End Time: " + end.toFixed(2);
+
             });
             // wavesurfer.play();
         });
