@@ -7,6 +7,7 @@ from .models import User, QueryConfig, Record, Annotation
 from . import auth, login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
+import random
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -149,20 +150,21 @@ def annotate():
 
     elif request.method == "POST":
         try:
-            print(request.data)
             annotation = Annotation(
+                id = random.randint(0, 1000000000),
                 recording_id = request.form['recording_id'],
-                user_id = db_session.query(User.id).filter(User.username == current_user.username).first(),
-                start_time = request.form['start_time'],
-                end_time = request.form['end_time'],
+                user_id = current_user.id,
+                start_time = int(request.form['start_time']),
+                end_time = int(request.form['end_time']),
                 label = [ bird for bird in request.form.getlist('label')],
-                audio_url = request.form['audio_url'],
                 status = request.form['status']
             )
+            print(annotation)
             db_session.add(annotation)
             db_session.commit()
+            print("Annotation added successfully")
             flash("Annotation successfully added.")
-            return redirect(url_for('annotate'))
+            return redirect(url_for('route_blueprint.annotate'))
         except Exception as e:
             print(e)
             db_session.rollback()

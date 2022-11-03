@@ -73,10 +73,10 @@ class QueryConfig(Base):
 class Annotation(Base):
         __tablename__ = "annotation"
 
-        id = Column(Integer, primary_key=True)
+        id = Column(Integer, primary_key=True, autoincrement=True)
         recording_id = Column(Integer, ForeignKey("record.id"))
         record = relationship("Record", back_populates="annotations")
-        user_id = Column(UUID, ForeignKey("user.id"), nullable=False)
+        user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
         user = relationship("User", back_populates="annotations")
         start_time = Column(Integer , nullable=False)
         end_time = Column(Integer, nullable=False)
