@@ -130,11 +130,11 @@ def annotate():
     def get_record(countries, with_annotation: bool=True, not_in_status: list = ['draft', 'reported'], in_status: list = ['questioned']):
         try:
             record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
-            current_user_id = db_session.query(User.id).filter(User.username == current_user.username).first()
-            current_record_annotators = db_session.query(Annotation.user_id).filter(Annotation.recording_id == record.id).all()
-            while current_record_annotators and current_user_id in current_record_annotators:
-                record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
-                current_record_annotators = db_session.query(Annotation.user_id).filter(Annotation.recording_id == record.id).all()
+            users_annotations = db_session.query(User).filter(current_user.id == User.id).first().annotations
+            if users_annotations:
+                related_records = [db_session.query(Record).filter(Record.id == annotation.recording_id).first() for annotation in users_annotations]
+                while record in related_records:
+                    record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
             return record
         except AttributeError:
             flash("No records found")
@@ -146,3 +146,27 @@ def annotate():
         in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value.split(',')
         print(countries, with_annotation, not_in_status, in_status)
         return render_template('annotate.html', record = get_record(countries, with_annotation, not_in_status, in_status), most_possible_birds = most_possible_birds, other_possible_birds=other_possible_birds)
+
+    elif request.method == "POST":
+        try:
+            print(request.data)
+            annotation = Annotation(
+                recording_id = request.form['recording_id'],
+                user_id = db_session.query(User.id).filter(User.username == current_user.username).first(),
+                start_time = request.form['start_time'],
+                end_time = request.form['end_time'],
+                label = [ bird for bird in request.form.getlist('label')],
+                audio_url = request.form['audio_url'],
+                status = request.form['status']
+            )
+            db_session.add(annotation)
+            db_session.commit()
+            flash("Annotation successfully added.")
+            return redirect(url_for('annotate'))
+        except Exception as e:
+            print(e)
+            db_session.rollback()
+            flash('Error: ' + str(e))
+            return redirect(url_for('route_blueprint.annotate'))
+    
+        
