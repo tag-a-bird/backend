@@ -130,7 +130,7 @@
             Pause
         </button>
         <button id="nextsegment" data-action="next-segment">Next Segment</button>
-
+        <input type="range" min="5" max="10000000" value="1" passive class="slider" id="gain">
     </div>
 
     <div id="wave-spectrogram"></div>
@@ -151,9 +151,10 @@
             container: '#waveform',
             normalize: true,
             scrollParent: true,
-            minPxPerSec: 88,
+            minPxPerSec: 86,
             autoCenter: true,
             autoCenterImmediately: true,
+            hideScrollbar: true,
             plugins: [
                 WaveSurfer.spectrogram.create({
                     wavesurfer: wavesurfer,
@@ -173,7 +174,7 @@
                     regions: [
                         {
                             start: 0,
-                            end: 10,
+                            end: 12,
                             loop: true,
                             drag: false,
                             color: 'hsla(400, 100%, 30%, 0.5)'
@@ -214,7 +215,7 @@
             let region = Object.values(wavesurfer.regions.list)[0];
             region.onDrag(10);
             let regionMiddle = region.start + (region.end - region.start) / 2;
-            wavesurfer.drawer.recenterOnPosition((regionMiddle * 88), true);
+            wavesurfer.drawer.recenterOnPosition((regionMiddle * 86), true);
             document.querySelector(
                 '[data-action="play-region-1"]'
             ).click();
@@ -226,7 +227,7 @@
             let region = Object.values(wavesurfer.regions.list)[0];
             region.onDrag(-10);
             let regionMiddle = (region.start + (region.end - region.start) / 2);
-            wavesurfer.drawer.recenterOnPosition((regionMiddle * 88), true);
+            wavesurfer.drawer.recenterOnPosition((regionMiddle * 86), true);
             document.querySelector(
                 '[data-action="play-region-1"]'
             ).click();
@@ -243,28 +244,78 @@
             // wavesurfer.play();
         });
 
+
+
+        function gain() {
+            var slider = document.getElementById("gain");
+            wavesurfer.gainNode().gain.value = slider.value;
+        }
     </script>
-    <div class="options">
-        <form method="post">
-            <p id="start"> Start Time: 0.00 </p>
-            <p id="end"> End Time: 10.00 </p>
-            {% for bird in most_possible_birds %}
-            <input type="checkbox" id="{{ bird }}" name="{{ bird }}">
-            <label for="{{ bird }}">{{ bird }}</label>
+    <script>
+        var finalAnnotation = new FormData();
+        finalAnnotation.append('start', parseFloat(document.getElementById("start").innerHTML));
+        finalAnnotation.append('end', parseFloat(document.getElementById("end").innerHTML));
+        finalAnnotation.append('audio_url', '{{ record.audio_url }}');
+        finalAnnotation.append('recording_id', '{{ record.recording_id }}');
+        finalAnnotation.append('label', '{{ record.label }}');
+        finalAnnotation.append('status', '');
+
+
+        function addBird(value) {
+            field = document.getElementById("annotation-preview");
+            input = document.createElement("input");
+            input.type = "button";
+            input.value = value;
+            input.id = "Bird: " + value;
+            input.onclick = function () {
+                removeBird(value);
+            };
+            field.append(input);
+            finalAnnotation.append('bird', value);
+        }
+
+        function removeBird(value) {
+            field = document.getElementById("annotation-preview");
+            removeObj = document.getElementById("Bird: " + value);
+            field.removeChild(removeObj);
+            checkbox = document.getElementById(value);
+            checkbox.checked = false;
+            finalAnnotation.delete('bird', value);
+        }
+
+        function addCheckBird(checkbox) {
+            if (checkbox.checked) {
+                addBird(checkbox.labels[0].innerText);
+            } else {
+                removeBird(checkbox.labels[0].innerText);
+            }
+        }
+
+    </script>
+
+    <p id="start"> Start Time: 0.00 </p>
+    <p id="end"> End Time: 10.00 </p>
+    {% for bird in most_possible_birds %}
+    <input type="checkbox" id="{{ bird }}" name="{{ bird }}" onchange="addCheckBird(this)">
+    <label for="{{ bird }}">{{ bird }}</label>
+    {% endfor %}
+
+    <div class="dropdown">
+        <button onclick="myFunction()" class="dropbtn">Other Birds</button>
+        <div id="myDropdown" class="dropdown-content">
+            <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+            {% for bird in other_possible_birds %}
+            <input type='button' onclick="addBird(this.value)" value="{{ bird }}">
             {% endfor %}
-        </form>
-        </form>
-        <div class="dropdown">
-            <button onclick="myFunction()" class="dropbtn">Other Birds</button>
-            <div id="myDropdown" class="dropdown-content">
-                <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-                {% for bird in other_possible_birds %}
-                <a href="#">{{ bird }}</a>
-                {% endfor %}
-            </div>
+        </div>
+    </div>
+    <h5>Final Annotation Preview</h3>
+        <div id="annotation-preview"><br>
+            <form method="post" data-="{{ finalAnnotation }}">
+                <input type="submit" value="Submit">
+            </form>
         </div>
 
-    </div>
 </body>
 
 {% endblock %}
