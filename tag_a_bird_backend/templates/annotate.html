@@ -239,6 +239,8 @@
                 var end = obj.end;
                 document.getElementById("start").innerHTML = "Start Time: " + start.toFixed(2);
                 document.getElementById("end").innerHTML = "End Time: " + end.toFixed(2);
+                document.getElementById("annotation-start").value = parseInt(start);
+                document.getElementById("annotation-end").value = parseInt(end);
 
             });
             // wavesurfer.play();
@@ -252,13 +254,16 @@
         }
     </script>
     <script>
-        var finalAnnotation = new FormData();
-        finalAnnotation.append('start', parseFloat(document.getElementById("start").innerHTML));
-        finalAnnotation.append('end', parseFloat(document.getElementById("end").innerHTML));
-        finalAnnotation.append('audio_url', '{{ record.audio_url }}');
-        finalAnnotation.append('recording_id', '{{ record.recording_id }}');
-        finalAnnotation.append('label', '{{ record.label }}');
-        finalAnnotation.append('status', '');
+
+        var finalAnnotationJson = {
+            start: parseFloat(document.getElementById("start").innerHTML),
+            end: parseFloat(document.getElementById("end").innerHTML),
+            label: '',
+            audio_url: '{{ record.audio_url }}',
+            recording_id: '{{ record.recording_id }}',
+            status: '',
+            birds: [],
+        };
 
 
         function addBird(value) {
@@ -271,7 +276,10 @@
                 removeBird(value);
             };
             field.append(input);
-            finalAnnotation.append('bird', value);
+            querySelector("annotation-label").value.push(value);
+
+
+
         }
 
         function removeBird(value) {
@@ -280,7 +288,7 @@
             field.removeChild(removeObj);
             checkbox = document.getElementById(value);
             checkbox.checked = false;
-            finalAnnotation.delete('bird', value);
+            querySelector("annotation-label").value.pop(value);
         }
 
         function addCheckBird(checkbox) {
@@ -290,13 +298,12 @@
                 removeBird(checkbox.labels[0].innerText);
             }
         }
-
     </script>
 
     <p id="start"> Start Time: 0.00 </p>
     <p id="end"> End Time: 10.00 </p>
     {% for bird in most_possible_birds %}
-    <input type="checkbox" id="{{ bird }}" name="{{ bird }}" onchange="addCheckBird(this)">
+    <input type="checkbox" id="{{ bird }}" value="{{ bird }}" onchange="addCheckBird(this)">
     <label for="{{ bird }}">{{ bird }}</label>
     {% endfor %}
 
@@ -311,11 +318,15 @@
     </div>
     <h5>Final Annotation Preview</h3>
         <div id="annotation-preview"><br>
-            <form method="post" data-="{{ finalAnnotation }}">
-                <input type="submit" value="Submit">
-            </form>
-        </div>
-
+        </div><br>
+        <form type="hidden" id=annotation-form method="POST">
+            <input type="hidden" id="annotation-record-id" name="recording_id" value="{{ record.id }}">
+            <input type="hidden" id="annotation-start" name="start_time" value="0">
+            <input type="hidden" id="annotation-end" name="end_time" value="10">
+            <input type="hidden" id="annotation-label" name="label" value="[]">
+            <input type="hidden" id="annotation-audio" name="audio_url" value="{{ record.audio_url }}">
+            <input type="hidden" id="annotation-status" name="status">
+            <input type="submit" value="Submit">
 </body>
 
 {% endblock %}
