@@ -4,8 +4,8 @@ from flask import g, session
 
 
 def test_admin(client):
-    assert client.get('/api/admin').status_code == 401
-    assert client.get('/api/admin').status == '401 UNAUTHORIZED'
+    assert client.get('/admin').status_code == 401
+    assert client.get('/admin').status == '401 UNAUTHORIZED'
 
 def test_signup(client, app):
     assert client.get('/api/signup').status_code == 200
