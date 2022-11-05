@@ -17,6 +17,10 @@ route_blueprint = Blueprint('route_blueprint', __name__,
     template_folder='templates',
     static_folder='static')
 
+@route_blueprint.route('/')
+def home():
+    return render_template('home.html')
+
 @route_blueprint.route('/api/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -31,7 +35,6 @@ def signup():
             user.set_password(request.form['password'])
             db_session.add(user)
             db_session.commit()
-            # flash("User successfully registered. You are already logged in. You would be redirected to annotation page if it would be there") # redirect(url_for('login'))
             return render_template('auth/login.html') #redirect(url_for('annotate'))
         except Exception as e:
             db_session.rollback()
@@ -40,7 +43,7 @@ def signup():
             # return "Error: " + str(e), 500 
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            flash('You are already logged in. You would be redirected to annotation page if it would be there ')
+            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
             return render_template('base.html')  #redirect(url_for('annotate'))
         return render_template('auth/signup.html')
 
@@ -55,7 +58,7 @@ def login():
                 return jsonify({"msg": "Bad username or password"}), 401
             
             login_user(user)
-            flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
+            # flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
             return render_template('base.html')
         except Exception as e:
             print(e)
@@ -74,6 +77,7 @@ def signout():
     return redirect(url_for('route_blueprint.login'))
 
 @route_blueprint.route('/admin/populate_db', methods = ["GET", "POST"])
+@login_required
 def populate_db():
     if request.method == "GET":
         return render_template('admin/populate_db.html')
@@ -88,7 +92,7 @@ def populate_db():
         return render_template('admin/populate_db.html')
 
 @route_blueprint.route('/admin', methods=['GET', 'POST'])
-@auth.login_required
+@login_required
 def set_parameters():
     if request.method == 'GET':
         if db_session.query(QueryConfig).first() is None:
@@ -119,7 +123,7 @@ def set_parameters():
             db_session.rollback()
             flash('Error: ' + str(e))
             return render_template('/admin/admin.html' , country = db_session.query(QueryConfig).filter_by(parameter='country').first().value, with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value, in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value, not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value)
-
+    
 @route_blueprint.route('/annotate', methods = ["GET", "POST"])
 @login_required
 def annotate():
