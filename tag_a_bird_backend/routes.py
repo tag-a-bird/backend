@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 import datetime
 import uuid
-from .models import User
+from .models import User, QueryConfig
 from . import auth, login_manager
 from .db import db_session
 
@@ -14,11 +14,6 @@ def load_user(user_id):
 route_blueprint = Blueprint('route_blueprint', __name__,        
     template_folder='templates',
     static_folder='static')
-
-@route_blueprint.route('/api/admin', methods=['GET'])
-@auth.login_required
-def about():
-    return 'hello admin'
 
 @route_blueprint.route('/api/signup', methods=['GET', 'POST'])
 def signup():
@@ -89,3 +84,36 @@ def populate_db():
             flash('Error: ' + str(e))
             print(e)
         return render_template('admin/populate_db.html')
+
+@route_blueprint.route('/admin', methods=['GET', 'POST'])
+@auth.login_required
+def set_parameters():
+    if request.method == 'GET':
+        if db_session.query(QueryConfig).first() is None:
+            country = QueryConfig(parameter='country', value='')
+            db_session.add(country)
+            with_annotation = QueryConfig(parameter='with_annotation', value='False')
+            db_session.add(with_annotation)
+            in_status = QueryConfig(parameter='in_status', value='')
+            db_session.add(in_status)
+            not_in_status = QueryConfig(parameter='not_in_status', value='')
+            db_session.add(not_in_status)
+            db_session.commit()
+        return render_template('/admin/admin.html' , country = db_session.query(QueryConfig).filter_by(parameter='country').first().value, with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value, in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value, not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value)
+    elif request.method == 'POST':
+        try:
+            country = QueryConfig(parameter='country', value=request.form['country'])
+            db_session.merge(country)
+            with_annotation = QueryConfig(parameter='with_annotation', value=request.form['with_annotation'])
+            db_session.merge(with_annotation)
+            in_status = QueryConfig(parameter='in_status', value=request.form['in_status'])
+            db_session.merge(in_status)
+            not_in_status = QueryConfig(parameter='not_in_status', value=request.form['not_in_status'])
+            db_session.merge(not_in_status)
+            db_session.commit()
+            flash("Parameters successfully set.")
+            return render_template('/admin/admin.html' , country = db_session.query(QueryConfig).filter_by(parameter='country').first().value, with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value, in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value, not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value)
+        except Exception as e:
+            db_session.rollback()
+            flash('Error: ' + str(e))
+            return render_template('/admin/admin.html' , country = db_session.query(QueryConfig).filter_by(parameter='country').first().value, with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value, in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value, not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value)
