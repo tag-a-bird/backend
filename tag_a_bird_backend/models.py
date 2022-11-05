@@ -67,6 +67,7 @@ class QueryConfig(Base):
         String(100),
         nullable=True,)
 
+
     def __repr__(self):
         return f"QueryConfig(parameter={self.parameter!r}, value={self.value!r})"
 
@@ -114,11 +115,12 @@ class Record(Base):
         human_noise_intensity = Column(String)
         organization_membership = Column(String)
         advanced_audio_equipment = Column(String)
+        status = Column(String)
 
         annotations = relationship("Annotation", back_populates="record")
 
         def __repr__(self):
-            return f"Record(id={self.id!r}, audio_url={self.audio_url!r}, photo_url={self.photo_url!r}, comment={self.comment!r}, country={self.country!r}, city={self.city!r}, habitat={self.habitat!r}, species={self.species!r}, weather={self.weather!r}, date={self.date!r}, device_os={self.device_os!r}, is_holiday={self.is_holiday!r}, human_noise={self.human_noise!r}, device.model={self.device.model!r}, habitat_other={self.habitat_other!r}, species_other={self.species_other!r}, day_of_the_week={self.day_of_the_week!r}, human_noise_type={self.human_noise_type!r}, location_private={self.location_private!r}, location_accuracy={self.location_accuracy!r}, dawn_chorus_import_id={self.dawn_chorus_import_id!r}, human_noise_intensity={self.human_noise_intensity!r}, organization_membership={self.organization_membership!r}, advanced_audio_equipment={self.advanced_audio_equipment!r})"
+            return f"Record(id={self.id!r}, audio_url={self.audio_url!r}, photo_url={self.photo_url!r}, comment={self.comment!r}, country={self.country!r}, city={self.city!r}, habitat={self.habitat!r}, species={self.species!r}, weather={self.weather!r}, date={self.date!r}, device_os={self.device_os!r}, is_holiday={self.is_holiday!r}, human_noise={self.human_noise!r}, device.model={self.device.model!r}, habitat_other={self.habitat_other!r}, species_other={self.species_other!r}, day_of_the_week={self.day_of_the_week!r}, human_noise_type={self.human_noise_type!r}, location_private={self.location_private!r}, location_accuracy={self.location_accuracy!r}, dawn_chorus_import_id={self.dawn_chorus_import_id!r}, human_noise_intensity={self.human_noise_intensity!r}, organization_membership={self.organization_membership!r}, advanced_audio_equipment={self.advanced_audio_equipment!r}, status={self.status!r})"
 
         #method to deserialize given json to Record object
         @staticmethod
