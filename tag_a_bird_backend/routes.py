@@ -17,11 +17,6 @@ route_blueprint = Blueprint('route_blueprint', __name__,
     template_folder='templates',
     static_folder='static')
 
-@route_blueprint.route('/api/admin', methods=['GET'])
-@auth.login_required
-def about():
-    return 'hello admin'
-
 @route_blueprint.route('/api/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -170,5 +165,3 @@ def annotate():
             db_session.rollback()
             flash('Error: ' + str(e))
             return redirect(url_for('route_blueprint.annotate'))
-    
-        
