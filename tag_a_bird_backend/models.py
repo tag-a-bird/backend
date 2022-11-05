@@ -64,7 +64,9 @@ class QueryConfig(Base):
         nullable=False
     )
     value = Column(
-        String(100))
+        String(100),
+        nullable=True,)
+
 
     def __repr__(self):
         return f"QueryConfig(parameter={self.parameter!r}, value={self.value!r})"
@@ -72,17 +74,18 @@ class QueryConfig(Base):
 class Annotation(Base):
         __tablename__ = "annotation"
 
-        id = Column(Integer, primary_key=True)
+        id = Column(Integer, primary_key=True, autoincrement=True)
         recording_id = Column(Integer, ForeignKey("record.id"))
         record = relationship("Record", back_populates="annotations")
-        user_id = Column(UUID, ForeignKey("user.id"))
+        user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
         user = relationship("User", back_populates="annotations")
-        start_time = Column(Integer)
-        end_time = Column(Integer)
+        start_time = Column(Integer , nullable=False)
+        end_time = Column(Integer, nullable=False)
         label = Column(String)
+        status = Column(String)
 
         def __repr__(self):
-            return f"Annotation(id={self.id!r}, recording_id={self.recording_id!r}, user_id={self.user_id!r}, start_time={self.start_time!r}, end_time={self.end_time!r}, label={self.label!r})"
+            return f"Annotation(id={self.id!r}, recording_id={self.recording_id!r}, user_id={self.user_id!r}, start_time={self.start_time!r}, end_time={self.end_time!r}, label={self.label!r}, self.status={self.status!r})"
 
 class Record(Base):
         __tablename__ = "record"
