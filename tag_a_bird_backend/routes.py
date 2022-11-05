@@ -3,9 +3,11 @@ from flask_login import login_user, login_required, logout_user, current_user
 from .helpers import populate_db_from_coreo
 import datetime
 import uuid
-from .models import User, QueryConfig
+from .models import User, QueryConfig, Record, Annotation
 from . import auth, login_manager
-from .db import db_session
+from .db import db_session, func
+from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
+import random
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -117,3 +119,49 @@ def set_parameters():
             db_session.rollback()
             flash('Error: ' + str(e))
             return render_template('/admin/admin.html' , country = db_session.query(QueryConfig).filter_by(parameter='country').first().value, with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value, in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value, not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value)
+
+@route_blueprint.route('/annotate', methods = ["GET", "POST"])
+@login_required
+def annotate():
+    def get_record(countries, with_annotation: bool=True, not_in_status: list = ['draft', 'reported'], in_status: list = ['questioned']):
+        try:
+            record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
+            users_annotations = db_session.query(User).filter(current_user.id == User.id).first().annotations
+            if users_annotations:
+                related_records = [db_session.query(Record).filter(Record.id == annotation.recording_id).first() for annotation in users_annotations]
+                while record in related_records:
+                    record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
+            return record
+        except AttributeError:
+            flash("No records found")
+            return None
+    if request.method == "GET":
+        countries = db_session.query(QueryConfig).filter_by(parameter='country').first().value.split(',')
+        with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value
+        not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value.split(',')
+        in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value.split(',')
+        print(countries, with_annotation, not_in_status, in_status)
+        return render_template('annotate.html', record = get_record(countries, with_annotation, not_in_status, in_status), most_possible_birds = most_possible_birds, other_possible_birds=other_possible_birds)
+
+    elif request.method == "POST":
+        try:
+            annotation = Annotation(
+                id = random.randint(0, 1000000000),
+                recording_id = request.form['recording_id'],
+                user_id = current_user.id,
+                start_time = int(request.form['start_time']),
+                end_time = int(request.form['end_time']),
+                label = [ bird for bird in request.form.getlist('label')],
+                status = request.form['status']
+            )
+            print(annotation)
+            db_session.add(annotation)
+            db_session.commit()
+            print("Annotation added successfully")
+            flash("Annotation successfully added.")
+            return redirect(url_for('route_blueprint.annotate'))
+        except Exception as e:
+            print(e)
+            db_session.rollback()
+            flash('Error: ' + str(e))
+            return redirect(url_for('route_blueprint.annotate'))
