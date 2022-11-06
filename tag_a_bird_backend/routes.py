@@ -59,7 +59,7 @@ def login():
             
             login_user(user)
             # flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
-            return render_template('base.html')
+            return render_template('home.html')
         except Exception as e:
             print(e)
 
