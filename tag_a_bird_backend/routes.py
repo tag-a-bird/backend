@@ -17,9 +17,9 @@ route_blueprint = Blueprint('route_blueprint', __name__,
     template_folder='templates',
     static_folder='static')
 
-@route_blueprint.route('/')
-def home():
-    return render_template('home.html')
+@route_blueprint.route('/about')
+def about():
+    return render_template('about.html')
 
 @route_blueprint.route('/api/signup', methods=['GET', 'POST'])
 def signup():
@@ -36,7 +36,7 @@ def signup():
             db_session.add(user)
             db_session.commit()
             login_user(user)
-            return render_template('home.html') #redirect(url_for('annotate'))
+            return render_template('about.html') #redirect(url_for('annotate'))
         except Exception as e:
             db_session.rollback()
             flash('Error: ' + str(e))
@@ -60,7 +60,7 @@ def login():
             
             login_user(user)
             # flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
-            return render_template('home.html')
+            return render_template('about.html')
         except Exception as e:
             print(e)
 
