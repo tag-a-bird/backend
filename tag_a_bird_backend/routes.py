@@ -35,7 +35,8 @@ def signup():
             user.set_password(request.form['password'])
             db_session.add(user)
             db_session.commit()
-            return render_template('auth/login.html') #redirect(url_for('annotate'))
+            login_user(user)
+            return render_template('home.html') #redirect(url_for('annotate'))
         except Exception as e:
             db_session.rollback()
             flash('Error: ' + str(e))
