@@ -34,6 +34,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         print('request made')
         try:
             response_json = loads(response.text)
+            print(f'{response_json}')
             return response_json
         except Exception as e:
             print(e)
