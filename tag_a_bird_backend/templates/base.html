@@ -37,7 +37,7 @@
         </div>
 
         <div class="md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0">
-          {% if current_user.username == 'kinga' %}
+          {% if current_user.username == 'admin' %}
           <!-- <span>logged in as {{ current_user['username'] }}</span> -->
           <a
             href="{{ url_for('route_blueprint.set_parameters') }}"
@@ -64,7 +64,7 @@
           >
             Ausloggen</a
           >
-          {% elif current_user.username != 'kinga' %}
+          {% elif current_user.username %}
 
           <a
             href="{{ url_for('route_blueprint.annotate') }}"
