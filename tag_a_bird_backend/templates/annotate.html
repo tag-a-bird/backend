@@ -19,7 +19,7 @@
         #waveform {
             width: 100%;
             background: rgba(0, 0, 0, 0.8);
-            height: 70%;
+            /* height: 70%; */
         }
 
         #wave-spectrogram {
@@ -122,251 +122,253 @@
 </head>
 
 <body>
-    <div class="container max-w-3xl px-2 mx-auto text-center">
+    <div class="flex flex-row mt-10">
+        <div class="w-3/4 px-2 text-center">
 
-    <div id="waveform">
-        <!-- Here be waveform -->
-    </div>
-    <div class="my-6">
-        <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300" id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt</button>
-        <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 bg-gray-200 text-indigo-700 transition-colors duration-300" data-action="play-region-1">
-            Abspielen
-        </button>
-        <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 bg-gray-200 hover:bg-gray-400 text-indigo-700 transition-colors duration-300" data-action="pause">
-            Pause
-        </button>
-        <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300" id="nextsegment" data-action="next-segment">Nächster Abschnitt</button>
-        <input type="range" min="5" max="10000000" value="1" passive class="slider" id="gain">
-    </div>
+            <div id="waveform">
+                <!-- Here be waveform -->
+            </div>
+            <div class="my-6">
+                <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300" id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt</button>
+                <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 bg-gray-200 text-indigo-700 transition-colors duration-300" data-action="play-region-1">
+                    Abspielen
+                </button>
+                <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 bg-gray-200 hover:bg-gray-400 text-indigo-700 transition-colors duration-300" data-action="pause">
+                    Pause
+                </button>
+                <button class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300" id="nextsegment" data-action="next-segment">Nächster Abschnitt</button>
+                <input type="range" min="5" max="10000000" value="1" passive class="slider" id="gain">
+            </div>
 
-    <div id="wave-spectrogram"></div>
-    <div id="wave-timeline"></div>
+            <div id="wave-spectrogram"></div>
+            <div id="wave-timeline"></div>
 
-    <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.spectrogram.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
-    <script>
-        var wavesurfer = WaveSurfer.create({
-            waveColor: 'red',
-            backgroundColor: 'white',
-            progressColor: 'black',
-            loaderColor: 'purple',
-            cursorColor: 'black',
-            container: '#waveform',
-            normalize: true,
-            scrollParent: true,
-            minPxPerSec: 86,
-            autoCenter: true,
-            autoCenterImmediately: true,
-            hideScrollbar: true,
-            plugins: [
-                WaveSurfer.spectrogram.create({
-                    wavesurfer: wavesurfer,
-                    container: document.querySelector('#wave-spectrogram'),
-                    labels: true,
-                    height: 256,
-                }),
-                WaveSurfer.minimap.create({
-                    wavesurfer: wavesurfer,
-                    height: 30,
-                    waveColor: '#ddd',
-                    progressColor: '#999',
-                    cursorColor: '#999'
-                }),
-                WaveSurfer.regions.create({
-                    regionsMinLength: 1,
-                    regions: [
-                        {
-                            start: 0,
-                            end: 12,
-                            loop: true,
-                            drag: false,
-                            color: 'hsla(400, 100%, 30%, 0.5)'
-                        }
+            <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
+            <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.spectrogram.js"></script>
+            <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
+            <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
+            <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
+            <script>
+                var wavesurfer = WaveSurfer.create({
+                    waveColor: 'red',
+                    backgroundColor: 'white',
+                    progressColor: 'black',
+                    loaderColor: 'purple',
+                    cursorColor: 'black',
+                    container: '#waveform',
+                    normalize: true,
+                    scrollParent: true,
+                    minPxPerSec: 86,
+                    autoCenter: true,
+                    autoCenterImmediately: true,
+                    hideScrollbar: true,
+                    plugins: [
+                        WaveSurfer.spectrogram.create({
+                            wavesurfer: wavesurfer,
+                            container: document.querySelector('#wave-spectrogram'),
+                            labels: true,
+                            height: 256,
+                        }),
+                        WaveSurfer.minimap.create({
+                            wavesurfer: wavesurfer,
+                            height: 30,
+                            waveColor: '#ddd',
+                            progressColor: '#999',
+                            cursorColor: '#999'
+                        }),
+                        WaveSurfer.regions.create({
+                            regionsMinLength: 1,
+                            regions: [
+                                {
+                                    start: 0,
+                                    end: 12,
+                                    loop: true,
+                                    drag: false,
+                                    color: 'hsla(400, 100%, 30%, 0.5)'
+                                }
+                            ]
+                        }),
+                        WaveSurfer.timeline.create({
+                            container: '#wave-timeline',
+                            fontSize: 14,
+                        })
                     ]
-                }),
-                WaveSurfer.timeline.create({
-                    container: '#wave-timeline',
-                    fontSize: 14,
-                })
-            ]
-        });
+                });
 
-        wavesurfer.load('{{ record.audio_url }}');
+                wavesurfer.load('{{ record.audio_url }}');
 
-        wavesurfer.on('error', function (e) {
-            console.warn(e);
-        });
+                wavesurfer.on('error', function (e) {
+                    console.warn(e);
+                });
 
-        document.querySelector(
-            '[data-action="play-region-1"]'
-        ).addEventListener('click', function () {
-            let region = Object.values(wavesurfer.regions.list)[0];
-            wavesurfer.params.scrollParent = false;
-            region.play();
-        });
+                document.querySelector(
+                    '[data-action="play-region-1"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    wavesurfer.params.scrollParent = false;
+                    region.play();
+                });
 
 
-        document.querySelector(
-            '[data-action="pause"]'
-        ).addEventListener('click', function () {
-            wavesurfer.pause();
-        });
+                document.querySelector(
+                    '[data-action="pause"]'
+                ).addEventListener('click', function () {
+                    wavesurfer.pause();
+                });
 
-        document.querySelector(
-            '[data-action="next-segment"]'
-        ).addEventListener('click', function () {
-            let region = Object.values(wavesurfer.regions.list)[0];
-            region.onDrag(10);
-            let regionMiddle = region.start + (region.end - region.start) / 2;
-            wavesurfer.drawer.recenterOnPosition((regionMiddle * 86), true);
-            document.querySelector(
-                '[data-action="play-region-1"]'
-            ).click();
-        });
+                document.querySelector(
+                    '[data-action="next-segment"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    region.onDrag(10);
+                    let regionMiddle = region.start + (region.end - region.start) / 2;
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 86), true);
+                    document.querySelector(
+                        '[data-action="play-region-1"]'
+                    ).click();
+                });
 
-        document.querySelector(
-            '[data-action="previous-segment"]'
-        ).addEventListener('click', function () {
-            let region = Object.values(wavesurfer.regions.list)[0];
-            region.onDrag(-10);
-            let regionMiddle = (region.start + (region.end - region.start) / 2);
-            wavesurfer.drawer.recenterOnPosition((regionMiddle * 86), true);
-            document.querySelector(
-                '[data-action="play-region-1"]'
-            ).click();
-        });
+                document.querySelector(
+                    '[data-action="previous-segment"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    region.onDrag(-10);
+                    let regionMiddle = (region.start + (region.end - region.start) / 2);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 86), true);
+                    document.querySelector(
+                        '[data-action="play-region-1"]'
+                    ).click();
+                });
 
-        wavesurfer.on('ready', () => {
-            wavesurfer.on('region-updated', (obj) => {
-                var start = obj.start;
-                var end = obj.end;
-                document.getElementById("start").innerHTML = "Start Time: " + start.toFixed(2);
-                document.getElementById("end").innerHTML = "End Time: " + end.toFixed(2);
-                document.getElementById("annotation-start").value = parseInt(start);
-                document.getElementById("annotation-end").value = parseInt(end);
+                wavesurfer.on('ready', () => {
+                    wavesurfer.on('region-updated', (obj) => {
+                        var start = obj.start;
+                        var end = obj.end;
+                        document.getElementById("start").innerHTML = "Start Time: " + start.toFixed(2);
+                        document.getElementById("end").innerHTML = "End Time: " + end.toFixed(2);
+                        document.getElementById("annotation-start").value = parseInt(start);
+                        document.getElementById("annotation-end").value = parseInt(end);
 
-            });
-            // wavesurfer.play();
-        });
+                    });
+                    // wavesurfer.play();
+                });
 
 
 
-        function gain() {
-            var slider = document.getElementById("gain");
-            wavesurfer.gainNode().gain.value = slider.value;
-        }
-    </script>
-    <script>
+                function gain() {
+                    var slider = document.getElementById("gain");
+                    wavesurfer.gainNode().gain.value = slider.value;
+                }
+            </script>
+            <script>
 
-        var finalAnnotationJson = {
-            start: parseFloat(document.getElementById("start").innerHTML),
-            end: parseFloat(document.getElementById("end").innerHTML),
-            label: '',
-            audio_url: '{{ record.audio_url }}',
-            recording_id: '{{ record.recording_id }}',
-            status: '',
-            birds: [],
-        };
+                var finalAnnotationJson = {
+                    start: parseFloat(document.getElementById("start").innerHTML),
+                    end: parseFloat(document.getElementById("end").innerHTML),
+                    label: '',
+                    audio_url: '{{ record.audio_url }}',
+                    recording_id: '{{ record.recording_id }}',
+                    status: '',
+                    birds: [],
+                };
 
 
-        function addBird(value) {
-            field = document.getElementById("annotation-preview");
-            input = document.createElement("input");
+                function addBird(value) {
+                    field = document.getElementById("annotation-preview");
+                    input = document.createElement("input");
 
-            // delete_sign = document.createElement("span");
-            // delete_sign.id = "x" + value;
-            // delete_sign = " x";
-            // delete_sign.classList.add("text-gray");
-            // line_break = document.createElement("br");
-            // line_break.id ="linebreak" + value;
+                    // delete_sign = document.createElement("span");
+                    // delete_sign.id = "x" + value;
+                    // delete_sign = " x";
+                    // delete_sign.classList.add("text-gray");
+                    // line_break = document.createElement("br");
+                    // line_break.id ="linebreak" + value;
 
-            input.type = "button";
-            input.classList.add("px-2");
-            input.classList.add("m-1");
-            input.classList.add("rounded");
-            input.classList.add("bg-emerald-200");
-            input.classList.add("hover:bg-red-300");
-            input.value = value;
-            input.id = "Bird: " + value;
-            input.onclick = function () {
-                removeBird(value);
-            };
-            field.append(input);
-            // field.append(delete_sign);
-            // field.append(line_break);
-            querySelector("annotation-label").value.push(value);
+                    input.type = "button";
+                    input.classList.add("px-2");
+                    input.classList.add("m-1");
+                    input.classList.add("rounded");
+                    input.classList.add("bg-emerald-200");
+                    input.classList.add("hover:bg-red-300");
+                    input.value = value;
+                    input.id = "Bird: " + value;
+                    input.onclick = function () {
+                        removeBird(value);
+                    };
+                    field.append(input);
+                    // field.append(delete_sign);
+                    // field.append(line_break);
+                    querySelector("annotation-label").value.push(value);
 
-        }
+                }
 
-        function removeBird(value) {
-            field = document.getElementById("annotation-preview");
-            removeObj = document.getElementById("Bird: " + value);
-            // removeDeleteSign = document.getElementById("x" + value);
-            // removeBreak = document.getElementById("linebreak" + value);
-            field.removeChild(removeObj);
-            // field.removeChild(removeDeleteSign);
-            // field.removeChild(removeBreak);
-            checkbox = document.getElementById(value);
-            checkbox.checked = false;
-            querySelector("annotation-label").value.pop(value);
-        }
+                function removeBird(value) {
+                    field = document.getElementById("annotation-preview");
+                    removeObj = document.getElementById("Bird: " + value);
+                    // removeDeleteSign = document.getElementById("x" + value);
+                    // removeBreak = document.getElementById("linebreak" + value);
+                    field.removeChild(removeObj);
+                    // field.removeChild(removeDeleteSign);
+                    // field.removeChild(removeBreak);
+                    checkbox = document.getElementById(value);
+                    checkbox.checked = false;
+                    querySelector("annotation-label").value.pop(value);
+                }
 
-        function addCheckBird(checkbox) {
-            if (checkbox.checked) {
-                addBird(checkbox.labels[0].innerText);
-            } else {
-                removeBird(checkbox.labels[0].innerText);
-            }
-        }
-    </script>
+                function addCheckBird(checkbox) {
+                    if (checkbox.checked) {
+                        addBird(checkbox.labels[0].innerText);
+                    } else {
+                        removeBird(checkbox.labels[0].innerText);
+                    }
+                }
+            </script>
 
-    <div class="mb-5">
-        <span id="start"> Start Time: 0.00 </span> - 
-        <span id="end"> End Time: 10.00 </span><br>
-    </div>
-
-    <div class="conatiner flex flex-row">
-        <div class="w-1/3 text-left p-2 m-2" >
-            <p class="mb-2">Pick birds you hear: </p>
-
-            {% for bird in most_possible_birds %}
-            <p>
-                <input type="checkbox" id="{{ bird }}" value="{{ bird }}" onchange="addCheckBird(this)">
-                <label for="{{ bird }}">{{ bird }}</label>
-            </p>
-            {% endfor %}
-
-            <div class="dropdown">
-                <button onclick="myFunction()" class="mt-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere Vögel Suchen...</button>
-                <div id="myDropdown" class="dropdown-content">
-                    <input type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
-                    {% for bird in other_possible_birds %}
-                    <input type='button' onclick="addBird(this.value)" value="{{ bird }}">
-                    {% endfor %}
-                </div>
+            <div class="mb-5">
+                <span id="start"> Start Time: 0.00 </span> - 
+                <span id="end"> End Time: 10.00 </span><br>
             </div>
         </div>
-        <div class="w-1/3 text-left p-2 m-2">
-            <p class="mb-2">Vogelarten in diesem Audio: </p>
-            <!-- <div class="rounded bg-gray-200"> -->
-                <div class="" id="annotation-preview">
-                    <!-- here are the tags for the selected birds -->
+        <div class="w-1/4 ml-6 self-start">
+            <div class="text-left" >
+                <p class="mb-2">Pick birds you hear: </p>
+
+                {% for bird in most_possible_birds %}
+                <p>
+                    <input type="checkbox" id="{{ bird }}" value="{{ bird }}" onchange="addCheckBird(this)">
+                    <label for="{{ bird }}">{{ bird }}</label>
+                </p>
+                {% endfor %}
+
+                <div class="dropdown">
+                    <button onclick="myFunction()" class="mt-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere Vögel Suchen...</button>
+                    <div id="myDropdown" class="dropdown-content">
+                        <input type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
+                        {% for bird in other_possible_birds %}
+                        <input type='button' onclick="addBird(this.value)" value="{{ bird }}">
+                        {% endfor %}
+                    </div>
                 </div>
-            <!-- </div> -->
-        </div>
-        <div class="w-1/3 self-start p-2">
-            <form type="hidden" id=annotation-form method="POST">
-                <input type="hidden" id="annotation-record-id" name="recording_id" value="{{ record.id }}">
-                <input type="hidden" id="annotation-start" name="start_time" value="0">
-                <input type="hidden" id="annotation-end" name="end_time" value="10">
-                <input type="hidden" id="annotation-label" name="label" value="[]">
-                <input type="hidden" id="annotation-audio" name="audio_url" value="{{ record.audio_url }}">
-                <input type="hidden" id="annotation-status" name="status">
-                <input class="m-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Abschicken">
-            </form>
+            </div>
+
+            <div class="text-left mt-8">
+                <p class="mb-2">Vogelarten in diesem Audio: </p>
+                    <div class="" id="annotation-preview">
+                        <!-- here are the tags for the selected birds -->
+                    </div>
+            </div>
+
+            <div class="self-end">
+                <form type="hidden" id=annotation-form method="POST">
+                    <input type="hidden" id="annotation-record-id" name="recording_id" value="{{ record.id }}">
+                    <input type="hidden" id="annotation-start" name="start_time" value="0">
+                    <input type="hidden" id="annotation-end" name="end_time" value="10">
+                    <input type="hidden" id="annotation-label" name="label" value="[]">
+                    <input type="hidden" id="annotation-audio" name="audio_url" value="{{ record.audio_url }}">
+                    <input type="hidden" id="annotation-status" name="status">
+                    <input class="m-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Abschicken">
+                </form>
+            </div>
         </div>
     </div>
 </body>
