@@ -1,6 +1,9 @@
 tag_a_bird_backend/.env
-tag_a_bird_backend/__pycache__/
-tag_a_bird_backend/tests/__pycache__/
-tag_a_bird_backend/static/__pycache__/
 tag_a_bird_backend/.pytest_cache
 .vscode/
+*.log
+*.pot
+*.pyc
+*/*/*/__pycache__/
+*/*/__pycache__/
+*/__pycache__/
