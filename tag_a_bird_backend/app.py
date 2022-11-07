@@ -16,12 +16,5 @@ def verify_password(username, password):
         return False
     return user
 
-class Annotations(Resource):
-    @auth.login_required
-    def get(self):
-        return json.dumps({'Hello': 'World'})
-
-api.add_resource(Annotations, "/api/annotation")
-
 if __name__ == '__main__':
     app.run()

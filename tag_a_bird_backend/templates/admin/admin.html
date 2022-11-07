@@ -5,13 +5,24 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
-    <input type="text" name="country" placeholder="Country" value="{{ country }}" />
-    <input type="radio" name="with_annotation" value="True" {% if with_annotation %}checked{% endif %} /> With
-    Annotation
-    <input type="radio" name="with_annotation" value="False" {% if with_annotation %}checked{% endif %} /> Without
-    <input type="text" name="in_status" placeholder="In Status" value="{{ in_status }}" />
-    <input type="text" name="not_in_status" placeholder="Not in Status" value="{{ not_in_status }}" />
-    <button type="submit">Submit</button>
+<div class="w-full max-w-xs container mx-auto mt-20">
+<form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
+    <div class="mb-4">    
+        <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="country" placeholder="Country" value="{{ country }}" />
+    </div>
+    <div class="mb-2">
+        <input type="radio" name="with_annotation" value="True" {% if with_annotation %}checked{% endif %} /> With Annotation
+    </div>
+    <div class="mb-4">
+        <input type="radio" name="with_annotation" value="False" {% if with_annotation %}checked{% endif %} /> Without
+    </div>
+    <div class="mb-4">
+        <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="in_status" placeholder="In Status" value="{{ in_status }}" />
+    </div>
+    <div class="mb-6">
+        <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="not_in_status" placeholder="Not in Status" value="{{ not_in_status }}" />
+    </div>
+    <button class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"  type="submit">Submit</button>
 </form>
+</div>
 {% endblock %}
