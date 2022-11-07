@@ -32,9 +32,4 @@ def create_app(test_config=None):
     #     # load the test config if passed in
     #     app.config.from_mapping()
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
     return app
