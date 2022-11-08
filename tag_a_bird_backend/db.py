@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import declarative_base, scoped_session, create_session, sessionmaker
 
-Base = declarative_base()
 engine = None
 sessionmaker = sessionmaker()
 db_session = scoped_session(sessionmaker)
+Base = declarative_base()
 
 def configure_engine(url):
     global sessionmaker, engine, db_session
