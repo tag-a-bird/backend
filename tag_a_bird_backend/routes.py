@@ -170,26 +170,3 @@ def annotate():
             db_session.rollback()
             flash('Error: ' + str(e))
             return redirect(url_for('route_blueprint.annotate'))
-                
-
-        """ try:
-            annotation = Annotation(
-                id = random.randint(0, 1000000000),
-                recording_id = request.form['recording_id'],
-                user_id = current_user.id,
-                start_time = int(request.form['start_time']),
-                end_time = int(request.form['end_time']),
-                label = request.form['birds'],
-                status = request.form['status']
-            )
-            print(annotation)
-            db_session.add(annotation)
-            db_session.commit()
-            print("Annotation added successfully")
-            flash("Annotation successfully added.")
-            return redirect(url_for('route_blueprint.annotate'))
-        except Exception as e:
-            print(e)
-            db_session.rollback()
-            flash('Error: ' + str(e))
-            return redirect(url_for('route_blueprint.annotate')) """
