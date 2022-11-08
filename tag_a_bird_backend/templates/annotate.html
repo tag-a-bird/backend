@@ -125,7 +125,7 @@
 <body>
     <div class="flex flex-row mt-8">
         <div class="w-5/6 px-2 text-center">
-        <p class="text-left font-bold">{{ record.audio_url.split("/")[-1]  }}</p>
+            <p class="text-left font-bold">{{ record.audio_url.split("/")[-1] }}</p>
 
             <div class="my-4" id="waveform">
                 <!-- Here be waveform -->
@@ -168,7 +168,7 @@
                     container: '#waveform',
                     normalize: true,
                     scrollParent: true,
-                    minPxPerSec: 76,
+                    minPxPerSec: 63,
                     autoCenter: true,
                     autoCenterImmediately: true,
                     hideScrollbar: true,
@@ -193,7 +193,7 @@
                                 {
                                     start: 0,
                                     end: 10,
-                                    loop: true,
+                                    loop: false,
                                     drag: false,
                                     color: 'hsla(0,0%,50%,0.2)'
                                 }
@@ -202,6 +202,7 @@
                         WaveSurfer.timeline.create({
                             container: '#wave-timeline',
                             fontSize: 14,
+                            primaryLabelInterval: 1,
                         })
                     ]
                 });
@@ -233,7 +234,7 @@
                     let region = Object.values(wavesurfer.regions.list)[0];
                     region.onDrag(10);
                     let regionMiddle = region.start + (region.end - region.start) / 2;
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 76), true);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 63), true);
                     document.querySelector(
                         '[data-action="play-region-1"]'
                     ).click();
@@ -245,7 +246,7 @@
                     let region = Object.values(wavesurfer.regions.list)[0];
                     region.onDrag(-10);
                     let regionMiddle = (region.start + (region.end - region.start) / 2);
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 76), true);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 63), true);
                     document.querySelector(
                         '[data-action="play-region-1"]'
                     ).click();
@@ -255,11 +256,10 @@
                     wavesurfer.on('region-updated', (obj) => {
                         var start = obj.start;
                         var end = obj.end;
-                        document.getElementById("start").innerHTML = "Start Time: " + start.toFixed(2);
-                        document.getElementById("end").innerHTML = "End Time: " + end.toFixed(2);
-                        document.getElementById("annotation-start").value = parseInt(start);
-                        document.getElementById("annotation-end").value = parseInt(end);
-
+                        document.getElementById("start").innerHTML = "Start:" + parseInt(start);
+                        document.getElementById("end").innerHTML = "End:" + parseInt(end);
+                        var currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
+                        checkboxSetup(currentTime);
                     });
                     // wavesurfer.play();
                 });
@@ -272,64 +272,216 @@
                 }
             </script>
             <script>
-
-                var finalAnnotationJson = {
-                    start: parseFloat(document.getElementById("start").innerHTML),
-                    end: parseFloat(document.getElementById("end").innerHTML),
-                    label: '',
-                    audio_url: '{{ record.audio_url }}',
-                    recording_id: '{{ record.recording_id }}',
-                    status: '',
-                    birds: [],
-                };
-
-
                 function addBird(value) {
-                    field = document.getElementById("annotation-preview");
-                    input = document.createElement("input");
-                    input.type = "button";
-                    input.classList.add("px-2");
-                    input.classList.add("m-1");
-                    input.classList.add("rounded");
-                    input.classList.add("bg-emerald-200");
-                    input.classList.add("hover:bg-red-300");
-                    input.value = value;
-                    input.id = "Bird: " + value;
-                    input.onclick = function () {
-                        removeBird(value);
+                    var currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
+                    var field = document.getElementById("annotation-preview");
+                    if (!document.getElementById(currentTime)) {
+                        var timeTitle = document.createElement("h3");
+                        timeTitle.id = currentTime;
+                        timeTitle.innerHTML = currentTime;
+                        var newTimeRegion = document.createElement("div");
+                        newTimeRegion.appendChild(timeTitle);
+                        newTimeRegion.classList.add("bg-light");
+                        field.appendChild(newTimeRegion);
+                    }
+                    var newBird = document.createElement("div");
+                    newBird.innerHTML = value;
+                    newBird.classList.add("px-2", "m-1", "rounded", "bg-emerald-200", "hover:bg-red-300");
+                    newBird.dataset.bird = value;
+                    newBird.dataset.time = currentTime;
+                    newBird.onclick = function () {
+                        removeBird(this);
                     };
-                    field.append(input);
+                    newBird.id = "birdSubmit"
+                    if (!document.querySelector(`[data-bird="${value}"][data-time="${currentTime}"]`)) {
+                        document.getElementById(currentTime).appendChild(newBird);
+                    }
                 }
 
-                function removeBird(value) {
-                    field = document.getElementById("annotation-preview");
-                    removeObj = document.getElementById("Bird: " + value);
-                    field.removeChild(removeObj);
-                    checkbox = document.getElementById(value);
-                    checkbox.checked = false;
+                function removeBird(objToRemove) {
+                    checkbox = document.getElementById(objToRemove.innerHTML);
+                    if (checkbox) {
+                        checkbox.checked = false;
+                    }
+                    objToRemove.remove();
                 }
 
                 function addCheckBird(checkbox) {
                     if (checkbox.checked) {
                         addBird(checkbox.labels[0].innerText);
                     } else {
-                        removeBird(checkbox.labels[0].innerText);
+                        currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
+                        var objToRemove = document.querySelector(`[data-bird="${checkbox.labels[0].innerText}"][data-time="${currentTime}"]`);
+                        if (objToRemove) {
+                            objToRemove.remove();
+                        }
                     }
+                }
+
+                function checkboxSetup(currentTime) {
+                    var checkboxes = document.querySelectorAll('input[name="common-birds"]');
+                    var flags = document.querySelectorAll('input[name="flags"]');
+                    if (!document.getElementById(currentTime)) {
+                        for (var i = 0; i < checkboxes.length; i++) {
+                            checkboxes[i].checked = false;
+                        }
+                        for (var i = 0; i < flags.length; i++) {
+                            flags[i].checked = false;
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < checkboxes.length; i++) {
+                            if (document.querySelector(`[data-bird="${checkboxes[i].labels[0].innerText}"][data-time="${currentTime}"]`)) {
+                                checkboxes[i].checked = true;
+                            }
+                            else {
+                                checkboxes[i].checked = false;
+                            }
+                        }
+                        for (var i = 0; i < flags.length; i++) {
+                            if (document.querySelector(`[data-bird="${flags[i].labels[0].innerText}"][data-time="${currentTime}"]`)) {
+                                flags[i].checked = true;
+                            }
+                            else {
+                                flags[i].checked = false;
+                            }
+                        }
+                    }
+                }
+
+                function addFlags(checkbox) {
+                    if (checkbox.checked) {
+                        addBird(checkbox.labels[0].innerText);
+                    } else {
+                        currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
+                        var objToRemove = document.querySelector(`[data-bird="${checkbox.labels[0].innerText}"][data-time="${currentTime}"]`);
+                        if (objToRemove) {
+                            objToRemove.remove();
+                        }
+                    }
+                }
+
+                function finalSubmit() {
+                    var annotationPreview = document.getElementById("annotation-preview");
+                    var postElements = annotationPreview.querySelectorAll('#birdSubmit');
+                    // group postElements by data-time use data-bird as value
+                    var groupedElements = {};
+                    for (var i = 0; i < postElements.length; i++) {
+                        var time = postElements[i].dataset.time;
+                        var start = time.split("-")[0].split(":")[1];
+                        var end = time.split("-")[1].split(":")[1];
+                        time = start + "-" + end;
+                        var bird = postElements[i].dataset.bird;
+                        if (groupedElements[time]) {
+                            groupedElements[time].push(bird);
+                        } else {
+                            groupedElements[time] = [bird];
+                        }
+                    }
+                    var recordId = "{{ record.id }}"
+                    groupedElements["recordId"] = recordId;
+                    // convert groupedElements to JSON
+                    var json = JSON.stringify(groupedElements);
+                    // send JSON to server
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/annotate", true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(json);
+                    // redirect to response value
+                    xhr.onload = function () {
+                        window.location.href = xhr.responseText;
+                    }
+
+
+
+
+
+                    /*
+                var parseBirdTime = {};
+                var timeGroups = {};
+                for (var i = 0; i < birds.length; i++) {
+                    var birdTime = birds[i].id.split("-");
+                    var bird = birdTime[0];
+                    var time = birdTime[1].split(":")[1] + "-" + birdTime[1].split(":")[2];
+                    // group birds by time
+                    if (parseBirdTime[time]) {
+                        parseBirdTime[time].push(bird);
+                    }
+                    else {
+                        parseBirdTime[time] = [bird];
+                    }
+                }
+                for (var key in parseBirdTime) {
+                    var start = key.split("-")[0];
+                    var end = key.split("-")[1];
+                    var birds = [];
+                    for (var i = 0; i < parseBirdTime[key].length; i++) {
+                        birds.push(parseBirdTime[key][i]);
+                    }
+                    var flags = {};
+                    if (document.getElementById("flag-species-uncertain").checked) {
+                        flags["flag-species-uncertain"] = true;
+                    }
+                    if (document.getElementById("flag-recording-not-suitable").checked) {
+                        flags["flag-recording-not-suitable"] = true;
+                    }
+                    timeGroups[key] = {
+                        "start": start,
+                        "end": end,
+                        "birds": birds,
+                        "flags": flags
+                    }
+                }
+                finalForm = document.createElement("form");
+                finalForm.method = "POST";
+
+                // create named inputs for each time group
+                for (var key in timeGroups) {
+                    var timeGroup = timeGroups[key];
+                    var timeGroupInput = document.createElement("input");
+                    timeGroupInput.type = "hidden";
+                    timeGroupInput.name = key;
+                    timeGroupInput.value = timeGroup;
+                    finalForm.appendChild(timeGroupInput);
+                }
+                document.body.appendChild(finalForm);
+                finalForm.submit();
+            */
                 }
             </script>
         </div>
 
         <div class="w-1/4 ml-6 self-start">
 
-            <p class="hidden" id="start"> Start Time: 0.00 </p>
-            <p class="hidden" id="end"> End Time: 10.00 </p>
+            <div class="text-left mt-8">
+                <p id="start">Start:0</p>
+                <p id="end">End:10</p>
+                <p class="mb-2">Vogelarten in diesem Audio: </p>
+                <div class="" id="annotation-preview">
+                    <!-- here are the tags for the selected birds -->
+                </div>
+            </div>
 
-            <div class="text-left p-3">
-    
-                <p class="mb-2 text-lg font-bold">Arten auswählen: </p>
+
+            <button
+                class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onclick="finalSubmit()"> Abschicken </button>
+
+            <div class="text-left">
+                <p class="my-2">Pick birds you hear: </p>
+                <p>
+                    <input name="flags" type="checkbox" id="flag-species-uncertain""
+                        value='false' onchange=" addFlags(this)">
+                    <label for="flag-species-uncertain">Species uncertain</label>
+                    <input name="flags" type="checkbox" id="flag-recording-not-suitable" value="recording-not-suitable"
+                        onchange="addFlags(this)">
+                    <label for="flag-recording-not-suitable">Recording not suitable</label>
+                </p>
+
                 {% for bird in most_possible_birds %}
                 <p>
-                    <input type="checkbox" id="{{ bird }}" value="{{ bird }}" onchange="addCheckBird(this)">
+                    <input name="common-birds" type="checkbox" id="{{ bird }}" value="{{bird}}"
+                        onchange="addCheckBird(this)">
                     <label for="{{ bird }}">{{ bird }}</label>
                 </p>
                 {% endfor %}
@@ -341,33 +493,10 @@
                     <div id="myDropdown" class="dropdown-content">
                         <input type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
                         {% for bird in other_possible_birds %}
-                        <input class="other-birds-input" type='button' onclick="addBird(this.value)" value="{{ bird }}">
+                        <input class="other-birds-input" type='button' onclick="addBird(this.value)" value="{{bird}}">
                         {% endfor %}
                     </div>
                 </div>
-
-            </div>
-
-            <div class="text-left bg-gray-200 h-64 p-3">
-                <p class="mb-2 text-lg font-bold">Artenliste </p>
-                <div class="" id="annotation-preview">
-                    <!-- here are the tags for the selected birds -->
-                </div>
-            </div>
-
-
-            <div class="self-end">
-                <form type="hidden" id=annotation-form method="POST">
-                    <input type="hidden" id="annotation-record-id" name="recording_id" value="{{ record.id }}">
-                    <input type="hidden" id="annotation-start" name="start_time" value="0">
-                    <input type="hidden" id="annotation-end" name="end_time" value="10">
-                    <input type="hidden" id="annotation-label" name="label" value="[]">
-                    <input type="hidden" id="annotation-audio" name="audio_url" value="{{ record.audio_url }}">
-                    <input type="hidden" id="annotation-status" name="status">
-                    <input
-                        class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit" value="nächste Audiodatei">
-                </form>
             </div>
 
         </div>
