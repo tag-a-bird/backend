@@ -1,14 +1,17 @@
 import base64
 import pytest
 from flask import g, session
+from tag_a_bird_backend.models import User
+# from tag_a_bird_backend.tests.conftest import app
 
+def test_request_with_logged_in_user(app):
+    user = User.query.get('b40ecc45-3f4b-4be6-872f-d1c6cb2e7b49')
+    with app.test_client(user=user) as client:
+        # This request has user 1 already logged in!
+        client.get("/")
 
-def test_admin(client):
-    assert client.get('/admin').status_code == 401
-    assert client.get('/admin').status == '401 UNAUTHORIZED'
-
-def test_signup(client, app):
-    assert client.get('/api/signup').status_code == 200
+def test_signup_function(client, app):
+    pass
     # response = client.post(
     #     '/api/signup', data={'username': 'a', 'password': 'a'}
     # )
@@ -32,23 +35,3 @@ def test_signup(client, app):
 #     )
 #     assert message in response.data
 
-
-# def test_admin_unauth():
-#     web = app.test_client()
-
-#     rv = web.get('/api/admin')
-#     assert rv.status == '401 UNAUTHORIZED'
-#     assert rv.data == b'Unauthorized Access'
-#     assert 'WWW-Authenticate' in rv.headers
-#     assert rv.headers['WWW-Authenticate'] == 'Basic realm="Authentication Required"'
-
-# def test_admin_auth():
-#     web = app.test_client()
-
-#     credentials = base64.b64encode(b'kinga:test').decode('utf-8')
-#     rv = web.get('/api/admin', headers={
-#             'Authorization': 'Basic ' + credentials
-#     })
-
-#     assert rv.status == '200 OK'
-#     assert rv.data == b'hello admin'
