@@ -7,6 +7,7 @@ from .models import User, QueryConfig, Record, Annotation
 from . import auth, login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
+from tag_a_bird_backend.static.flags import flags_list
 import random
 
 @login_manager.user_loader
@@ -150,13 +151,35 @@ def annotate():
 
     elif request.method == "POST":
         try:
+            content_type = request.headers['Content-Type']
+            if content_type == 'application/json':
+                data = request.get_json()
+                recordId = data.pop('recordId')
+                for key in data.keys():
+                    labels = data[key]
+                    birds = [bird for bird in labels if bird in most_possible_birds or bird in other_possible_birds]
+                    flags = [flag for flag in labels if flag in flags_list]
+                    new_annotation = Annotation(start_time=key.split('-')[0], end_time=key.split('-')[1], label=birds, recording_id=recordId, user_id=current_user.id, status=flags)
+                    db_session.add(new_annotation)
+            db_session.commit()
+            print("Annotation added successfully")
+            flash("Annotation successfully added.")
+            return "/annotate"
+        except Exception as e:
+            print(e)
+            db_session.rollback()
+            flash('Error: ' + str(e))
+            return redirect(url_for('route_blueprint.annotate'))
+                
+
+        """ try:
             annotation = Annotation(
                 id = random.randint(0, 1000000000),
                 recording_id = request.form['recording_id'],
                 user_id = current_user.id,
                 start_time = int(request.form['start_time']),
                 end_time = int(request.form['end_time']),
-                label = [ bird for bird in request.form.getlist('label')],
+                label = request.form['birds'],
                 status = request.form['status']
             )
             print(annotation)
@@ -169,4 +192,4 @@ def annotate():
             print(e)
             db_session.rollback()
             flash('Error: ' + str(e))
-            return redirect(url_for('route_blueprint.annotate'))
+            return redirect(url_for('route_blueprint.annotate')) """
