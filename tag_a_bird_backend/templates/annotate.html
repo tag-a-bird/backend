@@ -125,12 +125,13 @@
 <body>
     <div class="flex flex-row mt-8">
         <div class="w-5/6 px-2 text-center">
+        <p class="text-left font-bold">{{ record.audio_url.split("/")[-1]  }}</p>
 
-            <div id="wave-spectrogram"></div>
-            <div id="wave-timeline"></div>
             <div class="my-4" id="waveform">
                 <!-- Here be waveform -->
             </div>
+            <div id="wave-spectrogram"></div>
+            <div id="wave-timeline"></div>
 
             <div class="my-6">
                 <button
@@ -170,7 +171,7 @@
                     minPxPerSec: 76,
                     autoCenter: true,
                     autoCenterImmediately: true,
-                    hideScrollbar: false,
+                    hideScrollbar: true,
                     plugins: [
                         WaveSurfer.spectrogram.create({
                             wavesurfer: wavesurfer,
@@ -316,41 +317,16 @@
                     }
                 }
             </script>
-
-            <!-- <div class="mb-5">
-                <span id="start"> Start Time: 0.00 </span> - 
-                <span id="end"> End Time: 10.00 </span><br>
-            </div> -->
         </div>
 
         <div class="w-1/4 ml-6 self-start">
 
-            <div class="text-left mt-8">
-                <p id="start"> Start Time: 0.00 </p>
-                <p id="end"> End Time: 10.00 </p>
-                <p class="mb-2">Vogelarten in diesem Audio: </p>
-                <div class="" id="annotation-preview">
-                    <!-- here are the tags for the selected birds -->
-                </div>
-            </div>
+            <p class="hidden" id="start"> Start Time: 0.00 </p>
+            <p class="hidden" id="end"> End Time: 10.00 </p>
 
-            <div class="self-end">
-                <form type="hidden" id=annotation-form method="POST">
-                    <input type="hidden" id="annotation-record-id" name="recording_id" value="{{ record.id }}">
-                    <input type="hidden" id="annotation-start" name="start_time" value="0">
-                    <input type="hidden" id="annotation-end" name="end_time" value="10">
-                    <input type="hidden" id="annotation-label" name="label" value="[]">
-                    <input type="hidden" id="annotation-audio" name="audio_url" value="{{ record.audio_url }}">
-                    <input type="hidden" id="annotation-status" name="status">
-                    <input
-                        class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit" value="Abschicken">
-                </form>
-            </div>
-
-            <div class="text-left">
-                <p class="my-2">Pick birds you hear: </p>
-
+            <div class="text-left p-3">
+    
+                <p class="mb-2 text-lg font-bold">Arten auswählen: </p>
                 {% for bird in most_possible_birds %}
                 <p>
                     <input type="checkbox" id="{{ bird }}" value="{{ bird }}" onchange="addCheckBird(this)">
@@ -369,6 +345,29 @@
                         {% endfor %}
                     </div>
                 </div>
+
+            </div>
+
+            <div class="text-left bg-gray-200 h-64 p-3">
+                <p class="mb-2 text-lg font-bold">Artenliste </p>
+                <div class="" id="annotation-preview">
+                    <!-- here are the tags for the selected birds -->
+                </div>
+            </div>
+
+
+            <div class="self-end">
+                <form type="hidden" id=annotation-form method="POST">
+                    <input type="hidden" id="annotation-record-id" name="recording_id" value="{{ record.id }}">
+                    <input type="hidden" id="annotation-start" name="start_time" value="0">
+                    <input type="hidden" id="annotation-end" name="end_time" value="10">
+                    <input type="hidden" id="annotation-label" name="label" value="[]">
+                    <input type="hidden" id="annotation-audio" name="audio_url" value="{{ record.audio_url }}">
+                    <input type="hidden" id="annotation-status" name="status">
+                    <input
+                        class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit" value="nächste Audiodatei">
+                </form>
             </div>
 
         </div>
