@@ -168,7 +168,7 @@
                     container: '#waveform',
                     normalize: true,
                     scrollParent: true,
-                    minPxPerSec: 63,
+                    minPxPerSec: 74,
                     autoCenter: true,
                     autoCenterImmediately: true,
                     hideScrollbar: true,
@@ -234,7 +234,7 @@
                     let region = Object.values(wavesurfer.regions.list)[0];
                     region.onDrag(10);
                     let regionMiddle = region.start + (region.end - region.start) / 2;
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 63), true);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
                     document.querySelector(
                         '[data-action="play-region-1"]'
                     ).click();
@@ -246,7 +246,7 @@
                     let region = Object.values(wavesurfer.regions.list)[0];
                     region.onDrag(-10);
                     let regionMiddle = (region.start + (region.end - region.start) / 2);
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 63), true);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
                     document.querySelector(
                         '[data-action="play-region-1"]'
                     ).click();
@@ -465,7 +465,7 @@
 
             <button
                 class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                onclick="finalSubmit()"> Abschicken </button>
+                onclick="finalSubmit()"> Nächste Audiodatei </button>
 
             <div class="text-left">
                 <p class="my-2">Pick birds you hear: </p>
