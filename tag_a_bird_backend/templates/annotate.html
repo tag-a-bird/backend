@@ -221,7 +221,6 @@
                     region.play();
                 });
 
-
                 document.querySelector(
                     '[data-action="pause"]'
                 ).addEventListener('click', function () {
@@ -271,6 +270,7 @@
                     wavesurfer.gainNode().gain.value = slider.value;
                 }
             </script>
+
             <script>
                 function addBird(value) {
                     var currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
@@ -391,11 +391,6 @@
                     xhr.onload = function () {
                         window.location.href = xhr.responseText;
                     }
-
-
-
-
-
                     /*
                 var parseBirdTime = {};
                 var timeGroups = {};
@@ -449,35 +444,17 @@
             */
                 }
             </script>
+            <div class="text-left mt-8">
+                <p class='hidden' id="start">Start:0</p>
+                <p class='hidden' id="end">End:10</p>
+            </div>
         </div>
 
         <div class="w-1/4 ml-6 self-start">
 
-            <div class="text-left mt-8">
-                <p id="start">Start:0</p>
-                <p id="end">End:10</p>
-                <p class="mb-2">Vogelarten in diesem Audio: </p>
-                <div class="" id="annotation-preview">
-                    <!-- here are the tags for the selected birds -->
-                </div>
-            </div>
-
-
-            <button
-                class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                onclick="finalSubmit()"> Nächste Audiodatei </button>
-
             <div class="text-left">
-                <p class="my-2">Pick birds you hear: </p>
-                <p>
-                    <input name="flags" type="checkbox" id="flag-species-uncertain""
-                        value='false' onchange=" addFlags(this)">
-                    <label for="flag-species-uncertain">Species uncertain</label>
-                    <input name="flags" type="checkbox" id="flag-recording-not-suitable" value="recording-not-suitable"
-                        onchange="addFlags(this)">
-                    <label for="flag-recording-not-suitable">Recording not suitable</label>
-                </p>
-
+                
+                <p class="mb-2 text-lg font-bold">Arten auswählen:</p>
                 {% for bird in most_possible_birds %}
                 <p>
                     <input name="common-birds" type="checkbox" id="{{ bird }}" value="{{bird}}"
@@ -488,7 +465,7 @@
 
                 <div class="dropdown">
                     <button onclick="myFunction()"
-                        class="mt-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere
+                        class="my-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere
                         Vögel Suchen...</button>
                     <div id="myDropdown" class="dropdown-content">
                         <input type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
@@ -497,7 +474,27 @@
                         {% endfor %}
                     </div>
                 </div>
+
+                <p>
+                    <input name="flags" type="checkbox" id="flag-species-uncertain""
+                        value='false' onchange=" addFlags(this)">
+                    <label for="flag-species-uncertain">Art unsicher</label>
+                </p> 
+                <p>
+                    <input name="flags" type="checkbox" id="flag-recording-not-suitable" value="recording-not-suitable"
+                        onchange="addFlags(this)">
+                    <label for="flag-recording-not-suitable">Aufnahme ungeeignet</label>
+                </p>
             </div>
+
+            <p class="my-2 text-lg font-bold">Artenliste:</p>
+            <div class="" id="annotation-preview">
+                <!-- here are the tags for the selected birds -->
+            </div>
+
+            <button
+                class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onclick="finalSubmit()"> Nächste Audiodatei</button>
 
         </div>
     </div>
