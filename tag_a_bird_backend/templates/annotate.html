@@ -125,7 +125,8 @@
 <body>
     <div class="flex flex-row mt-8">
         <div class="w-5/6 px-2 text-center">
-            <p class="text-left font-bold w-3/4 break-keep">{{ record.audio_url.split("/")[-1] }}</p>
+            <!-- <p class="text-left font-bold w-3/4 break-keep">{{ record.audio_url.split("/")[-1] }}</p> -->
+            <p class="text-left font-bold w-3/4 break-keep">Coreo ID: {{ record.id }}</p>
 
             <div class="my-4" id="waveform">
                 <!-- Here be waveform -->
@@ -149,8 +150,12 @@
                 </button>
                 <button
                     class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                    id="nextsegment" data-action="next-segment">Nächster Abschnitt</button>
-                <input type="range" min="5" max="10000000" value="1" passive class="slider" id="gain">
+                    id="nextsegment" data-action="next-segment">Nächster Abschnitt
+                </button>
+                <img class="ml-2 w-6 inline" src="../static/img/speaker.svg" alt="Volume"/>
+                <span class="pl-2">
+                    <input class="h-2 accent-indigo-500" type="range" min="5" max="10000000" value="1" passive class="slider" id="gain">
+                </span>
             </div>
 
             <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
