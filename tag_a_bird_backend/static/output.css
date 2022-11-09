@@ -710,6 +710,10 @@ video {
   align-self: flex-start;
 }
 
+.break-keep {
+  word-break: keep-all;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
