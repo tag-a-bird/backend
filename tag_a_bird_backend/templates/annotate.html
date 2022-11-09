@@ -136,9 +136,6 @@
 
             <div class="my-6">
                 <button
-                    class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                    id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt</button>
-                <button
                     class="p-2 lg:px-4 text-gray-600 font-bold rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
                     data-action="play-region-1">
                     Abspielen
@@ -147,10 +144,6 @@
                     class="p-2 lg:px-4 text-gray-600 font-bold rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
                     data-action="pause">
                     Pause
-                </button>
-                <button
-                    class="p-2 lg:px-4 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                    id="nextsegment" data-action="next-segment">Nächster Abschnitt
                 </button>
                 <img class="ml-2 w-6 inline" src="../static/img/speaker.svg" alt="Volume"/>
                 <span class="pl-2">
@@ -232,29 +225,29 @@
                     wavesurfer.pause();
                 });
 
-                document.querySelector(
-                    '[data-action="next-segment"]'
-                ).addEventListener('click', function () {
-                    let region = Object.values(wavesurfer.regions.list)[0];
-                    region.onDrag(10);
-                    let regionMiddle = region.start + (region.end - region.start) / 2;
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
-                    document.querySelector(
-                        '[data-action="play-region-1"]'
-                    ).click();
-                });
+                // document.querySelector(
+                //     '[data-action="next-segment"]'
+                // ).addEventListener('click', function () {
+                //     let region = Object.values(wavesurfer.regions.list)[0];
+                //     region.onDrag(10);
+                //     let regionMiddle = region.start + (region.end - region.start) / 2;
+                //     wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                //     document.querySelector(
+                //         '[data-action="play-region-1"]'
+                //     ).click();
+                // });
 
-                document.querySelector(
-                    '[data-action="previous-segment"]'
-                ).addEventListener('click', function () {
-                    let region = Object.values(wavesurfer.regions.list)[0];
-                    region.onDrag(-10);
-                    let regionMiddle = (region.start + (region.end - region.start) / 2);
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
-                    document.querySelector(
-                        '[data-action="play-region-1"]'
-                    ).click();
-                });
+                // document.querySelector(
+                //     '[data-action="previous-segment"]'
+                // ).addEventListener('click', function () {
+                //     let region = Object.values(wavesurfer.regions.list)[0];
+                //     region.onDrag(-10);
+                //     let regionMiddle = (region.start + (region.end - region.start) / 2);
+                //     wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                //     document.querySelector(
+                //         '[data-action="play-region-1"]'
+                //     ).click();
+                // });
 
                 wavesurfer.on('ready', () => {
                     wavesurfer.on('region-updated', (obj) => {
@@ -366,6 +359,15 @@
                     }
                 }
 
+                function confirmFinalSubmit(){
+                    document.getElementById("confirm").hidden=false
+                }
+                
+                //hide the confirmation div
+                function confirmNo() {
+                    document.getElementById("confirm").hidden=true
+                }
+                
                 function finalSubmit() {
                     var annotationPreview = document.getElementById("annotation-preview");
                     var postElements = annotationPreview.querySelectorAll('#birdSubmit');
@@ -492,15 +494,57 @@
                 </p>
             </div>
 
-            <p class="my-2 text-lg font-bold">Artenliste:</p>
+            <p class="my-2 text-lg font-bold">Arten in dieser Aufnahme:</p>
             <div class="" id="annotation-preview">
                 <!-- here are the tags for the selected birds -->
             </div>
-
             <button
-                class="my-3 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                onclick="finalSubmit()"> Nächste Audiodatei</button>
+                class="w-[100px] p-2 mt-3  text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+                id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt
+            </button>
+            <button
+                class="w-[100px] p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+                id="nextsegment" data-action="next-segment">Nächster Abschnitt
+            </button>
+            <button
+                class="w-[204px] my-1.5 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onclick="confirmFinalSubmit()"> Artenliste absenden
+            </button>
 
+            <div id="confirm" hidden>
+                <!-- <h3>Confirmation</h3> -->
+                <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
+            
+                <button onclick="finalSubmit()" class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Ja, absenden</button>  
+                <button onclick="confirmNo()" class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Nein, zurück</button>  
+            </div>
+
+            <script>
+                                document.querySelector(
+                    '[data-action="next-segment"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    region.onDrag(10);
+                    let regionMiddle = region.start + (region.end - region.start) / 2;
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                    document.querySelector(
+                        '[data-action="play-region-1"]'
+                    ).click();
+                });
+
+                document.querySelector(
+                    '[data-action="previous-segment"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    region.onDrag(-10);
+                    let regionMiddle = (region.start + (region.end - region.start) / 2);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                    document.querySelector(
+                        '[data-action="play-region-1"]'
+                    ).click();
+                });
+
+            </script>
         </div>
     </div>
 </body>
