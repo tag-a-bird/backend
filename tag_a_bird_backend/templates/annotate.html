@@ -127,7 +127,13 @@
         <div class="w-5/6 px-2 text-center">
             <!-- <p class="text-left font-bold w-3/4 break-keep">{{ record.audio_url.split("/")[-1] }}</p> -->
             <p class="text-left font-bold w-3/4 break-keep">Coreo ID: {{ record.id }}</p>
+            <p class="text-left">
+                <span >Abschnitt</span>
+                <input class="text-left w-2.5" type="text" id="current-segment" value="1"/>
+                <span class="text-left" id="total-segments"></span>
+                <span class="text-left"></span>
 
+            </p>
             <div class="my-4" id="waveform">
                 <!-- Here be waveform -->
             </div>
@@ -207,6 +213,44 @@
 
                 wavesurfer.load('{{ record.audio_url }}');
 
+                var numSegments = 0
+
+                wavesurfer.on('ready', function() {
+                    var totalDuration = wavesurfer.getDuration()
+                    var roundedDuration = totalDuration.toFixed(2)
+                    numSegments = roundedDuration/10
+                    var currentSegmentNum = 1
+                    // document.getElementById('total-segments').innerHTML = "(Abschnitt " + currentSegmentNum + "/"+ numSegments.toFixed(0) + ")";
+                    document.getElementById('total-segments').innerHTML = "/ " + numSegments.toFixed(0);
+                })
+
+                function incrementValue(){
+                    var value = parseInt(document.getElementById('current-segment').value, 10);
+                    value = isNaN(value) ? 0 : value;
+                    if (value == numSegments.toFixed(0)-1){
+                        document.getElementById('current-segment').value = numSegments.toFixed(0);
+                    }   
+                    else if (value < numSegments.toFixed(0)){
+                        value++;
+                        document.getElementById('current-segment').value = value;
+                    }  
+                }
+
+                function decrementValue(){
+                    var value = parseInt(document.getElementById('current-segment').value, 10);
+                    value = isNaN(value) ? 0 : value;;
+                    // value--;
+                    // document.getElementById('current-segment').value = value
+                    if (value == 1){
+                        document.getElementById('current-segment').value = value;
+                    }
+                    else{
+                        value--;
+                        document.getElementById('current-segment').value = value;
+                    }
+       
+                }
+
                 wavesurfer.on('error', function (e) {
                     console.warn(e);
                 });
@@ -260,15 +304,11 @@
                     });
                     // wavesurfer.play();
                 });
-
-
-
                 function gain() {
                     var slider = document.getElementById("gain");
                     wavesurfer.gainNode().gain.value = slider.value;
                 }
             </script>
-
             <script>
                 function addBird(value) {
                     var currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
@@ -500,11 +540,11 @@
             </div>
             <button
                 class="w-[100px] p-2 mt-3  text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt
+                id="previoussegment" onclick="decrementValue()" data-action="previous-segment">Vorheriger Abschnitt
             </button>
             <button
                 class="w-[100px] p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                id="nextsegment" data-action="next-segment">Nächster Abschnitt
+                id="nextsegment" onclick="incrementValue()" data-action="next-segment">Nächster Abschnitt
             </button>
             <button
                 class="w-[204px] my-1.5 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -520,29 +560,29 @@
             </div>
 
             <script>
-                                document.querySelector(
-                    '[data-action="next-segment"]'
-                ).addEventListener('click', function () {
-                    let region = Object.values(wavesurfer.regions.list)[0];
-                    region.onDrag(10);
-                    let regionMiddle = region.start + (region.end - region.start) / 2;
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
-                    document.querySelector(
-                        '[data-action="play-region-1"]'
-                    ).click();
-                });
-
+            document.querySelector(
+                '[data-action="next-segment"]'
+            ).addEventListener('click', function () {
+                let region = Object.values(wavesurfer.regions.list)[0];
+                region.onDrag(10);
+                let regionMiddle = region.start + (region.end - region.start) / 2;
+                wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
                 document.querySelector(
-                    '[data-action="previous-segment"]'
-                ).addEventListener('click', function () {
-                    let region = Object.values(wavesurfer.regions.list)[0];
-                    region.onDrag(-10);
-                    let regionMiddle = (region.start + (region.end - region.start) / 2);
-                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
-                    document.querySelector(
-                        '[data-action="play-region-1"]'
-                    ).click();
-                });
+                    '[data-action="play-region-1"]'
+                ).click();
+            });
+
+            document.querySelector(
+                '[data-action="previous-segment"]'
+            ).addEventListener('click', function () {
+                let region = Object.values(wavesurfer.regions.list)[0];
+                region.onDrag(-10);
+                let regionMiddle = (region.start + (region.end - region.start) / 2);
+                wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                document.querySelector(
+                    '[data-action="play-region-1"]'
+                ).click();
+            });
 
             </script>
         </div>
