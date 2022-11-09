@@ -470,12 +470,12 @@
 
                 <div class="dropdown">
                     <button onclick="myFunction()"
-                        class="my-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere
+                        class="dropdownbutton mt-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere
                         Vögel Suchen...</button>
-                    <div id="myDropdown" class="dropdown-content">
-                        <input type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
+                    <div id="myDropdown" class="dropdownbutton dropdown-content ml-6 mt-0">
+                        <input class="dropdownbutton" type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
                         {% for bird in other_possible_birds %}
-                        <input class="other-birds-input" type='button' onclick="addBird(this.value)" value="{{bird}}">
+                        <input class="dropdownbutton other-birds-input block hover:bg-gray-300 ml-2" type='button' onclick="addBird(this.value)" value="{{bird}}">
                         {% endfor %}
                     </div>
                 </div>
