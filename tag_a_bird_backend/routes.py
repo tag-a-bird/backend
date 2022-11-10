@@ -55,7 +55,7 @@ def login():
         try:
             email = request.form['email']
             password = request.form['password']
-            user = User.query.filter_by(email=email).first()
+            user = db_session.query(User).filter_by(email=email).first()
             if not user or not user.verify_password(password):
                 return jsonify({"msg": "Bad username or password"}), 401
             
