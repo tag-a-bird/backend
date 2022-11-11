@@ -71,7 +71,6 @@
         /* The search field */
         #myInput {
             box-sizing: border-box;
-            background-image: url('searchicon.png');
             background-position: 14px 12px;
             background-repeat: no-repeat;
             font-size: 16px;
@@ -128,8 +127,8 @@
             <!-- <p class="text-left font-bold w-3/4 break-keep">{{ record.audio_url.split("/")[-1] }}</p> -->
             <p class="text-left font-bold w-3/4 break-keep">Coreo ID: {{ record.id }}</p>
             <p class="text-left">
-                <span >Abschnitt</span>
-                <input class="text-left w-2.5" type="text" id="current-segment" value="1"/>
+                <span>Abschnitt</span>
+                <input class="text-left w-2.5" type="text" id="current-segment" value="1" />
                 <span class="text-left" id="total-segments"></span>
                 <span class="text-left"></span>
 
@@ -151,9 +150,10 @@
                     data-action="pause">
                     Pause
                 </button>
-                <img class="ml-2 w-6 inline" src="../static/img/speaker-svgrepo-com.svg" alt="Volume"/>
+                <img class="ml-2 w-6 inline" src="../static/img/speaker-svgrepo-com.svg" alt="Volume" />
                 <span class="pl-2">
-                    <input class="h-2 accent-indigo-500" type="range" min="5" max="10000000" value="1" passive class="slider" id="gain">
+                    <input class="h-2 accent-indigo-500" type="range" min="5" max="10000000" value="1" passive
+                        class="slider" id="gain-slider">
                 </span>
             </div>
 
@@ -164,6 +164,7 @@
             <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
             <script>
                 var wavesurfer = WaveSurfer.create({
+                    backend: 'MediaElementWebAudio',
                     waveColor: 'indigo',
                     backgroundColor: 'white',
                     progressColor: 'black',
@@ -211,44 +212,54 @@
                     ]
                 });
 
-                wavesurfer.load('{{ record.audio_url }}');
+                const birdAudio = new Audio('{{ record.audio_url }}');
+                birdAudio.crossOrigin = 'anonymous';
+
+                wavesurfer.load(birdAudio);
+
+                const audioGain = wavesurfer.backend.ac.createGain();
+                let sliderGain = document.getElementById('gain-slider');
+                sliderGain.addEventListener('input', () => {
+                    audioGain.gain.value = Number(sliderGain.value / 100000);
+                });
+                wavesurfer.backend.setFilter(audioGain);
 
                 var numSegments = 0
 
-                wavesurfer.on('ready', function() {
+                wavesurfer.on('ready', function () {
                     var totalDuration = wavesurfer.getDuration()
                     var roundedDuration = totalDuration.toFixed(2)
-                    numSegments = roundedDuration/10
+                    numSegments = roundedDuration / 10
                     var currentSegmentNum = 1
                     // document.getElementById('total-segments').innerHTML = "(Abschnitt " + currentSegmentNum + "/"+ numSegments.toFixed(0) + ")";
                     document.getElementById('total-segments').innerHTML = "/ " + numSegments.toFixed(0);
                 })
 
-                function incrementValue(){
+                function incrementValue() {
                     var value = parseInt(document.getElementById('current-segment').value, 10);
                     value = isNaN(value) ? 0 : value;
-                    if (value == numSegments.toFixed(0)-1){
+                    if (value == numSegments.toFixed(0) - 1) {
                         document.getElementById('current-segment').value = numSegments.toFixed(0);
-                    }   
-                    else if (value < numSegments.toFixed(0)){
+                    }
+                    else if (value < numSegments.toFixed(0)) {
                         value++;
                         document.getElementById('current-segment').value = value;
-                    }  
+                    }
                 }
 
-                function decrementValue(){
+                function decrementValue() {
                     var value = parseInt(document.getElementById('current-segment').value, 10);
                     value = isNaN(value) ? 0 : value;;
                     // value--;
                     // document.getElementById('current-segment').value = value
-                    if (value == 1){
+                    if (value == 1) {
                         document.getElementById('current-segment').value = value;
                     }
-                    else{
+                    else {
                         value--;
                         document.getElementById('current-segment').value = value;
                     }
-       
+
                 }
 
                 wavesurfer.on('error', function (e) {
@@ -304,10 +315,6 @@
                     });
                     // wavesurfer.play();
                 });
-                function gain() {
-                    var slider = document.getElementById("gain");
-                    wavesurfer.gainNode().gain.value = slider.value;
-                }
             </script>
             <script>
                 function addBird(value) {
@@ -399,15 +406,15 @@
                     }
                 }
 
-                function confirmFinalSubmit(){
-                    document.getElementById("confirm").hidden=false
+                function confirmFinalSubmit() {
+                    document.getElementById("confirm").hidden = false
                 }
-                
+
                 //hide the confirmation div
                 function confirmNo() {
-                    document.getElementById("confirm").hidden=true
+                    document.getElementById("confirm").hidden = true
                 }
-                
+
                 function finalSubmit() {
                     var annotationPreview = document.getElementById("annotation-preview");
                     var postElements = annotationPreview.querySelectorAll('#birdSubmit');
@@ -500,7 +507,7 @@
         <div class="w-1/4 ml-6 self-start">
 
             <div class="text-left">
-                
+
                 <p class="mb-2 text-lg font-bold">Arten auswählen:</p>
                 {% for bird in most_possible_birds %}
                 <p>
@@ -515,9 +522,11 @@
                         class="dropdownbutton mt-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere
                         Vögel Suchen...</button>
                     <div id="myDropdown" class="dropdownbutton dropdown-content ml-6 mt-0">
-                        <input class="dropdownbutton" type="text" placeholder="Suchen.." id="myInput" onkeyup="filterFunction()">
+                        <input class="dropdownbutton" type="text" placeholder="Suchen.." id="myInput"
+                            onkeyup="filterFunction()">
                         {% for bird in other_possible_birds %}
-                        <input class="dropdownbutton other-birds-input block hover:bg-gray-300 ml-2" type='button' onclick="addBird(this.value)" value="{{bird}}">
+                        <input class="dropdownbutton other-birds-input block hover:bg-gray-300 ml-2" type='button'
+                            onclick="addBird(this.value)" value="{{bird}}">
                         {% endfor %}
                     </div>
                 </div>
@@ -526,7 +535,7 @@
                     <input name="flags" type="checkbox" id="flag-species-uncertain""
                         value='false' onchange=" addFlags(this)">
                     <label for="flag-species-uncertain">Art/Arten unsicher</label>
-                </p> 
+                </p>
                 <p>
                     <input name="flags" type="checkbox" id="flag-recording-not-suitable" value="recording-not-suitable"
                         onchange="addFlags(this)">
@@ -554,35 +563,39 @@
             <div id="confirm" hidden>
                 <!-- <h3>Confirmation</h3> -->
                 <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
-            
-                <button onclick="finalSubmit()" class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Ja, absenden</button>  
-                <button onclick="confirmNo()" class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Nein, zurück</button>  
+
+                <button onclick="finalSubmit()"
+                    class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Ja,
+                    absenden</button>
+                <button onclick="confirmNo()"
+                    class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Nein,
+                    zurück</button>
             </div>
 
             <script>
-            document.querySelector(
-                '[data-action="next-segment"]'
-            ).addEventListener('click', function () {
-                let region = Object.values(wavesurfer.regions.list)[0];
-                region.onDrag(10);
-                let regionMiddle = region.start + (region.end - region.start) / 2;
-                wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
                 document.querySelector(
-                    '[data-action="play-region-1"]'
-                ).click();
-            });
+                    '[data-action="next-segment"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    region.onDrag(10);
+                    let regionMiddle = region.start + (region.end - region.start) / 2;
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                    document.querySelector(
+                        '[data-action="play-region-1"]'
+                    ).click();
+                });
 
-            document.querySelector(
-                '[data-action="previous-segment"]'
-            ).addEventListener('click', function () {
-                let region = Object.values(wavesurfer.regions.list)[0];
-                region.onDrag(-10);
-                let regionMiddle = (region.start + (region.end - region.start) / 2);
-                wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
                 document.querySelector(
-                    '[data-action="play-region-1"]'
-                ).click();
-            });
+                    '[data-action="previous-segment"]'
+                ).addEventListener('click', function () {
+                    let region = Object.values(wavesurfer.regions.list)[0];
+                    region.onDrag(-10);
+                    let regionMiddle = (region.start + (region.end - region.start) / 2);
+                    wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true);
+                    document.querySelector(
+                        '[data-action="play-region-1"]'
+                    ).click();
+                });
 
             </script>
         </div>
