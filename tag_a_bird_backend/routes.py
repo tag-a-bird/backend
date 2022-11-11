@@ -68,7 +68,7 @@ def login():
             return "Error: " + str(e), 500
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            flash('You are already logged in. You would be redirected to annotation page if it would be there ')
+            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
             return render_template('base.html')  #redirect(url_for('annotate'))
         return render_template('auth/login.html')
 
@@ -163,7 +163,7 @@ def annotate():
                     db_session.add(new_annotation)
             db_session.commit()
             print("Annotation added successfully")
-            flash("Annotation successfully added.")
+            # flash("Annotation successfully added.")
             return "/annotate"
         except Exception as e:
             print(e)

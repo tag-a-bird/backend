@@ -4,6 +4,8 @@
 {% block title %}Annotieren{% endblock %}
 {% endblock %}
 
+{% set active_page = "annotate" %}
+
 {% block content %}
 
 <head>
@@ -417,9 +419,13 @@
                     document.getElementById("absenden-button").hidden=true
                 }
 
-                //hide the confirmation div
+                function logoutSubmit(){
+                    document.getElementById("logout-confirm").hidden=false
+                }
+
                 function confirmNo() {
                     document.getElementById("confirm").hidden=true
+                    document.getElementById("logout-confirm").hidden=true
                     document.getElementById("absenden-button").hidden=false
                 }
 
@@ -516,6 +522,16 @@
 
             <div class="text-left">
 
+                <div id="logout-confirm" hidden>
+                    <!-- <h3>Confirmation</h3> -->
+                    <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
+                    <input type="button" onclick="location.href='{{ url_for('route_blueprint.signout') }}';" value="Ja, ausloggen" class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300"
+                    />
+
+                        <button onclick="confirmNo()" class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400  transition-colors duration-300">
+                            Nein, zurück</button>  
+                </div>
+    
                 <p class="mb-2 text-lg font-bold">Arten auswählen:</p>
                 {% for bird in most_possible_birds %}
                 <p>
@@ -577,18 +593,6 @@
                 class="w-[204px] my-1.5 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 onclick="confirmFinalSubmit()"> Artenliste absenden
             </button>
-
-            <div id="confirm" hidden>
-                <!-- <h3>Confirmation</h3> -->
-                <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
-
-                <button onclick="finalSubmit()"
-                    class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Ja,
-                    absenden</button>
-                <button onclick="confirmNo()"
-                    class="p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">Nein,
-                    zurück</button>
-            </div>
 
             <script>
                 document.querySelector(
