@@ -406,13 +406,15 @@
                     }
                 }
 
-                function confirmFinalSubmit() {
-                    document.getElementById("confirm").hidden = false
+                function confirmFinalSubmit(){
+                    document.getElementById("confirm").hidden=false
+                    document.getElementById("absenden-button").hidden=true
                 }
 
                 //hide the confirmation div
                 function confirmNo() {
-                    document.getElementById("confirm").hidden = true
+                    document.getElementById("confirm").hidden=true
+                    document.getElementById("absenden-button").hidden=false
                 }
 
                 function finalSubmit() {
@@ -543,19 +545,29 @@
                 </p>
             </div>
 
+            <button
+                class="w-[100px] p-2 mt-3 font-bold border-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+                id="previoussegment" onclick="decrementValue()" data-action="previous-segment">Vorheriger Abschnitt
+            </button>
+            <button
+                class="w-[100px] p-2 font-bold border-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+                id="nextsegment" onclick="incrementValue()" data-action="next-segment">Nächster Abschnitt
+            </button>
+        
             <p class="my-2 text-lg font-bold">Arten in dieser Aufnahme:</p>
             <div class="" id="annotation-preview">
                 <!-- here are the tags for the selected birds -->
             </div>
-            <button
-                class="w-[100px] p-2 mt-3  text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                id="previoussegment" onclick="decrementValue()" data-action="previous-segment">Vorheriger Abschnitt
-            </button>
-            <button
-                class="w-[100px] p-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-                id="nextsegment" onclick="incrementValue()" data-action="next-segment">Nächster Abschnitt
-            </button>
-            <button
+
+            <div class="my-2 p-3  rounded" id="confirm" hidden>
+                <!-- <h3>Confirmation</h3> -->
+                <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
+            
+                <button onclick="finalSubmit()" class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300">Ja, absenden</button>  
+                <button onclick="confirmNo()" class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400  transition-colors duration-300">Nein, zurück</button>  
+            </div>
+
+            <button id="absenden-button"
                 class="w-[204px] my-1.5 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 onclick="confirmFinalSubmit()"> Artenliste absenden
             </button>
