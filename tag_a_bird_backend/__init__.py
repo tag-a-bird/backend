@@ -5,6 +5,7 @@ from flask_httpauth import HTTPBasicAuth
 from flask_login import LoginManager
 from .db import Base, configure_engine, engine
 from . import config
+from alembic import config as alembic_config
 
 auth = HTTPBasicAuth()
 toastr = Toastr()
@@ -15,6 +16,12 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_object(config.DevConfig) # fix this later
     configure_engine(app.config['DATABASE_URI']) 
+
+    alembicArgs = ['revision', '--autogenerate', '-m', 'auto-generated migration']
+    alembic_config.main(argv=alembicArgs)
+    alembicArgs = ['upgrade', 'head']
+    alembic_config.main(argv=alembicArgs)
+    
 
     from tag_a_bird_backend.routes import route_blueprint
     app.register_blueprint(route_blueprint)

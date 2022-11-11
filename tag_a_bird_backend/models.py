@@ -83,6 +83,11 @@ class Annotation(Base):
         end_time = Column(Integer, nullable=False)
         label = Column(String)
         status = Column(String)
+        comment = Column(String)
+        created_at = Column(
+            DateTime,
+            default=datetime.utcnow()
+        )
 
         def __repr__(self):
             return f"Annotation(id={self.id!r}, recording_id={self.recording_id!r}, user_id={self.user_id!r}, start_time={self.start_time!r}, end_time={self.end_time!r}, label={self.label!r}, self.status={self.status!r})"
