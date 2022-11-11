@@ -407,6 +407,12 @@
                 }
 
                 function confirmFinalSubmit(){
+                    const element = document.getElementById("footer");
+                    const topPos = element.getBoundingClientRect().bottom
+                    scroll({
+                    top: topPos,
+                    behavior: 'smooth' 
+                    });
                     document.getElementById("confirm").hidden=false
                     document.getElementById("absenden-button").hidden=true
                 }
@@ -559,7 +565,7 @@
                 <!-- here are the tags for the selected birds -->
             </div>
 
-            <div class="my-2 p-3  rounded" id="confirm" hidden>
+            <div class="p-3 bg-red-100 rounded" id="confirm" hidden>
                 <!-- <h3>Confirmation</h3> -->
                 <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
             
@@ -610,6 +616,8 @@
                 });
 
             </script>
+                <div id="" class="h-20"></div>
+                <div id="footer" class="h-20"></div>
         </div>
     </div>
 </body>
