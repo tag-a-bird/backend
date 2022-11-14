@@ -10,12 +10,12 @@ def test_request_with_logged_in_user(app):
         # This request has user 1 already logged in!
         client.get("/")
 
-def test_signup_function(client, app):
+def test_register_function(client, app):
     pass
     # response = client.post(
-    #     '/api/signup', data={'username': 'a', 'password': 'a'}
+    #     '/api/register', data={'username': 'a', 'password': 'a'}
     # )
-    # assert response.headers["Location"] == "/api/signin"
+    # assert response.headers["Location"] == "/api/login"
 
     # with app.app_context():
     #     assert get_db().execute(

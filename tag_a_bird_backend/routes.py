@@ -21,8 +21,8 @@ route_blueprint = Blueprint('route_blueprint', __name__,
 def about():
     return render_template('about.html')
 
-@route_blueprint.route('/api/signup', methods=['GET', 'POST'])
-def signup():
+@route_blueprint.route('/api/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
         db_session.rollback()
         try:
@@ -44,9 +44,9 @@ def signup():
     elif request.method == 'GET':
         if current_user.is_authenticated:
             return render_template('base.html') 
-        return render_template('auth/signup.html')
+        return render_template('auth/register.html')
 
-@route_blueprint.route('/api/signin', methods = ["POST", "GET"])
+@route_blueprint.route('/api/login', methods = ["POST", "GET"])
 def login():
     if request.method == 'POST':
         try:
@@ -65,8 +65,8 @@ def login():
             return render_template('base.html')  
         return render_template('auth/login.html')
 
-@route_blueprint.route('/api/signout')
-def signout():
+@route_blueprint.route('/api/logout')
+def logout():
     logout_user()
     return redirect(url_for('route_blueprint.login'))
 

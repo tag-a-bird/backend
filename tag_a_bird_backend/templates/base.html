@@ -39,7 +39,7 @@
               Populate db</a>
             <a href="{{ url_for('route_blueprint.annotate') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300">
               Annotieren</a>
-            <a href="{{ url_for('route_blueprint.signout') }}" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">
+            <a href="{{ url_for('route_blueprint.logout') }}" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">
               Ausloggen</a>
 
           {% elif current_user.username %}
@@ -47,7 +47,7 @@
             {% if active_page == "about" %}
               <a href="{{ url_for('route_blueprint.annotate') }}" target="_blank" class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300"
               >Annotieren</a >
-              <a href="{{ url_for('route_blueprint.signout') }}"  class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+              <a href="{{ url_for('route_blueprint.logout') }}"  class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
               >Ausloggen</a >
             {% endif %}
 
@@ -58,7 +58,7 @@
 
           {% else %}
 
-          <a href=" {{ url_for('route_blueprint.signup') }}" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
+          <a href=" {{ url_for('route_blueprint.register') }}" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
             >Registrieren</a>
 
           <a href="{{ url_for('route_blueprint.login') }}" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
