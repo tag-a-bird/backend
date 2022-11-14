@@ -4,11 +4,10 @@ from .helpers import populate_db_from_coreo
 import datetime
 import uuid
 from .models import User, QueryConfig, Record, Annotation
-from . import auth, login_manager
+from . import login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
-import random
 
 @login_manager.user_loader
 def load_user(user_id):

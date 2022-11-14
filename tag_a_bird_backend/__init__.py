@@ -1,9 +1,8 @@
 from flask import Flask
 from flask_toastr import Toastr
 from flask_httpauth import HTTPBasicAuth
-from flask_login import LoginManager, FlaskLoginClient
-from .db import Base, configure_engine, engine, db_session
-from . import config
+from flask_login import LoginManager
+from .db import Base, configure_engine, db_session
 
 auth = HTTPBasicAuth()
 toastr = Toastr()
@@ -11,7 +10,7 @@ login_manager = LoginManager()
 
 def create_app(config_class):
     app = Flask(__name__)
-    app.config.from_object(config_class) # fix this later
+    app.config.from_object(config_class)
     configure_engine(app.config['DATABASE_URI']) 
     Base.query = db_session.query_property()
 
