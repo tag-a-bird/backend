@@ -155,6 +155,7 @@ def annotate():
                     db_session.add(new_annotation)
             db_session.commit()
             print("Annotation added successfully")
+            print(data)
             return "/annotate"
         except Exception as e:
             print(e)
