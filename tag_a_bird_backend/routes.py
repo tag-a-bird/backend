@@ -36,16 +36,14 @@ def signup():
             db_session.add(user)
             db_session.commit()
             login_user(user)
-            return render_template('about.html') #redirect(url_for('annotate'))
+            return render_template('about.html')
         except Exception as e:
             db_session.rollback()
             flash('Error: ' + str(e))
             return render_template('base.html')
-            # return "Error: " + str(e), 500 
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
-            return render_template('base.html')  #redirect(url_for('annotate'))
+            return render_template('base.html') 
         return render_template('auth/signup.html')
 
 @route_blueprint.route('/api/signin', methods = ["POST", "GET"])
@@ -56,24 +54,19 @@ def login():
             password = request.form['password']
             user = db_session.query(User).filter_by(email=email).first()
             if not user or not user.verify_password(password):
-                return jsonify({"msg": "Bad username or password"}), 401
-            
+                return jsonify({"msg": "Bad email or password"}), 401
             login_user(user)
-            # flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
             return render_template('about.html')
         except Exception as e:
             print(e)
-
             return "Error: " + str(e), 500
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
-            return render_template('base.html')  #redirect(url_for('annotate'))
+            return render_template('base.html')  
         return render_template('auth/login.html')
 
 @route_blueprint.route('/api/signout')
 def signout():
-    # remove users token from database
     logout_user()
     return redirect(url_for('route_blueprint.login'))
 
@@ -162,7 +155,6 @@ def annotate():
                     db_session.add(new_annotation)
             db_session.commit()
             print("Annotation added successfully")
-            # flash("Annotation successfully added.")
             return "/annotate"
         except Exception as e:
             print(e)
