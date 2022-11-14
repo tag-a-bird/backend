@@ -4,11 +4,10 @@ from .helpers import populate_db_from_coreo
 import datetime
 import uuid
 from .models import User, QueryConfig, Record, Annotation
-from . import auth, login_manager
+from . import login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
-import random
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -22,8 +21,8 @@ route_blueprint = Blueprint('route_blueprint', __name__,
 def about():
     return render_template('about.html')
 
-@route_blueprint.route('/api/signup', methods=['GET', 'POST'])
-def signup():
+@route_blueprint.route('/api/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
         db_session.rollback()
         try:
@@ -37,19 +36,17 @@ def signup():
             db_session.add(user)
             db_session.commit()
             login_user(user)
-            return render_template('about.html') #redirect(url_for('annotate'))
+            return render_template('about.html')
         except Exception as e:
             db_session.rollback()
             flash('Error: ' + str(e))
             return render_template('base.html')
-            # return "Error: " + str(e), 500 
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
-            return render_template('base.html')  #redirect(url_for('annotate'))
-        return render_template('auth/signup.html')
+            return render_template('base.html') 
+        return render_template('auth/register.html')
 
-@route_blueprint.route('/api/signin', methods = ["POST", "GET"])
+@route_blueprint.route('/api/login', methods = ["POST", "GET"])
 def login():
     if request.method == 'POST':
         try:
@@ -57,24 +54,19 @@ def login():
             password = request.form['password']
             user = db_session.query(User).filter_by(email=email).first()
             if not user or not user.verify_password(password):
-                return jsonify({"msg": "Bad username or password"}), 401
-            
+                return jsonify({"msg": "Bad email or password"}), 401
             login_user(user)
-            # flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
             return render_template('about.html')
         except Exception as e:
             print(e)
-
             return "Error: " + str(e), 500
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
-            return render_template('base.html')  #redirect(url_for('annotate'))
+            return render_template('base.html')  
         return render_template('auth/login.html')
 
-@route_blueprint.route('/api/signout')
-def signout():
-    # remove users token from database
+@route_blueprint.route('/api/logout')
+def logout():
     logout_user()
     return redirect(url_for('route_blueprint.login'))
 
@@ -163,7 +155,7 @@ def annotate():
                     db_session.add(new_annotation)
             db_session.commit()
             print("Annotation added successfully")
-            # flash("Annotation successfully added.")
+            print(data)
             return "/annotate"
         except Exception as e:
             print(e)
