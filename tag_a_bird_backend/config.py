@@ -20,5 +20,14 @@ class ProdConfig(Config):
 class DevConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
-    TESTING = True
+    TESTING = False
+    LOGIN_DISABLED = False
     DATABASE_URI = getenv('FLASK_DATABASE_URI')
+
+
+class TestConfig(Config):
+    FLASK_ENV = 'testing'
+    DEBUG = False
+    TESTING = True
+    LOGIN_DISABLED = True
+    DATABASE_URI = getenv('FLASK_TEST_DATABASE_URI')
