@@ -1,11 +1,9 @@
 from flask import Flask
 from flask_toastr import Toastr
-from flask_httpauth import HTTPBasicAuth
 from flask_login import LoginManager
-from .db import Base, configure_engine, db_session
+from .db import Base, configure_engine, db_session, engine
 from alembic import config as alembic_config
 
-auth = HTTPBasicAuth()
 toastr = Toastr()
 login_manager = LoginManager()
 
@@ -14,11 +12,11 @@ def create_app(config_class):
     app.config.from_object(config_class)
     configure_engine(app.config['DATABASE_URI']) 
     Base.query = db_session.query_property()
-
-    alembicArgs = ['revision', '--autogenerate', '-m', 'auto-generated migration']
-    alembic_config.main(argv=alembicArgs)
-    alembicArgs = ['upgrade', 'head']
-    alembic_config.main(argv=alembicArgs)
+    
+    # alembicArgs = ['revision', '--autogenerate', '-m', 'auto-generated migration']
+    # alembic_config.main(argv=alembicArgs)
+    # alembicArgs = ['upgrade', 'head']
+    # alembic_config.main(argv=alembicArgs)
     
     from tag_a_bird_backend.routes import route_blueprint
     app.register_blueprint(route_blueprint)
