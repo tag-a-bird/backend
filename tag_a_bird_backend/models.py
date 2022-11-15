@@ -1,11 +1,11 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime, timezone
-from sqlalchemy.types import Boolean, DateTime, Integer, String
+from sqlalchemy.types import Boolean, DateTime, Integer, String, LargeBinary
 from .db import Base
+from flask_scrypt import generate_random_salt, generate_password_hash, check_password_hash
 
 class User(Base, UserMixin):
     __tablename__ = "user"
@@ -24,8 +24,13 @@ class User(Base, UserMixin):
         unique=True,
         nullable=False
     )
+    salt = Column(
+        LargeBinary(200),
+        unique=True,
+        nullable=False
+    )
     password_hash = Column(
-        String(200),
+        LargeBinary(200),
         primary_key=False,
         unique=False,
         nullable=False
@@ -38,15 +43,11 @@ class User(Base, UserMixin):
     )
 
     def set_password(self, password):
-        """Create hashed password."""
-        self.password_hash = generate_password_hash(
-            password,
-            method='sha256'
-        )
+        self.salt = generate_random_salt()
+        self.password_hash = generate_password_hash(password, self.salt)
 
     def verify_password(self, password):
-        """Check hashed password."""
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(password, self.password_hash, self.salt)
 
     annotations = relationship("Annotation", back_populates="user")
 

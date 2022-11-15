@@ -16,11 +16,11 @@ def test_user_password_hashing():
     user.set_password('testpassword')
     assert user.verify_password('testpassword')
 
-def test_request_with_logged_in_user(app):
-    user = User.query.get('b40ecc45-3f4b-4be6-872f-d1c6cb2e7b49')
-    with app.test_client(user=user) as client:
-        # This request has user 1 already logged in!
-        client.get("/")
+# def test_request_with_logged_in_user(app):
+#     user = User.query.get[('b40ecc45-3f4b-4be6-872f-d1c6cb2e7b49')]
+#     with app.test_client(user=user) as client:
+#         # This request has user 1 already logged in!
+#         client.get("/")
 
 def test_register_function(client, app):
     pass
