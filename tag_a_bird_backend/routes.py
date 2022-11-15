@@ -9,6 +9,7 @@ from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return db_session.query(User).get(user_id)
@@ -40,7 +41,7 @@ def register():
         except Exception as e:
             db_session.rollback()
             flash('Error: ' + str(e))
-            return render_template('base.html')
+            return render_template('auth/register.html')
     elif request.method == 'GET':
         if current_user.is_authenticated:
             return render_template('base.html') 
