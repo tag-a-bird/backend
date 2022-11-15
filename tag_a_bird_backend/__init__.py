@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_toastr import Toastr
 from flask_login import LoginManager
-from .db import Base, configure_engine, db_session, engine
+from .db import configure_engine, db_session, engine
+from .models import Base
 from alembic import config as alembic_config
 
 toastr = Toastr()
