@@ -44,7 +44,7 @@ def register():
             return render_template('auth/register.html')
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            return render_template('base.html') 
+            return render_template('about.html') 
         return render_template('auth/register.html')
 
 @route_blueprint.route('/api/login', methods = ["POST", "GET"])
@@ -63,7 +63,7 @@ def login():
             return "Error: " + str(e), 500
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            return render_template('base.html')  
+            return render_template('about.html')  
         return render_template('auth/login.html')
 
 @route_blueprint.route('/api/logout')
