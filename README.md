@@ -50,9 +50,9 @@ flask run
 
 `POST /admin` saves paramteres to the query_config table
 
-`GET /admin/popualte_db` only logged in admins can access it, renders the form to populate the database
+`GET /admin/populate_db` only logged in admins can access it, renders the form to populate the database
 
-`POST /admin/popualte_db` populates the database with recordings by sending a request to the Coreo Api with the parameters from query_config
+`POST /admin/populate_db` populates the database with recordings by sending a request to the Coreo Api with the parameters from query_config
 
 `GET /annotate` randomly selects a recording from the database and renders its id, segments, waveform and spectogram. Also renders the annotation toolbar.
 
