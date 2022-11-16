@@ -7,11 +7,11 @@ from .db import db_session
 from functools import wraps
 from flask import session, jsonify
 
-def access_required(role="ANY"):
+def admin_access_required():
     def wrapper(fn):
         @wraps(fn)
         def decorated_function(*args, **kwargs):
-            if session.get("role") == 'Admin' and role == 'Admin':
+            if session.get("role") == 'Admin':
                 print("access: Admin")
             else:
                 return jsonify({"msg": "Only the admin can access this page"}), 401
