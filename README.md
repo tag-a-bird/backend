@@ -1,5 +1,5 @@
 ## About
-Tag a bird is an audiodata annotation tool, focusing on bioacoustics. Audiodata can be a valuable resource for monitoring ecosystems, and while there are increasing amounts of recordings collected every day, the data is mostly unlabelled. In order to turn these recordings into usable input for any algorithm that analyzes and learns from them, we need to label them. We need to know which animals are audible in which parts of the recordings. Our tool allows experts and bird enthusiast to listen to recordings collected and made by the [Dawn Chorus project](https://dawn-chorus.org/en/) and segment by segment, specify birds they recognise. 
+Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio data can be a valuable resource for monitoring ecosystems, and while there are increasing amounts of recordings collected every day, the data is mostly unlabelled. In order to turn these recordings into usable input for any algorithm that analyzes and learns from them, we need to label them. We need to know which animals are audible in which parts of the recordings. Our tool allows experts and bird enthusiasts to listen to recordings collected and made by the [Dawn Chorus project](https://dawn-chorus.org/en/) and segment by segment, specify birds they recognise. 
 
 ## Running the app
 1. clone the repository
@@ -48,13 +48,13 @@ flask run
 
 `GET /admin` only a logged in admin can access it, renders the parameter setting form 
 
-`POST /admin` saves paramteres to the query_config table
+`POST /admin` saves parameters to the query_config table
 
 `GET /admin/populate_db` only logged in admins can access it, renders the form to populate the database
 
 `POST /admin/populate_db` populates the database with recordings by sending a request to the Coreo Api with the parameters from query_config
 
-`GET /annotate` randomly selects a recording from the database and renders its id, segments, waveform and spectogram. Also renders the annotation toolbar.
+`GET /annotate` randomly selects a recording from the database and renders its id, segments, waveform and spectrogram. Also renders the annotation toolbar.
 
 `POST /annotate` saves selected labels to the database
 
