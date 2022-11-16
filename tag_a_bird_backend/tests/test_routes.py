@@ -12,11 +12,11 @@ def test_login_route(client):
 def test_logout_route(client):
     assert client.get('/api/login').status_code == 200
 
-def test_admin_route(client):
-    assert client.get('/admin').status_code == 200
+# def test_admin_route(client):
+#     assert client.get('/admin').status_code == 200
 
-def test_populate_db_route(client):
-    assert client.get('/admin/populate_db').status_code == 200
+# def test_populate_db_route(client):
+#     assert client.get('/admin/populate_db').status_code == 200
 
 def test_annotate_route(client):
     pass
