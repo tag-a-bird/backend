@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 from sqlalchemy.types import Boolean, DateTime, Integer, String, LargeBinary
 from .db import Base
 from flask_scrypt import generate_random_salt, generate_password_hash, check_password_hash
-from flask_security import RoleMixin
 
 class UserRoles(Base):
         __tablename__ = 'user_roles'

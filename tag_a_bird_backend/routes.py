@@ -1,7 +1,6 @@
 from os import getenv
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
-from tag_a_bird_backend.app import admin_access_required
 from .helpers import populate_db_from_coreo
 import datetime
 import uuid
@@ -10,7 +9,20 @@ from . import login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
+import uuid
+from functools import wraps
 
+def admin_access_required():
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_function(*args, **kwargs):
+            if session.get("role") == 'Admin':
+                print("access: Admin")
+            else:
+                return jsonify({"msg": "Only the admin can access this page"}), 401
+            return fn(*args, **kwargs)
+        return decorated_function
+    return wrapper
 
 @login_manager.user_loader
 def load_user(user_id):

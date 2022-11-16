@@ -1,23 +1,9 @@
 import datetime
 from os import getenv
 import uuid
-from . import create_app, config
 from .models import User, Role
 from .db import db_session
-from functools import wraps
-from flask import session, jsonify
-
-def admin_access_required():
-    def wrapper(fn):
-        @wraps(fn)
-        def decorated_function(*args, **kwargs):
-            if session.get("role") == 'Admin':
-                print("access: Admin")
-            else:
-                return jsonify({"msg": "Only the admin can access this page"}), 401
-            return fn(*args, **kwargs)
-        return decorated_function
-    return wrapper
+from . import create_app, config
     
 app = create_app(config.DevConfig)
 
