@@ -1,3 +1,4 @@
+from os import getenv
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
 from tag_a_bird_backend.app import admin_access_required
@@ -55,7 +56,7 @@ def login():
             email = request.form['email']
             password = request.form['password']
             user = db_session.query(User).filter_by(email=email).first()
-            if user.email == 'admin@admin.com':
+            if user.email == getenv("ADMIN_CREDENTIALS_EMAIL"):
                 r = Role.query.get(1)
                 session['role'] = r.name
             if not user or not user.verify_password(password):
