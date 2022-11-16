@@ -1,6 +1,6 @@
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
-from tag_a_bird_backend.app import access_required
+from tag_a_bird_backend.app import admin_access_required
 from .helpers import populate_db_from_coreo
 import datetime
 import uuid
@@ -78,7 +78,7 @@ def logout():
 
 @route_blueprint.route('/admin/populate_db', methods = ["GET", "POST"])
 @login_required
-@access_required(role="Admin")
+@admin_access_required()
 def populate_db():
     if request.method == "GET":
         return render_template('admin/populate_db.html')
@@ -94,7 +94,7 @@ def populate_db():
 
 @route_blueprint.route('/admin', methods=['GET', 'POST'])
 @login_required
-@access_required(role="Admin")
+@admin_access_required()
 def set_parameters():
     if request.method == 'GET':
         if db_session.query(QueryConfig).first() is None:
