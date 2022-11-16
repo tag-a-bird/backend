@@ -6,11 +6,12 @@ from .helpers import populate_db_from_coreo
 import datetime
 import uuid
 from .models import Role, User, QueryConfig, Record, Annotation
-from . import login_manager
+from . import login_manager, limiter
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
 from functools import wraps
+import requests 
 
 def admin_access_required():
     def wrapper(fn):
@@ -69,6 +70,7 @@ def register():
         return render_template('auth/register.html')
 
 @route_blueprint.route('/api/login', methods = ["POST", "GET"])
+@limiter.limit("5 per hour", deduct_when=lambda response: response.status_code != 200)
 def login():
     if request.method == 'POST':
         try:
@@ -84,10 +86,13 @@ def login():
             return render_template('about.html')
         except Exception as e:
             print(e)
-            return "Error: " + str(e), 500
+            return jsonify({"msg": "Bad email or password"}), 401
     elif request.method == 'GET':
         if current_user.is_authenticated:
             return render_template('about.html')  
+        # for debugging, to check x-ratelimit-remainin header
+        # resp = requests.request('GET', 'http://localhost:5000/api/login')
+        # pprint.pprint(resp.headers)
         return render_template('auth/login.html')
 
 @route_blueprint.route('/api/logout')
