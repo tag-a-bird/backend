@@ -8,13 +8,16 @@ from datetime import datetime, timezone
 from sqlalchemy.types import Boolean, DateTime, Integer, String, LargeBinary
 from .db import Base
 from flask_scrypt import generate_random_salt, generate_password_hash, check_password_hash
-from flask_security import RoleMixin
 
-roles_users_table = Table('roles_users', 
-    Base.metadata,
-    Column('users_id', UUID(), ForeignKey('user.id')),
-    Column('roles_id', Integer(), ForeignKey('roles.id'))
-    )
+class UserRoles(Base):
+        __tablename__ = 'user_roles'
+        id = Column(Integer(), primary_key=True)
+        user_id = Column(UUID(as_uuid=True), ForeignKey('user.id'
+        #, ondelete='CASCADE'
+        ))
+        role_id = Column(Integer(), ForeignKey('roles.id'
+        #, ondelete='CASCADE'
+        ))
 
 class User(Base, UserMixin):
     __tablename__ = "user"
@@ -50,6 +53,12 @@ class User(Base, UserMixin):
         unique=False,
         nullable=True
     )
+    active = Column(
+        'is_active', 
+        Boolean(), 
+        nullable=False, 
+        server_default='1'
+    )
 
     # def set_password(password, maxtime=0.5, datalength=64):
     #     return scrypt.encrypt(os.urandom(datalength), password, maxtime=maxtime)
@@ -70,17 +79,16 @@ class User(Base, UserMixin):
         return check_password_hash(password, self.password_hash, self.salt)
 
     annotations = relationship("Annotation", back_populates="user")
-    roles = relationship('Roles', secondary=roles_users_table, backref='user', lazy=True)
+    roles =  relationship('Role', secondary='user_roles')
 
     def __repr__(self):
         return f"User(id={self.id!r}, username={self.username!r}, email={self.email!r}, password={self.password!r})"
 
-class Roles(Base, RoleMixin):
+class Role(Base):
     __tablename__ = "roles"
 
     id = Column(Integer(), primary_key=True)
-    name = Column(String(80), unique=True)
-    description = Column(String(255))
+    name = Column(String(50), unique=True)
 
 class QueryConfig(Base):
     __tablename__ = "query_config"
