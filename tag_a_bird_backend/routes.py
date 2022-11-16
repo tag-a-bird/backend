@@ -9,7 +9,6 @@ from . import login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
-import uuid
 from functools import wraps
 
 def admin_access_required():
@@ -38,7 +37,7 @@ def about():
 
 @route_blueprint.route('/api/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
+    if request.method == 'POST' and len(request.form['password']) > 7:
         db_session.rollback()
         try:
             user = User(
@@ -56,6 +55,9 @@ def register():
             db_session.rollback()
             flash('Error: ' + str(e))
             return render_template('auth/register.html')
+    elif request.method == 'POST' and len(request.form['password']) < 8:
+        flash("The password must be at least 8 characters long!")
+        return render_template('auth/register.html') # this clears the entire form, fix later!
     elif request.method == 'GET':
         if current_user.is_authenticated:
             return render_template('about.html') 
