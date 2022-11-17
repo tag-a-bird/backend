@@ -13,15 +13,23 @@ limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
 
 def create_app(config_class):
     app = Flask(__name__)
-    app.config.from_object(config_class)
-    configure_engine(app.config['DATABASE_URI']) 
-    Base.query = db_session.query_property()
+    app.config.from_object(config.DevConfig) # fix this later
+
+    #ssl_context = ssl.create_default_context(cafile='/Users/can/coding_enviorment/tag-a-bird/backend/tag_a_bird_backend/ca-certificate.cer')
+    #ssl_context.verify_mode = ssl.CERT_REQUIRED
+
+    #connect_arg = {
+   #     'ssl': ssl_context
+    #}
+
+    configure_engine(app.config['DATABASE_URI'])
+
+    #alembicArgs = ['revision', '--autogenerate', '-m', 'auto-generated migration']
+    #alembic_config.main(argv=alembicArgs)
+    #alembicArgs = ['upgrade', 'head']
+    #alembic_config.main(argv=alembicArgs)
     
-    # alembicArgs = ['revision', '--autogenerate', '-m', 'auto-generated migration']
-    # alembic_config.main(argv=alembicArgs)
-    # alembicArgs = ['upgrade', 'head']
-    # alembic_config.main(argv=alembicArgs)
-    
+
     from tag_a_bird_backend.routes import route_blueprint
     app.register_blueprint(route_blueprint)
 
