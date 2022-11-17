@@ -156,7 +156,7 @@
                 ).addEventListener('click', function () {
                     let region = Object.values(wavesurfer.regions.list)[0];
                     wavesurfer.params.scrollParent = false;
-                    region.play();
+                    wavesurfer.play();
                 });
 
                 document.querySelector(
@@ -175,8 +175,16 @@
                         checkboxSetup(currentTime);
                     });
                     // wavesurfer.play();
-                });
 
+                    // on region out clıck pause
+                    wavesurfer.on('region-out', (obj) => {
+                        wavesurfer.pause();
+                        var region = Object.values(wavesurfer.regions.list)[0];
+                        wavesurfer.seekTo(region.start);
+                    });
+                });
+            </script>
+            <script>
                 function addBird(value) {
                     var currentTime = document.getElementById("start").innerHTML + "-" + document.getElementById("end").innerHTML
                     var field = document.getElementById("annotation-preview");
