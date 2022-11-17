@@ -2,12 +2,14 @@
 Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio data can be a valuable resource for monitoring ecosystems, and while there are increasing amounts of recordings collected every day, the data is mostly unlabelled. In order to turn these recordings into usable input for any algorithm that analyzes and learns from them, we need to label them. We need to know which animals are audible in which parts of the recordings. Our tool allows experts and bird enthusiasts to listen to recordings collected and made by the [Dawn Chorus project](https://dawn-chorus.org/en/) and segment by segment, specify birds they recognise. 
 
 ## Running the app
+0. prerequisites
+you have [poetry](https://python-poetry.org/docs/#installation) and python3.10 installed
 1. clone the repository
 ```
 git clone https://github.com/tag-a-bird/backend.git
 cd backend
 ```
-2. assuming you already have [poetry](https://python-poetry.org/docs/#installation) installed, activate the virtual environment and install dependencies
+2. ctivate the virtual environment and install dependencies
 ```
 poetry shell
 poetry install
