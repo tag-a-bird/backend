@@ -3,6 +3,7 @@ Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio dat
 
 ## Running the app
 0. prerequisites
+
 you have [poetry](https://python-poetry.org/docs/#installation) and python3.10 installed
 1. clone the repository
 ```
