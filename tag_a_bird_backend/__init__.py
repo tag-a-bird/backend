@@ -4,9 +4,12 @@ from flask_login import LoginManager
 from .db import configure_engine, db_session, engine
 from .models import Base
 from alembic import config as alembic_config
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 toastr = Toastr()
 login_manager = LoginManager()
+limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
 
 def create_app(config_class):
     app = Flask(__name__)
@@ -23,6 +26,7 @@ def create_app(config_class):
     app.register_blueprint(route_blueprint)
 
     toastr.init_app(app)
+    limiter.init_app(app)
 
     with app.app_context():
         login_manager.init_app(app)
