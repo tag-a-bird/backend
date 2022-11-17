@@ -1,23 +1,12 @@
-import os
-import scrypt
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
+from concurrent.futures import process
+from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime, timezone
-from sqlalchemy.types import Boolean, DateTime, Integer, String, LargeBinary
+from sqlalchemy.types import Boolean, DateTime, Integer, String
 from .db import Base
-from flask_scrypt import generate_random_salt, generate_password_hash, check_password_hash
-
-class UserRoles(Base):
-        __tablename__ = 'user_roles'
-        id = Column(Integer(), primary_key=True)
-        user_id = Column(UUID(as_uuid=True), ForeignKey('user.id'
-        #, ondelete='CASCADE'
-        ))
-        role_id = Column(Integer(), ForeignKey('roles.id'
-        #, ondelete='CASCADE'
-        ))
 
 class User(Base, UserMixin):
     __tablename__ = "user"
@@ -36,13 +25,8 @@ class User(Base, UserMixin):
         unique=True,
         nullable=False
     )
-    salt = Column(
-        LargeBinary(200),
-        unique=True,
-        nullable=False
-    )
     password_hash = Column(
-        LargeBinary(200),
+        String(200),
         primary_key=False,
         unique=False,
         nullable=False
@@ -53,42 +37,22 @@ class User(Base, UserMixin):
         unique=False,
         nullable=True
     )
-    active = Column(
-        'is_active', 
-        Boolean(), 
-        nullable=False, 
-        server_default='1'
-    )
-
-    # def set_password(password, maxtime=0.5, datalength=64):
-    #     return scrypt.encrypt(os.urandom(datalength), password, maxtime=maxtime)
-
-    # def verify_password(self, guessed_password, maxtime=0.5):
-    #     hashed_password = self.password_hash
-    #     try:
-    #         scrypt.decrypt(hashed_password, guessed_password, maxtime)
-    #         return True
-    #     except scrypt.error:
-    #         return False
 
     def set_password(self, password):
-        self.salt = generate_random_salt()
-        self.password_hash = generate_password_hash(password, self.salt)
+        """Create hashed password."""
+        self.password_hash = generate_password_hash(
+            password,
+            method='sha256'
+        )
 
     def verify_password(self, password):
-        return check_password_hash(password, self.password_hash, self.salt)
+        """Check hashed password."""
+        return check_password_hash(self.password_hash, password)
 
     annotations = relationship("Annotation", back_populates="user")
-    roles =  relationship('Role', secondary='user_roles')
 
     def __repr__(self):
         return f"User(id={self.id!r}, username={self.username!r}, email={self.email!r}, password={self.password!r})"
-
-class Role(Base):
-    __tablename__ = "roles"
-
-    id = Column(Integer(), primary_key=True)
-    name = Column(String(50), unique=True)
 
 class QueryConfig(Base):
     __tablename__ = "query_config"
@@ -119,11 +83,6 @@ class Annotation(Base):
         end_time = Column(Integer, nullable=False)
         label = Column(String)
         status = Column(String)
-        #created_at = Column(
-        #comment = Column(String)
-        #    DateTime,
-        #    default=datetime.utcnow()
-        #)
 
         def __repr__(self):
             return f"Annotation(id={self.id!r}, recording_id={self.recording_id!r}, user_id={self.user_id!r}, start_time={self.start_time!r}, end_time={self.end_time!r}, label={self.label!r}, self.status={self.status!r})"

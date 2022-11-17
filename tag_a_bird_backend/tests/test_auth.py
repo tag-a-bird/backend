@@ -1,33 +1,18 @@
 import base64
-import datetime
-import uuid
 import pytest
 from flask import g, session
-from tag_a_bird_backend.models import User
-# from tag_a_bird_backend.tests.conftest import app
 
-def test_user_password_hashing():
-    user = User(
-                    id  = uuid.uuid4(),
-                    username = 'testuser',
-                    email = 'test@email.com',
-                    created_on = datetime.datetime.now()
-                    )
-    user.set_password('testpassword')
-    assert user.verify_password('testpassword')
 
-# def test_request_with_logged_in_user(app):
-#     user = User.query.get[('b40ecc45-3f4b-4be6-872f-d1c6cb2e7b49')]
-#     with app.test_client(user=user) as client:
-#         # This request has user 1 already logged in!
-#         client.get("/")
+def test_admin(client):
+    assert client.get('/admin').status_code == 401
+    assert client.get('/admin').status == '401 UNAUTHORIZED'
 
-def test_register_function(client, app):
-    pass
+def test_signup(client, app):
+    assert client.get('/api/signup').status_code == 200
     # response = client.post(
-    #     '/api/register', data={'username': 'a', 'password': 'a'}
+    #     '/api/signup', data={'username': 'a', 'password': 'a'}
     # )
-    # assert response.headers["Location"] == "/api/login"
+    # assert response.headers["Location"] == "/api/signin"
 
     # with app.app_context():
     #     assert get_db().execute(
@@ -47,3 +32,23 @@ def test_register_function(client, app):
 #     )
 #     assert message in response.data
 
+
+# def test_admin_unauth():
+#     web = app.test_client()
+
+#     rv = web.get('/api/admin')
+#     assert rv.status == '401 UNAUTHORIZED'
+#     assert rv.data == b'Unauthorized Access'
+#     assert 'WWW-Authenticate' in rv.headers
+#     assert rv.headers['WWW-Authenticate'] == 'Basic realm="Authentication Required"'
+
+# def test_admin_auth():
+#     web = app.test_client()
+
+#     credentials = base64.b64encode(b'kinga:test').decode('utf-8')
+#     rv = web.get('/api/admin', headers={
+#             'Authorization': 'Basic ' + credentials
+#     })
+
+#     assert rv.status == '200 OK'
+#     assert rv.data == b'hello admin'

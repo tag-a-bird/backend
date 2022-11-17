@@ -60,7 +60,7 @@ def run_migrations_online() -> None:
     """
     connectable = engine
 
-    with connectable.connect() as connection:
+    with connectable as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata
         )

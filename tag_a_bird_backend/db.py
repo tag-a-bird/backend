@@ -6,6 +6,7 @@ engine = None
 sessionmaker = sessionmaker()
 db_session = scoped_session(sessionmaker)
 
+
 def configure_engine(url):
     global sessionmaker, engine, db_session
 
