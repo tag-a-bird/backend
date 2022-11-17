@@ -35,7 +35,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         print('request made')
         try:
             response_json = loads(response.text)
-            # print(f'{response_json}')
+            print(f'{response_json}')
             return response_json
         except Exception as e:
             print(e)
@@ -59,16 +59,16 @@ def populate_db_from_coreo(db_session, country: str) -> str:
                 print(e)
                 return f"Error: {e}"
             db_session.commit()
-            # print(f"Added {count} records to the database")
+            print(f"Added {count} records to the database")
             offset += count
-            # print(offset)
+            print(offset)
             total_count += count
             count = 0
             response = coreo_request(limit=limit, offset=offset)
             
         try:
             for record in response["data"]["records"]:
-                new_record = Record.from_json(json=record["data"], id=record["id"])
+                new_record = Record.from_json(json=record)
                 db_session.add(new_record)
                 count += 1
             db_session.commit()
@@ -84,7 +84,6 @@ def populate_db_from_coreo(db_session, country: str) -> str:
     else:
         db_last_record = Record.query.filter_by(country=country).order_by(Record.created_at.desc()).first()
         count = 0
-        # print(f'there are already some records from {country}')
         print(limit, offset)
         response = coreo_request(offset=offset)
         
@@ -93,7 +92,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
                 for record in response["data"]["records"]:
                     if record["id"] == db_last_record.id:
                         break
-                    new_record =Record.from_json(json=record["data"], id=record["id"])
+                    new_record =Record.from_json(json=record)
                     db_session.add(new_record)
                     count += 1
             except Exception as e:
@@ -104,7 +103,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             db_session.commit()
             print(f"Added {count} records to the database")
             offset += count
-            # print(offset)
+            print(offset)
             total_count += count
             count = 0
             response = coreo_request(offset=offset)

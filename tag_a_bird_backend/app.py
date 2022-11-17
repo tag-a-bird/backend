@@ -1,23 +1,20 @@
-import datetime
-from os import getenv
-import uuid
-from .models import User, Role
+from crypt import methods
+from flask_restful import Resource
+import json
+from .models import User, Annotation, Base
+from . import create_app, auth, api, config
 from .db import db_session
-from . import create_app, config
     
 app = create_app(config.DevConfig)
 
-if not User.query.filter(User.email == getenv('ADMIN_CREDENTIALS_EMAIL')).first():
-    user = User(
-            id  = uuid.uuid4(),
-            username = "admin",
-            email= getenv('ADMIN_CREDENTIALS_EMAIL'),
-            created_on = datetime.datetime.now()
-    )
-    user.set_password(getenv('ADMIN_CREDENTIALS_PW'))
-    user.roles.append(Role(name='Admin'))
-    db_session.add(user)
-    db_session.commit()
+Base.query = db_session.query_property()
+
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username = username).first()
+    if not user or not user.verify_password(password):
+        return False
+    return user
 
 if __name__ == '__main__':
     app.run()

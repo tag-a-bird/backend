@@ -13,6 +13,7 @@
   <link href="{{url_for('static', filename='output.css')}}" rel="stylesheet" />
   <link rel="icon" type="image/x-icon" href="../static/img/favicon.ico">
 
+
   <title>{%block title%}Home{%endblock%}</title>
   {{ toastr.include_jquery() }} {{ toastr.include_toastr_css() }} {{
   toastr.message() }}
@@ -23,47 +24,47 @@
     <nav class="sticky top-0 z-50 bg-white/80 max-w-5xl mx-auto py-2">
       <div class="relative container md:flex md:items-center">
         <div class="flex justify-between items-center mt-3">
+          <!-- <a href="#" class="font-bold text-xl text-indigo-600">TAG A BIRD</a> -->
 
           {% if active_page != "annotate" %}
-            <a href="{{ url_for('route_blueprint.about') }}" class="p-2 text-indigo-600 text-center rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300">
-              About</a>
-          {% endif %}
-
+ 
+      
+          <a
+            href="{{ url_for('route_blueprint.about') }}"
+            class="p-2 text-indigo-600 text-center rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
+            >About</a>
+            {% endif %}
         </div>
-        <div class="md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0">
-          {% if current_user.username == "admin" %}
 
+        <div class="md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0">
+          {% if current_user.username == 'admin' %}
+            <!-- <span>logged in as {{ current_user['username'] }}</span> -->
             <a href="{{ url_for('route_blueprint.set_parameters') }}" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
               Admin</a>
             <a href="{{ url_for('route_blueprint.populate_db') }}" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
               Populate db</a>
             <a href="{{ url_for('route_blueprint.annotate') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300">
               Annotieren</a>
-            <a href="{{ url_for('route_blueprint.logout') }}" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">
+            <a href="{{ url_for('route_blueprint.signout') }}" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300">
               Ausloggen</a>
 
           {% elif current_user.username %}
 
-            {% if active_page == "about" %}
-              <a href="{{ url_for('route_blueprint.annotate') }}" target="_blank" class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300"
-              >Annotieren</a >
-              <a href="{{ url_for('route_blueprint.logout') }}"  class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-              >Ausloggen</a >
-            {% endif %}
+          {% if active_page == "about" %}
+            <a href="{{ url_for('route_blueprint.annotate') }}" target="_blank" class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300"
+            >Annotieren</a >
+          {% endif %}
 
-            {% if active_page == "annotate" %}
-              <a onclick="logoutSubmit()" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
-              >Ausloggen</a>
-            {% endif %}
+
+            <a onclick="logoutSubmit()" class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+            >Ausloggen</a>
 
           {% else %}
-
-          <a href=" {{ url_for('route_blueprint.register') }}" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
+          <a href=" {{ url_for('route_blueprint.signup') }}" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
             >Registrieren</a>
 
           <a href="{{ url_for('route_blueprint.login') }}" class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
             >Einloggen</a>
-
           {% endif %}
         </div>
       </div>
@@ -71,3 +72,4 @@
     {{ toastr.include_toastr_js() }} {% block content %}{% endblock %}
   </div>
 </body>
+<footer></footer>

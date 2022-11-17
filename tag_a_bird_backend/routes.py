@@ -1,29 +1,14 @@
-from os import getenv
-from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
+from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint
 from flask_login import login_user, login_required, logout_user, current_user
-from .validate_email import check_email
 from .helpers import populate_db_from_coreo
 import datetime
 import uuid
-from .models import Role, User, QueryConfig, Record, Annotation
-from . import login_manager, limiter
+from .models import User, QueryConfig, Record, Annotation
+from . import auth, login_manager
 from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
-from functools import wraps
-import requests 
-
-def admin_access_required():
-    def wrapper(fn):
-        @wraps(fn)
-        def decorated_function(*args, **kwargs):
-            if session.get("role") == 'Admin':
-                print("access: Admin")
-            else:
-                return jsonify({"msg": "Only the admin can access this page"}), 401
-            return fn(*args, **kwargs)
-        return decorated_function
-    return wrapper
+import random
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -37,73 +22,64 @@ route_blueprint = Blueprint('route_blueprint', __name__,
 def about():
     return render_template('about.html')
 
-@route_blueprint.route('/api/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST' and len(request.form['password']) > 7:
-        if check_email(request.form['email']):
+@route_blueprint.route('/api/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        db_session.rollback()
+        try:
+            user = User(
+                    id  = uuid.uuid4(),
+                    username = request.form['username'],
+                    email = request.form['email'],
+                    created_on = datetime.datetime.now()
+                    )
+            user.set_password(request.form['password'])
+            db_session.add(user)
+            db_session.commit()
+            login_user(user)
+            return render_template('about.html') #redirect(url_for('annotate'))
+        except Exception as e:
             db_session.rollback()
-            try:
-                user = User(
-                        id  = uuid.uuid4(),
-                        username = request.form['username'],
-                        email = request.form['email'],
-                        created_on = datetime.datetime.now()
-                        )
-                user.set_password(request.form['password'])
-                db_session.add(user)
-                db_session.commit()
-                login_user(user)
-                return render_template('about.html')
-            except Exception as e:
-                db_session.rollback()
-                flash('Error: ' + str(e))
-                return render_template('auth/register.html')
-        else:
-            flash("The email seems to be incorrect!")
-            return render_template('auth/register.html') # this clears the entire form, fix later!
-    elif request.method == 'POST' and len(request.form['password']) < 8:
-        flash("The password must be at least 8 characters long!")
-        return render_template('auth/register.html') # this clears the entire form, fix later!
+            flash('Error: ' + str(e))
+            return render_template('base.html')
+            # return "Error: " + str(e), 500 
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            return render_template('about.html') 
-        return render_template('auth/register.html')
+            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
+            return render_template('base.html')  #redirect(url_for('annotate'))
+        return render_template('auth/signup.html')
 
-@route_blueprint.route('/api/login', methods = ["POST", "GET"])
-@limiter.limit("5 per hour", deduct_when=lambda response: response.status_code != 200)
+@route_blueprint.route('/api/signin', methods = ["POST", "GET"])
 def login():
     if request.method == 'POST':
         try:
             email = request.form['email']
             password = request.form['password']
             user = db_session.query(User).filter_by(email=email).first()
-            if user.email == getenv("ADMIN_CREDENTIALS_EMAIL"):
-                r = Role.query.get(1)
-                session['role'] = r.name
             if not user or not user.verify_password(password):
-                return jsonify({"msg": "Bad email or password"}), 401
+                return jsonify({"msg": "Bad username or password"}), 401
+            
             login_user(user)
+            # flash("you would be redirected to the annotation page if it was there") #redirect(url_for('annotate_page'))
             return render_template('about.html')
         except Exception as e:
             print(e)
-            return jsonify({"msg": "Bad email or password"}), 401
+
+            return "Error: " + str(e), 500
     elif request.method == 'GET':
         if current_user.is_authenticated:
-            return render_template('about.html')  
-        # for debugging, to check x-ratelimit-remainin header
-        # resp = requests.request('GET', 'http://localhost:5000/api/login')
-        # pprint.pprint(resp.headers)
+            # flash('You are already logged in. You would be redirected to annotation page if it would be there ')
+            return render_template('base.html')  #redirect(url_for('annotate'))
         return render_template('auth/login.html')
 
-@route_blueprint.route('/api/logout')
-def logout():
-    session.clear()
+@route_blueprint.route('/api/signout')
+def signout():
+    # remove users token from database
     logout_user()
     return redirect(url_for('route_blueprint.login'))
 
 @route_blueprint.route('/admin/populate_db', methods = ["GET", "POST"])
 @login_required
-@admin_access_required()
 def populate_db():
     if request.method == "GET":
         return render_template('admin/populate_db.html')
@@ -119,7 +95,6 @@ def populate_db():
 
 @route_blueprint.route('/admin', methods=['GET', 'POST'])
 @login_required
-@admin_access_required()
 def set_parameters():
     if request.method == 'GET':
         if db_session.query(QueryConfig).first() is None:
@@ -188,7 +163,7 @@ def annotate():
                     db_session.add(new_annotation)
             db_session.commit()
             print("Annotation added successfully")
-            print(data)
+            # flash("Annotation successfully added.")
             return "/annotate"
         except Exception as e:
             print(e)
