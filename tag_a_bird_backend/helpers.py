@@ -2,6 +2,7 @@ from os import getenv
 import requests
 from json import loads
 from .models import Record
+from .db import db_session
 
 def populate_db_from_coreo(db_session, country: str) -> str:
     """Populates the database with records from the coreo API"""
@@ -42,7 +43,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
 
     # find the record in response that matches the last record in the database from the same country and add all records after that one to the database
     # if there are no records in the database from that country, add all records from that country to the database
-    if Record.query.filter_by(country=country).first() is None:
+    if db_session.query(Record).filter_by(country=country).first() is None:
         count = 0
         response = coreo_request(limit=limit, offset=offset)
         
