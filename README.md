@@ -64,5 +64,29 @@ for running tests, type
 ```
 pytest -v
 ```
-## Threat model
+## Cyber Security
+Disclaimer: the implementation of certain cyber security measures is currently ongoing. The reason for that is the necessity of stable deployment so our clients are able to test and use the tool uninterrupted. In the near future, with the implementation of a proper CI/CD pipeline, added security measures will be live more quickly. 
+
+### Threat model 
 ![Threat model](./readme_assets/threat_model_owasp.png)
+
+### Security measures
+Prevent SQL Injection
+  * Parameterizing sensitive query inputs (SQLAlchemy)
+
+  
+Secure Authentication
+  * Requiring long passwords (min. 8 characters) 
+  * Rate limiting failed login attempts (5 per hour)
+  * Using JWT tokens (currently only on a separate development branch) 
+  * Email validation (py3-validate-email)
+  
+
+Protect Sensitive Data
+  * Password hashing and salting (currently using flask-scrypt)
+  *	Encrypted database in production
+  * Encrypt data transmission with secure TLS protocol
+  
+
+Secure Configurations
+  * Keep error messages vague
