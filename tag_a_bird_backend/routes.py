@@ -78,7 +78,7 @@ def login():
             password = request.form['password']
             user = db_session.query(User).filter_by(email=email).first()
             if user.email == getenv("ADMIN_CREDENTIALS_EMAIL"):
-                r = Role.query.get(1)
+                r = db_session.query(Role).get(1)
                 session['role'] = r.name
             if not user or not user.verify_password(password):
                 return jsonify({"msg": "Bad email or password"}), 401
