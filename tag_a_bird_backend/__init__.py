@@ -13,7 +13,7 @@ limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
 
 def create_app(config_class):
     app = Flask(__name__)
-    app.config.from_object(config.DevConfig) # fix this later
+    app.config.from_object(config_class)
 
     #ssl_context = ssl.create_default_context(cafile='/Users/can/coding_enviorment/tag-a-bird/backend/tag_a_bird_backend/ca-certificate.cer')
     #ssl_context.verify_mode = ssl.CERT_REQUIRED
