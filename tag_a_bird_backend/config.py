@@ -8,6 +8,7 @@ class Config:
     SECRET_KEY = getenv('FLASK_SECRET_KEY')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
+    # FLASK_SQLALCHEMY_TRACK_MODIFICATIONS= False
 
 
 class ProdConfig(Config):
