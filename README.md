@@ -4,12 +4,15 @@ Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio dat
 a diagram explaining the backend architecture can be found [here](https://bit.ly/3gkomWA)
 
 ## Running the app
+0. prerequisites
+
+you have [poetry](https://python-poetry.org/docs/#installation) and python3.10 installed
 1. clone the repository
 ```
 git clone https://github.com/tag-a-bird/backend.git
 cd backend
 ```
-2. assuming you already have [poetry](https://python-poetry.org/docs/#installation) installed, activate the virtual environment and install dependencies
+2. ctivate the virtual environment and install dependencies
 ```
 poetry shell
 poetry install
@@ -65,3 +68,5 @@ for running tests, type
 ```
 pytest -v
 ```
+## Threat model
+![Threat model](./readme_assets/threat_model_owasp.png)
