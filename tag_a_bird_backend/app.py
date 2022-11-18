@@ -7,7 +7,7 @@ from . import create_app, config
     
 app = create_app(config.DevConfig)
 
-if not User.query.filter(User.email == getenv('ADMIN_CREDENTIALS_EMAIL')).first():
+if not db_session.query(User.email == getenv('ADMIN_CREDENTIALS_EMAIL')).first():
     user = User(
             id  = uuid.uuid4(),
             username = "admin",
