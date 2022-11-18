@@ -66,3 +66,5 @@ for running tests, type
 ```
 pytest -v
 ```
+## Threat model
+![Threat model](./readme_assets/threat_model_owasp.png)
