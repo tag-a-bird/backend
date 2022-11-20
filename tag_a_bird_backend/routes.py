@@ -11,13 +11,13 @@ from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
 from functools import wraps
-import requests 
+import requests
 
 def admin_access_required():
     def wrapper(fn):
         @wraps(fn)
         def decorated_function(*args, **kwargs):
-            if session.get("role") == 'Admin':
+            if db_session.query(Role).filter(Role.name == 'Admin').first() in current_user.roles:
                 print("access: Admin")
             else:
                 return jsonify({"msg": "Only the admin can access this page"}), 401
@@ -153,26 +153,27 @@ def set_parameters():
     
 @route_blueprint.route('/annotate', methods = ["GET", "POST"])
 @login_required
-def annotate():
-    def get_record(countries, with_annotation: bool=True, not_in_status: list = ['draft', 'reported'], in_status: list = ['questioned']):
+async def annotate():
+    async def get_record(countries, with_annotation: bool=True, not_in_status: list = ['draft', 'reported'], in_status: list = ['questioned']):
         try:
             record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
             users_annotations = db_session.query(User).filter(current_user.id == User.id).first().annotations
             if users_annotations:
-                related_records = [db_session.query(Record).filter(Record.id == annotation.recording_id).first() for annotation in users_annotations]
+                related_records = [ db_session.query(Record).filter(Record.id == annotation.recording_id).first() for annotation in users_annotations]
                 while record in related_records:
                     record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
             return record
-        except AttributeError:
+        except AttributeError as e:
             flash("No records found")
-            return None
+            record = str(e)
+            return record
     if request.method == "GET":
         countries = db_session.query(QueryConfig).filter_by(parameter='country').first().value.split(',')
         with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value
         not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value.split(',')
         in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value.split(',')
-        print(countries, with_annotation, not_in_status, in_status)
-        return render_template('annotate.html', record = get_record(countries, with_annotation, not_in_status, in_status), most_possible_birds = most_possible_birds, other_possible_birds=other_possible_birds)
+        new_record = await get_record(countries, with_annotation, not_in_status, in_status)
+        return render_template('annotate.html', record = new_record, most_possible_birds = most_possible_birds, other_possible_birds=other_possible_birds)
 
     elif request.method == "POST":
         try:

@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from .db import configure_engine, db_session, engine
 from .models import Base
 from alembic import config as alembic_config
+from . import config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -11,9 +12,9 @@ toastr = Toastr()
 login_manager = LoginManager()
 limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
 
-def create_app(config_class):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(config.DevConfig)
 
     #ssl_context = ssl.create_default_context(cafile='/Users/can/coding_enviorment/tag-a-bird/backend/tag_a_bird_backend/ca-certificate.cer')
     #ssl_context.verify_mode = ssl.CERT_REQUIRED
