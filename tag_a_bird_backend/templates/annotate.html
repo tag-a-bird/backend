@@ -23,7 +23,7 @@
             <p class="text-left font-bold w-3/4 break-keep">Coreo ID: {{ record.id }}</p>
             <p class="text-left">
                 <span>Abschnitt</span>
-                <input class="text-left w-2.5" type="text" id="current-segment" value="1"/>
+                <input class="text-left w-2.5" type="text" id="current-segment" value="1" />
                 <span class="text-left" id="total-segments"></span>
             </p>
 
@@ -156,7 +156,7 @@
                 ).addEventListener('click', function () {
                     let region = Object.values(wavesurfer.regions.list)[0];
                     wavesurfer.params.scrollParent = false;
-                    wavesurfer.play();
+                    wavesurfer.play(region.start, region.end);
                 });
 
                 document.querySelector(
@@ -274,25 +274,25 @@
                     }
                 }
 
-                function confirmFinalSubmit(){
+                function confirmFinalSubmit() {
                     const element = document.getElementById("footer");
                     const topPos = element.getBoundingClientRect().bottom
                     scroll({
-                    top: topPos,
-                    behavior: 'smooth' 
+                        top: topPos,
+                        behavior: 'smooth'
                     });
-                    document.getElementById("confirm").hidden=false
-                    document.getElementById("absenden-button").hidden=true
+                    document.getElementById("confirm").hidden = false
+                    document.getElementById("absenden-button").hidden = true
                 }
 
-                function logoutSubmit(){
-                    document.getElementById("logout-confirm").hidden=false
+                function logoutSubmit() {
+                    document.getElementById("logout-confirm").hidden = false
                 }
 
                 function confirmNo() {
-                    document.getElementById("confirm").hidden=true
-                    document.getElementById("logout-confirm").hidden=true
-                    document.getElementById("absenden-button").hidden=false
+                    document.getElementById("confirm").hidden = true
+                    document.getElementById("logout-confirm").hidden = true
+                    document.getElementById("absenden-button").hidden = false
                 }
 
                 function finalSubmit() {
@@ -338,16 +338,21 @@
             <div class="text-left">
                 <div id="logout-confirm" hidden>
                     <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
-                    <input type="button" onclick="location.href='{{ url_for('route_blueprint.logout') }}';" value="Ja, ausloggen" class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300"/>
-                    <button onclick="confirmNo()" class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400  transition-colors duration-300">Nein, zurück</button>  
+                    <input type="button" onclick="location.href='{{ url_for('route_blueprint.logout') }}';"
+                        value="Ja, ausloggen"
+                        class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300" />
+                    <button onclick="confirmNo()"
+                        class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400  transition-colors duration-300">Nein,
+                        zurück</button>
                 </div>
-    
+
                 <p class="mb-2 text-lg font-bold">Arten auswählen:</p>
                 {% for bird in most_possible_birds %}
-                    <p>
-                        <input name="common-birds" type="checkbox" id="{{ bird }}" value="{{bird}}" onchange="addCheckBird(this)">
-                        <label for="{{ bird }}">{{ bird }}</label>
-                    </p>
+                <p>
+                    <input name="common-birds" type="checkbox" id="{{ bird }}" value="{{bird}}"
+                        onchange="addCheckBird(this)">
+                    <label for="{{ bird }}">{{ bird }}</label>
+                </p>
                 {% endfor %}
 
                 <div>
@@ -355,33 +360,45 @@
                         class="dropdownbutton mt-2 py-1 px-2 text-gray-600 rounded border border-solid bg-gray-200 hover:bg-gray-300 text-indigo-700 transition-colors duration-300">Andere
                         Vögel Suchen...</button>
                     <div id="myDropdown" class="dropdownbutton dropdown-content ml-6 mt-0">
-                        <input class="dropdownbutton" type="text" placeholder="Suchen.." id="myInput"onkeyup="filterFunction()">
+                        <input class="dropdownbutton" type="text" placeholder="Suchen.." id="myInput"
+                            onkeyup="filterFunction()">
                         {% for bird in other_possible_birds %}
-                            <input class="dropdownbutton other-birds-input block hover:bg-gray-300 ml-2" type='button' onclick="addBird(this.value)" value="{{bird}}">
+                        <input class="dropdownbutton other-birds-input block hover:bg-gray-300 ml-2" type='button'
+                            onclick="addBird(this.value)" value="{{bird}}">
                         {% endfor %}
                     </div>
                 </div>
 
                 <p>
-                    <input onchange="addFlags(this)" name="flags" type="checkbox" id="flag-species-uncertain" value='false'>
+                    <input onchange="addFlags(this)" name="flags" type="checkbox" id="flag-species-uncertain"
+                        value='false'>
                     <label for="flag-species-uncertain">Art/Arten unsicher</label>
                 </p>
                 <p>
-                    <input onchange="addFlags(this)" name="flags" type="checkbox" id="flag-recording-not-suitable" value="recording-not-suitable">
+                    <input onchange="addFlags(this)" name="flags" type="checkbox" id="flag-recording-not-suitable"
+                        value="recording-not-suitable">
                     <label for="flag-recording-not-suitable">Audio ungeeignet</label>
                 </p>
             </div>
-            
-            <button onclick="decrementValue()" class="w-[100px] p-2 mt-3 font-bold border-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300" id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt</button>
-            <button onclick="incrementValue()" class="w-[100px] p-2 font-bold border-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300" id="nextsegment" data-action="next-segment">Nächster Abschnitt</button>
-        
+
+            <button onclick="decrementValue()"
+                class="w-[100px] p-2 mt-3 font-bold border-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+                id="previoussegment" data-action="previous-segment">Vorheriger Abschnitt</button>
+            <button onclick="incrementValue()"
+                class="w-[100px] p-2 font-bold border-2 text-gray-600 rounded border border-solid border-indigo-600 hover:bg-gray-200 hover:text-indigo-700 transition-colors duration-300"
+                id="nextsegment" data-action="next-segment">Nächster Abschnitt</button>
+
             <p class="my-2 text-lg font-bold">Arten in dieser Aufnahme:</p>
             <div id="annotation-preview"></div>
 
             <div class="p-3 bg-red-100 rounded" id="confirm" hidden>
                 <p>Alle Segmente dieser Audiodatei annotiert und überprüft? </p>
-                <button onclick="finalSubmit()" class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300">Ja, absenden</button>  
-                <button onclick="confirmNo()" class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400  transition-colors duration-300">Nein, zurück</button>  
+                <button onclick="finalSubmit()"
+                    class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300">Ja,
+                    absenden</button>
+                <button onclick="confirmNo()"
+                    class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400  transition-colors duration-300">Nein,
+                    zurück</button>
             </div>
 
             <button id="absenden-button"
@@ -397,7 +414,7 @@
                         let regionMiddle = (region.start + (region.end - region.start) / 2)
                         wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true)
                         document.querySelector('[data-action="play-region-1"]')
-                        .click()
+                            .click()
                     });
 
                 document.querySelector('[data-action="previous-segment"]')
@@ -407,7 +424,7 @@
                         let regionMiddle = (region.start + (region.end - region.start) / 2)
                         wavesurfer.drawer.recenterOnPosition((regionMiddle * 74), true)
                         document.querySelector('[data-action="play-region-1"]')
-                        .click()
+                            .click()
                     });
             </script>
             <div id="footer" class="h-40"></div>
