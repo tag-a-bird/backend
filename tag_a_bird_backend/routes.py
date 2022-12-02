@@ -111,7 +111,6 @@ def populate_db():
         try:
             country = request.form['country']
             populate_db_from_coreo(db_session=db_session, country=country)
-            flash("Database populated successfully")
         except Exception as e:
             flash('Error: ' + str(e))
             print(e)
