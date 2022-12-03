@@ -647,6 +647,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "secure"
+version = "0.3.0"
+description = "A lightweight package that adds security headers for Python web frameworks."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "setuptools"
 version = "65.5.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
@@ -775,7 +783,7 @@ email = ["email-validator"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "3b1961aa1d4e30131ec97b83d1c4fb239de7526311df66b5710cfb88d5fc9ded"
+content-hash = "3ab7079d1812b2a9df1cea8128303932a56fc37e5aeaebb921fb35c0ed1ceedd"
 
 [metadata.files]
 alembic = [
@@ -1171,6 +1179,10 @@ scrypt = [
     {file = "scrypt-0.8.20-cp39-cp39-win32.whl", hash = "sha256:ae606705fa1d54aa0d5ba8e3272bb4d3f801543c8090e11ced00de46c4feff40"},
     {file = "scrypt-0.8.20-cp39-cp39-win_amd64.whl", hash = "sha256:776b6778d6bdd0794b404f20af9509c8e09dc0b7bc5683e2b6612a6ca8231b11"},
     {file = "scrypt-0.8.20.tar.gz", hash = "sha256:0d226c1c6744fb2e308b391410669b1df5cfe82637ffcb5ed489bf82b2d2eb78"},
+]
+secure = [
+    {file = "secure-0.3.0-py3-none-any.whl", hash = "sha256:a93b720c7614809c131ca80e477263140107c6c212829d0a6e1f7bc8d859c608"},
+    {file = "secure-0.3.0.tar.gz", hash = "sha256:6e30939d8f95bf3b8effb8a36ebb5ed57f265daeeae905e3aa9677ea538ab64e"},
 ]
 setuptools = [
     {file = "setuptools-65.5.1-py3-none-any.whl", hash = "sha256:d0b9a8433464d5800cbe05094acf5c6d52a91bfac9b52bcfc4d41382be5d5d31"},
