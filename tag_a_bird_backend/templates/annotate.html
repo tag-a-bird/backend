@@ -346,7 +346,7 @@
                         zurück</button>
                 </div>
 
-                <p class="mb-2 text-lg font-bold">Arten auswählen:</p>
+                <p class="mb-2 text-lg font-bold">Diese Arten habe ich sicher erkannt:</p>
                 {% for bird in most_possible_birds %}
                 <p>
                     <input name="common-birds" type="checkbox" id="{{ bird }}" value="{{bird}}"
@@ -372,7 +372,7 @@
                 <p>
                     <input onchange="addFlags(this)" name="flags" type="checkbox" id="flag-species-uncertain"
                         value='false'>
-                    <label for="flag-species-uncertain">Art/Arten unsicher</label>
+                    <label for="flag-species-uncertain">Weitere unbekannte Art(en)</label>
                 </p>
                 <p>
                     <input onchange="addFlags(this)" name="flags" type="checkbox" id="flag-recording-not-suitable"
