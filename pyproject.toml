@@ -26,6 +26,7 @@ py3-validate-email = "^1.0.8"
 Flask-Limiter = "^2.8.1"
 flask = {extras = ["async"], version = "^2.2.2"}
 asyncio = "^3.4.3"
+secure = "^0.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.1.3"
