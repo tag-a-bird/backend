@@ -7,7 +7,7 @@ Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio dat
 ## Running the app
 0. prerequisites
 
-you have [poetry](https://python-poetry.org/docs/#installation), [postgresql] and python3.10 installed
+you have [poetry](https://python-poetry.org/docs/#installation), [postgresql](https://www.postgresql.org/download/) and python3.10 installed
 1. clone the repository
 ```
 git clone https://github.com/tag-a-bird/backend.git
