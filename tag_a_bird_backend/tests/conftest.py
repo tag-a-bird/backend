@@ -30,4 +30,5 @@ def new_user():
                     email = 'test@email.com',
                     created_on = datetime.datetime.now()
                     )
+    user.set_password('testpassword')
     return user
