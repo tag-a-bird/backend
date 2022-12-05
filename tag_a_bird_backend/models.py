@@ -1,5 +1,3 @@
-import os
-import scrypt
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -10,14 +8,19 @@ from .db import Base
 from flask_scrypt import generate_random_salt, generate_password_hash, check_password_hash
 
 class UserRoles(Base):
-        __tablename__ = 'user_roles'
-        id = Column(Integer(), primary_key=True)
-        user_id = Column(UUID(as_uuid=True), ForeignKey('user.id'
-        #, ondelete='CASCADE'
+    __tablename__ = 'user_roles'
+    id = Column(
+        Integer(), 
+        primary_key=True
+        )
+    user_id = Column(
+        UUID(as_uuid=True), 
+        ForeignKey('user.id'
         ))
-        role_id = Column(Integer(), ForeignKey('roles.id'
-        #, ondelete='CASCADE'
-        ))
+    role_id = Column(
+        Integer(), 
+        ForeignKey('roles.id')
+        )
 
 class User(Base, UserMixin):
     __tablename__ = "user"
@@ -60,17 +63,6 @@ class User(Base, UserMixin):
         server_default='1'
     )
 
-    # def set_password(password, maxtime=0.5, datalength=64):
-    #     return scrypt.encrypt(os.urandom(datalength), password, maxtime=maxtime)
-
-    # def verify_password(self, guessed_password, maxtime=0.5):
-    #     hashed_password = self.password_hash
-    #     try:
-    #         scrypt.decrypt(hashed_password, guessed_password, maxtime)
-    #         return True
-    #     except scrypt.error:
-    #         return False
-
     def set_password(self, password):
         self.salt = generate_random_salt()
         self.password_hash = generate_password_hash(password, self.salt)
@@ -103,7 +95,6 @@ class QueryConfig(Base):
         String(100),
         nullable=True,)
 
-
     def __repr__(self):
         return f"QueryConfig(parameter={self.parameter!r}, value={self.value!r})"
 
@@ -119,11 +110,6 @@ class Annotation(Base):
         end_time = Column(Integer, nullable=False)
         label = Column(String)
         status = Column(String)
-        #created_at = Column(
-        #comment = Column(String)
-        #    DateTime,
-        #    default=datetime.utcnow()
-        #)
 
         def __repr__(self):
             return f"Annotation(id={self.id!r}, recording_id={self.recording_id!r}, user_id={self.user_id!r}, start_time={self.start_time!r}, end_time={self.end_time!r}, label={self.label!r}, self.status={self.status!r})"
