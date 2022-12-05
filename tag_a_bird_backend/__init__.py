@@ -17,24 +17,6 @@ def create_app(config_class):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    #ssl_context = ssl.create_default_context(cafile='/Users/can/coding_enviorment/tag-a-bird/backend/tag_a_bird_backend/ca-certificate.cer')
-    #ssl_context.verify_mode = ssl.CERT_REQUIRED
-
-    #connect_arg = {
-   #     'ssl': ssl_context
-    #}
-
-    configure_engine(app.config['DATABASE_URI'])
-
-    #alembicArgs = ['revision', '--autogenerate', '-m', 'auto-generated migration']
-    #alembic_config.main(argv=alembicArgs)
-    #alembicArgs = ['upgrade', 'head']
-    #alembic_config.main(argv=alembicArgs)
-    
-
-    from tag_a_bird_backend.routes import route_blueprint
-    app.register_blueprint(route_blueprint)
-
     @app.after_request
     def set_secure_headers(response):
         secure_headers.framework.flask(response)
@@ -45,5 +27,10 @@ def create_app(config_class):
 
     with app.app_context():
         login_manager.init_app(app)
+        
+        configure_engine(app.config['DATABASE_URI'])
+
+        from tag_a_bird_backend.routes import route_blueprint
+        app.register_blueprint(route_blueprint)
 
     return app
