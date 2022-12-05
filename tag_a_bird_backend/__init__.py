@@ -6,7 +6,9 @@ from .models import Base
 from alembic import config as alembic_config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from secure import Secure
 
+secure_headers = Secure()
 toastr = Toastr()
 login_manager = LoginManager()
 limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
@@ -32,6 +34,11 @@ def create_app(config_class):
 
     from tag_a_bird_backend.routes import route_blueprint
     app.register_blueprint(route_blueprint)
+
+    @app.after_request
+    def set_secure_headers(response):
+        secure_headers.framework.flask(response)
+        return response
 
     toastr.init_app(app)
     limiter.init_app(app)
