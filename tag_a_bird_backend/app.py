@@ -4,16 +4,8 @@ import uuid
 from .models import User, Role
 from .db import db_session
 from . import create_app, config
-from secure import Secure
 
-secure_headers = Secure()
-    
 app = create_app(config.DevConfig)
-
-@app.after_request
-def set_secure_headers(response):
-    secure_headers.framework.flask(response)
-    return response
 
 if not db_session.query(User.email == getenv('ADMIN_CREDENTIALS_EMAIL')).first():
     user = User(
