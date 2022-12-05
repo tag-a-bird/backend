@@ -41,22 +41,26 @@ def about():
 def register():
     if request.method == 'POST' and len(request.form['password']) > 7:
         if check_email(request.form['email']):
-            db_session.rollback()
-            try:
-                user = User(
-                        id  = uuid.uuid4(),
-                        username = request.form['username'],
-                        email = request.form['email'],
-                        created_on = datetime.datetime.now()
-                        )
-                user.set_password(request.form['password'])
-                db_session.add(user)
-                db_session.commit()
-                login_user(user)
-                return render_template('about.html')
-            except Exception as e:
+            if db_session.query(User).filter(User.email == request.form['email']).first() is None:
                 db_session.rollback()
-                flash('Error: ' + str(e))
+                try:
+                    user = User(
+                            id  = uuid.uuid4(),
+                            username = request.form['username'],
+                            email = request.form['email'],
+                            created_on = datetime.datetime.now()
+                            )
+                    user.set_password(request.form['password'])
+                    db_session.add(user)
+                    db_session.commit()
+                    login_user(user)
+                    return render_template('about.html')
+                except Exception as e:
+                    db_session.rollback()
+                    flash('Error: ' + str(e))
+                    return render_template('auth/register.html')
+            else:
+                flash('Error: User already exists')
                 return render_template('auth/register.html')
         else:
             flash("The email seems to be incorrect!")
