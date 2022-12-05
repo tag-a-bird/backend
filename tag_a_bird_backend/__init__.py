@@ -7,6 +7,9 @@ from alembic import config as alembic_config
 from . import config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from secure import Secure
+
+secure_headers = Secure()
 
 toastr = Toastr()
 login_manager = LoginManager()
@@ -36,6 +39,11 @@ def create_app():
 
     toastr.init_app(app)
     limiter.init_app(app)
+
+    @app.after_request
+    def set_secure_headers(response):
+        secure_headers.framework.flask(response)
+        return response
 
     with app.app_context():
         login_manager.init_app(app)
