@@ -24,7 +24,7 @@ def runner(app):
     return app.test_cli_runner()
 
 @pytest.fixture
-def new_user():
+def test_user():
     user = User(
                 id  = uuid.uuid4(),
                 username = 'testuser',
@@ -44,7 +44,7 @@ def setup_test_database(app):
     session.close()
 
 @pytest.fixture
-def test_data(setup_test_database):
+def test_query_config(setup_test_database):
     test_session = setup_test_database
     test_session.add_all([
         QueryConfig(parameter='country', value ='Hungary'),
