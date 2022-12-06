@@ -11,7 +11,6 @@ from .db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
 from functools import wraps
-import requests 
 
 def admin_access_required():
     def wrapper(fn):
