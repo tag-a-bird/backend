@@ -16,7 +16,13 @@ def test_about_route(test_client):
 
 def test_register_route(test_client):
     assert test_client.get('/api/register').status_code == 200
-    # assert test_client.post('/api/register').status_code == 200
+    response = test_client.post('/api/register', follow_redirects=True,  data = {
+        "username": "tagger",
+        "email": "tagabird.FS2022@gmail.com" ,
+        "password": "secretsecret",
+        })
+    assert response.request.path == "/about"
+    assert response.status_code == 200
 
 def test_login_route(test_client):
     assert test_client.get('/api/login').status_code == 200

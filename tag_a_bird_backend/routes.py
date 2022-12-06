@@ -53,7 +53,7 @@ def register():
                 db_session.add(user)
                 db_session.commit()
                 login_user(user)
-                return render_template('about.html')
+                return redirect(url_for('route_blueprint.about'))
             except Exception as e:
                 db_session.rollback()
                 flash('Error: ' + str(e))
