@@ -7,29 +7,36 @@ Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio dat
 ## Running the app
 0. prerequisites
 
-you have [poetry](https://python-poetry.org/docs/#installation), [postgresql](https://www.postgresql.org/download/) and python3.10 installed
-1. clone the repository
+you have [poetry](https://python-poetry.org/docs/#installation), [postgresql](https://www.postgresql.org/download/) and python3.10 installed 
+
+1. create local postgres databases
+```
+createdb local_db
+createdb local_test_db
+
+```
+2. clone the repository
 ```
 git clone https://github.com/tag-a-bird/backend.git
 cd backend
 ```
-2. ctivate the virtual environment and install dependencies
+3. activate the virtual environment and install dependencies
 ```
 poetry shell
 poetry install
 ```
-3. create an .env file according to example.env
+4. create an .env file according to example.env
 ```
 cd tag_a_bird_backend
 echo "FLASK_APP=app.py
-FLASK_DATABASE_URI=<uri_to_local_database>
-FLASK_TEST_DATABASE_URI=<uri_to_local_test_database>
+FLASK_DATABASE_URI=postgresql://localhost/local_db
+FLASK_TEST_DATABASE_URI=postgresql://localhost/local_test_db
 FLASK_SECRET_KEY=<a_secret_key>
 COREO_API_KEY=<api_key>
 ADMIN_CREDENTIALS_PW=<admin_pw>
 ADMIN_CREDENTIALS_EMAIL=<admin_email>" > .env
 ```
-4. start local dev server on http://localhost:5000/about
+5. start local dev server on http://localhost:5000/about
 ```
 flask run
 ```
