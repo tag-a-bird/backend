@@ -18,11 +18,7 @@ def app():
 @pytest.fixture
 def test_client(app):
     yield app.test_client()
-
-@pytest.fixture
-def runner(app):
-    return app.test_cli_runner()
-
+    
 @pytest.fixture
 def test_user():
     user = User(

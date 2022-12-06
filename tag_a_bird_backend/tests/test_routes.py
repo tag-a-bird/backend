@@ -14,7 +14,7 @@ def test_about_route(test_client):
 
 def test_register_route(test_client):
     assert test_client.get('/api/register').status_code == 200
-    response = test_client.post('/api/register', follow_redirects=True,  data = {
+    response = test_client.post('/api/register', follow_redirects=True, data = {
         "username": "tagger",
         "email": "tagabird.FS2022@gmail.com" ,
         "password": "secretsecret",
@@ -45,3 +45,4 @@ def test_populate_db_route(test_client):
 
 def test_annotate_route(test_client, test_query_config):
     assert test_client.get('/annotate').status_code == 200
+    

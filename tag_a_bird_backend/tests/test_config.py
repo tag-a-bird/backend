@@ -22,4 +22,3 @@ def test_test_config(app):
     assert app.config['TESTING']
     assert app.config['LOGIN_DISABLED']
     assert app.config['DATABASE_URI'] == getenv('FLASK_TEST_DATABASE_URI')
-
