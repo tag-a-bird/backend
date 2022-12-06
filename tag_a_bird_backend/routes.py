@@ -122,14 +122,12 @@ def populate_db():
 def set_parameters():
     if request.method == 'GET':
         if db_session.query(QueryConfig).first() is None:
-            country = QueryConfig(parameter='country', value='')
-            db_session.add(country)
-            with_annotation = QueryConfig(parameter='with_annotation', value='False')
-            db_session.add(with_annotation)
-            in_status = QueryConfig(parameter='in_status', value='')
-            db_session.add(in_status)
-            not_in_status = QueryConfig(parameter='not_in_status', value='')
-            db_session.add(not_in_status)
+            db_session.add_all([
+                QueryConfig(parameter='country', value=''),
+                QueryConfig(parameter='with_annotation', value='False'),
+                QueryConfig(parameter='in_status', value=''),
+                QueryConfig(parameter='not_in_status', value='')
+            ])
             db_session.commit()
         return render_template('/admin/admin.html' , country = db_session.query(QueryConfig).filter_by(parameter='country').first().value, with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value, in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value, not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value)
     elif request.method == 'POST':

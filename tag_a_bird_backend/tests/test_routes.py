@@ -11,8 +11,6 @@ routes and http methods are:
 
 def test_about_route(test_client):
     assert test_client.get('/about').status_code == 200
-    # response = test_client.get("/about")
-    # assert b"Hello" in response.data
 
 def test_register_route(test_client):
     assert test_client.get('/api/register').status_code == 200
@@ -26,8 +24,7 @@ def test_register_route(test_client):
 
 def test_login_route(test_client):
     assert test_client.get('/api/login').status_code == 200
-    # assert test_client.post('/api/login').status_code == 200 
-
+    
 def test_logout_route(test_client):
     response = test_client.get('/api/logout', follow_redirects=True)
     assert len(response.history) == 1
