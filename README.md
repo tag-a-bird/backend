@@ -13,7 +13,6 @@ you have [poetry](https://python-poetry.org/docs/#installation), [postgresql](ht
 ```
 createdb local_db
 createdb local_test_db
-
 ```
 2. clone the repository
 ```
