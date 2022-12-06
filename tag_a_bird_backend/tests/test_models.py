@@ -11,10 +11,10 @@ def test_new_user(new_user):
 
 def test_query_config(test_client, test_data):
     test_session = test_data
-    with test_client.session_transaction() as session:
-        session['role'] = "Admin"
-    country = test_session.query(QueryConfig).filter_by(parameter='country').first().value
-    assert country == "Hungary"
+    assert test_session.query(QueryConfig).filter_by(parameter='country').first().value == "Hungary"
+    assert test_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value == "False"
+    assert test_session.query(QueryConfig).filter_by(parameter='in_status').first().value == ""
+    assert test_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value == ""
 
 # def test_new_annotation(new_annotation):
 #     assert new_annotation.id == 12345
