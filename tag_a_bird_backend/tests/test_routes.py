@@ -18,7 +18,7 @@ def test_logout_route(test_client):
     assert response.request.path == "/api/login"
     assert response.status_code == 200
 
-def test_admin_route(test_client):
+def test_admin_route(test_client, test_data):
     assert test_client.get('/admin').status_code == 401
     with test_client.session_transaction() as session:
         session['role'] = "Admin"
@@ -30,5 +30,5 @@ def test_populate_db_route(test_client):
         session['role'] = "Admin"
     assert test_client.get('/admin/populate_db').status_code == 200
 
-def test_annotate_route(test_client):
+def test_annotate_route(test_client, test_data):
     assert test_client.get('/annotate').status_code == 200
