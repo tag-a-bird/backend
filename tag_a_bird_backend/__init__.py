@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_toastr import Toastr
 from flask_login import LoginManager
+from . import config
 from .db import configure_engine, db_session, engine
 from .models import Base
 from alembic import config as alembic_config
@@ -27,8 +28,8 @@ def create_app(config_class):
 
     with app.app_context():
         login_manager.init_app(app)
-        
-        configure_engine(app.config['DATABASE_URI'])
+        if app.config != config.TestConfig:
+            configure_engine(app.config['DATABASE_URI'])
 
         from tag_a_bird_backend.routes import route_blueprint
         app.register_blueprint(route_blueprint)
