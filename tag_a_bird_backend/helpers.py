@@ -4,6 +4,34 @@ from json import loads
 from .models import Record
 from flask import flash
 
+def coreo_request(limit, offset, country) -> dict:
+    api_url: str = "https://api.coreo.io/graphql"
+    request_header: dict = {"Authorization": getenv("COREO_API_KEY"), "Content-Type": "application/json", "Accept": "*/*", "Connection": "Keep-Alive"}
+    query = f"""{{
+        records(where:{{
+            projectId: 462,
+            data:{{country: {country}}}
+            }},
+            limit:{limit},
+            offset:{offset},
+            order:"createdAt")
+            {{
+                id
+                data
+            }}
+            }}"""
+
+    request_body: dict = {"query": query}
+    response = requests.post(api_url, headers=request_header, json=request_body)
+
+    try:
+        response_json = loads(response.text)
+        # print(f'{response_json}')
+        return response_json
+    except Exception as e:
+        print(e)
+        return {}
+
 def populate_db_from_coreo(db_session, country: str) -> str:
     """Populates the database with records from the coreo API"""
 
@@ -11,40 +39,12 @@ def populate_db_from_coreo(db_session, country: str) -> str:
     offset = 0
     total_count = 0
 
-    def coreo_request(limit, offset) -> dict:
-        api_url: str = "https://api.coreo.io/graphql"
-        request_header: dict = {"Authorization": getenv("COREO_API_KEY"), "Content-Type": "application/json", "Accept": "*/*", "Connection": "Keep-Alive"}
-        query = f"""{{
-            records(where:{{
-                projectId: 462,
-                data:{{country: {country}}}
-                }},
-                limit:{limit},
-                offset:{offset},
-                order:"createdAt")
-                {{
-                    id
-                    data
-                }}
-                }}"""
-
-        request_body: dict = {"query": query}
-        response = requests.post(api_url, headers=request_header, json=request_body)
-
-        try:
-            response_json = loads(response.text)
-            # print(f'{response_json}')
-            return response_json
-        except Exception as e:
-            print(e)
-            return {}
-
     # find the record in response that matches the last record in the database from the same country and add all records after that one to the database
     # if there are no records in the database from that country, add all records from that country to the database
     if db_session.query(Record).filter_by(country=country).first() is None:
         print(f"There was no record from {country} till now")
         count = 0
-        response = coreo_request(limit=limit, offset=offset)
+        response = coreo_request(limit=limit, offset=offset, country=country)
 
         while len(response["data"]["records"]) == limit:
             try:
@@ -62,7 +62,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             offset += count
             total_count += count
             count = 0
-            response = coreo_request(limit=limit, offset=offset)
+            response = coreo_request(limit=limit, offset=offset, country=country)
         
         flash("Database populated successfully")
         
@@ -71,7 +71,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         count = 0
         print(f'there are already some records from {country}')
         # print(f'last record\'s id is {db_last_record.id}')
-        response = coreo_request(offset=offset, limit=limit)
+        response = coreo_request(offset=offset, limit=limit, country=country)
             
         while len(response["data"]["records"]) == limit:
             try:
@@ -95,7 +95,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             offset += count
             total_count += count
             count = 0
-            response = coreo_request(offset=offset, limit=limit)
+            response = coreo_request(offset=offset, limit=limit, country=country)
         flash("Database updated successfully")
             
     print(f"Database populated with {total_count} records from {country}")
