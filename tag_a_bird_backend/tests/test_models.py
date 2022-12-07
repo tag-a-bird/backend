@@ -22,6 +22,6 @@ def test_query_config(test_query_config):
 
 def test_new_annotation(test_annotation):
     test_session = test_annotation
-    assert test_session.query(User).filter_by(username='fakeuser')
-    assert test_session.query(Record).filter_by(id=9811488)
-    assert test_session.query(Annotation).filter_by(recording_id=9811488)
+    assert test_session.query(User).filter_by(username='fakeuser').first().username == "fakeuser"
+    # assert test_session.query(Record).first().id == 9811488
+    assert test_session.query(Annotation).first().recording_id == 9811488
