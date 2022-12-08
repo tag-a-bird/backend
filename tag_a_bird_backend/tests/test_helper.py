@@ -8,3 +8,5 @@ def test_populate_db(setup_test_database, app):
         assert temp_session.query(Record).first().country == "Japan"
         temp_session.query(Record).delete()
         temp_session.commit()
+
+    # TODO: add more tests for eg. case when there already are some recordings!

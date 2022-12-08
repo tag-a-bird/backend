@@ -4,6 +4,17 @@ from json import loads
 from .models import Record
 from flask import flash
 
+'''
+TODO: 
+- find and clean more dead code
+- restructure graphql query
+- handle inaccurate/vague exceptions
+- shorten long parameter list
+- rename functions
+- remove more duplicate code
+...
+'''
+
 def coreo_request(limit, offset, country) -> dict:
     api_url: str = "https://api.coreo.io/graphql"
     request_header: dict = {"Authorization": getenv("COREO_API_KEY"), "Content-Type": "application/json", "Accept": "*/*", "Connection": "Keep-Alive"}
