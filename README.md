@@ -98,3 +98,4 @@ Protect Sensitive Data
 
 Secure Configurations
   * Keep error messages vague
+  * Session timeout after 1 minute of inactivity
