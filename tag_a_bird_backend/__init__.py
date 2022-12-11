@@ -7,9 +7,27 @@ from .db import configure_engine
 from alembic import config as alembic_config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from secure import Secure
+from secure import Secure, Server, ContentSecurityPolicy, PermissionsPolicy, StrictTransportSecurity, CacheControl
 
-secure_headers = Secure()
+server = Server().set("Secure")
+csp = (ContentSecurityPolicy()
+    .base_uri("'self'")
+    # .connect_src("'self'" "coreo.s3.eu-west-1.amazonaws.com")
+    .frame_src("'none'")
+    .img_src("'self'")
+)
+hsts = StrictTransportSecurity().include_subdomains().preload().max_age(2592000)
+permissions = (PermissionsPolicy().geolocation("self"))
+cache = CacheControl().must_revalidate()
+
+secure_headers = Secure(
+    server = server, 
+    csp = csp, 
+    permissions = permissions,
+    hsts = hsts,
+    cache = cache,
+    )
+
 toastr = Toastr()
 login_manager = LoginManager()
 limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
@@ -21,7 +39,7 @@ def create_app(config_class):
     @app.before_request
     def before_request():
         session.permanent = True
-        app.permanent_session_lifetime = timedelta(minutes=1)
+        app.permanent_session_lifetime = timedelta(minutes=10)
         session.modified = True
         g.user = current_user
 
