@@ -8,7 +8,10 @@ class Config:
     SECRET_KEY = getenv('FLASK_SECRET_KEY')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
-    FLASK_SQLALCHEMY_TRACK_MODIFICATIONS= False
+    FLASK_SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
 
 
 class ProdConfig(Config):
@@ -16,6 +19,7 @@ class ProdConfig(Config):
     DEBUG = False
     TESTING = False
     DATABASE_URI = getenv('PROD_DATABASE_URI')
+    SESSION_COOKIE_SECURE = True
 
 
 class DevConfig(Config):
