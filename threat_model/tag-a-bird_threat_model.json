@@ -29,7 +29,40 @@
               "id": "41730a14-078a-4368-a06d-71180af6cec4",
               "z": 1,
               "hasOpenThreats": false,
-              "threats": [],
+              "threats": [
+                {
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "modelType": "STRIDE",
+                  "title": "Cross-Site Scripting (XSS)",
+                  "type": "Information disclosure",
+                  "mitigation": "Input validation, implementing the Content Security Policy (CSP) header and adding  restrictive Set-Cookie attributes (all 3 partially, as of now).",
+                  "description": "XSS could mean unauthorised disclosure of sensitive information. XSS attacks involve injecting malicious JavaScript code into a web page, which is then executed by the victim's browser. This can allow the attacker to steal sensitive information, such as login credentials, from the victim's browser.",
+                  "threatId": "ebf87215-9dfc-443b-945c-d9911f87bd20",
+                  "$$hashKey": "object:220"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "modelType": "STRIDE",
+                  "title": "Man-in-the-Middle attack",
+                  "type": "Tampering",
+                  "description": "Man-in-the-Middle attack means intercepting the communication between a user's browser and a web application, allowing the attacker to view and modify the data being exchanged.",
+                  "mitigation": "Using HTTPS (on the deployed app)",
+                  "threatId": "e2b0fbbf-f03d-419d-a798-b366a010a9de",
+                  "$$hashKey": "object:234"
+                },
+                {
+                  "status": "NotApplicable",
+                  "severity": "Medium",
+                  "modelType": "STRIDE",
+                  "title": "Malicious extensions",
+                  "type": "Denial of service",
+                  "description": "Malicious extensions can be used to perform actions that disrupt the normal functioning of a web application, such as inserting ads or downloading malware.",
+                  "threatId": "8d60af3b-92dd-473b-970c-d98c107ed9fa",
+                  "$$hashKey": "object:269"
+                }
+              ],
               "attrs": {
                 ".element-shape": {
                   "class": "element-shape hasNoOpenThreats isInScope"
@@ -425,7 +458,7 @@
               "z": 12,
               "hasOpenThreats": false,
               "outOfScope": true,
-              "reasonOutOfScope": "Not managed by us",
+              "reasonOutOfScope": "Data collected, stored and managed by Coreo",
               "attrs": {
                 ".element-shape": {
                   "class": "element-shape hasNoOpenThreats isOutOfScope"
@@ -556,12 +589,141 @@
               "id": "75917de0-9986-4f71-a623-660cce15a010",
               "z": 17,
               "attrs": {}
+            },
+            {
+              "type": "tm.Store",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 746,
+                "y": 255
+              },
+              "angle": 0,
+              "id": "33a15fdc-b52e-49a1-8895-88facbd7373a",
+              "z": 18,
+              "hasOpenThreats": false,
+              "outOfScope": true,
+              "description": "All Coreo data is stored in AWS S3 within the AWS EU region, on secure servers in Dublin, Ireland.",
+              "reasonOutOfScope": "Data collected, stored and managed by Coreo",
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isOutOfScope"
+                },
+                "text": {
+                  "text": "AWS"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "33a15fdc-b52e-49a1-8895-88facbd7373a"
+              },
+              "target": {
+                "id": "3fbec472-2301-4bf2-9c0c-6dabe114627f"
+              },
+              "vertices": [
+                {
+                  "x": 672,
+                  "y": 277
+                }
+              ],
+              "id": "e45c4cae-b046-482d-b46a-51ad1bc19b93",
+              "labels": [
+                {
+                  "position": {
+                    "distance": 0.5146693553443314,
+                    "offset": 2.9407920765281865
+                  },
+                  "attrs": {
+                    "text": {
+                      "text": "Response",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 19,
+              "hasOpenThreats": false,
+              "outOfScope": true,
+              "reasonOutOfScope": "Data collected, stored and managed by Coreo",
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isOutOfScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "3fbec472-2301-4bf2-9c0c-6dabe114627f"
+              },
+              "target": {
+                "id": "33a15fdc-b52e-49a1-8895-88facbd7373a"
+              },
+              "vertices": [
+                {
+                  "x": 659,
+                  "y": 304
+                },
+                {
+                  "x": 708,
+                  "y": 311
+                },
+                {
+                  "x": 729,
+                  "y": 309
+                }
+              ],
+              "id": "da514da9-cbfc-4d35-985e-a0d627390322",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "Request",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 20,
+              "hasOpenThreats": false,
+              "outOfScope": true,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isOutOfScope"
+                }
+              }
             }
           ]
         },
         "size": {
           "height": 862,
-          "width": 824
+          "width": 1185
         }
       },
       {
