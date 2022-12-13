@@ -60,7 +60,8 @@
                   "type": "Denial of service",
                   "description": "Malicious extensions can be used to perform actions that disrupt the normal functioning of a web application, such as inserting ads or downloading malware.",
                   "threatId": "8d60af3b-92dd-473b-970c-d98c107ed9fa",
-                  "$$hashKey": "object:85"
+                  "mitigation": "Fine-tune Content Security Policy,  (to be implemented),  improve input validation.",
+                  "$$hashKey": "object:335"
                 },
                 {
                   "status": "Mitigated",
@@ -114,7 +115,7 @@
                   "type": "Information disclosure",
                   "mitigation": "Hashing sensitive data such as user password with flask-scrypt.",
                   "threatId": "08cc990b-f3db-4576-b450-7700d9b2e6ee",
-                  "$$hashKey": "object:120"
+                  "$$hashKey": "object:377"
                 },
                 {
                   "ruleId": "dc09cecf-cb06-455d-9e77-b9372bf6c8eb",
@@ -126,7 +127,7 @@
                   "description": "See OWASP Automated Threat #7:\nBrute force, dictionary and guessing attacks used against authentication processes of the application to identify valid account credentials",
                   "mitigation": "Defences include restriction of excessive authentication attempts, control of interaction frequency and enforcement of a single unique action",
                   "threatId": "cb972d57-bf3f-4d63-a23c-869fd2dcd12f",
-                  "$$hashKey": "object:126"
+                  "$$hashKey": "object:383"
                 },
                 {
                   "ruleId": "4fb623f6-2896-4209-8689-ff1b8a932105",
@@ -138,7 +139,7 @@
                   "description": "Out of date encryption algorithms are vulnerable and have known vulnerabilities",
                   "mitigation": "Use up to date cryptography for all signatures and encryption",
                   "threatId": "9e28e255-5269-46a4-9b97-49795d2819a5",
-                  "$$hashKey": "object:132"
+                  "$$hashKey": "object:389"
                 },
                 {
                   "status": "Mitigated",
@@ -149,7 +150,7 @@
                   "description": "A data breach occurs when sensitive information is accessed or stolen by unauthorised individuals. This can happen as a result of an attack on the server, or if data is accidentally exposed.",
                   "mitigation": "Role-based authorisation, data encryption, regular back-ups, keep software up-to-date.",
                   "threatId": "eefab014-c6b5-4a72-9fa3-31c39601322f",
-                  "$$hashKey": "object:138"
+                  "$$hashKey": "object:395"
                 },
                 {
                   "status": "Mitigated",
@@ -160,7 +161,7 @@
                   "type": "Tampering",
                   "mitigation": "Encrypting data, regular back-ups, implementing strong security measures.",
                   "threatId": "c9e9084c-3199-49d5-84be-5073a616f872",
-                  "$$hashKey": "object:144"
+                  "$$hashKey": "object:401"
                 },
                 {
                   "status": "Mitigated",
@@ -171,7 +172,7 @@
                   "type": "Denial of service",
                   "mitigation": "Using trustable hosting provider, strong security measures, network monitoring (to be implemented).",
                   "threatId": "ade1be53-b394-46a9-a441-2939e4f4b8be",
-                  "$$hashKey": "object:301"
+                  "$$hashKey": "object:407"
                 }
               ],
               "attrs": {
@@ -208,7 +209,7 @@
                   "type": "Information disclosure",
                   "title": "Security misconfiguration",
                   "description": "Attacker can obtain information on application vulnerabilities from misconfigured, verbose error messages.",
-                  "mitigation": "Keep error messages vague",
+                  "mitigation": "Keep error messages vague, don't write code handling sensitive data from scratch, use trusted, maintained libraries.",
                   "threatId": "c1aeb8f5-b000-4e84-9dcb-26341a994adf",
                   "$$hashKey": "object:101"
                 },
@@ -220,7 +221,7 @@
                   "type": "Tampering",
                   "mitigation": "Using SQLAlchemy that parameterize input data under the hood",
                   "threatId": "3323470f-8a2b-49d5-8c8b-2e70eb29cc84",
-                  "$$hashKey": "object:95"
+                  "$$hashKey": "object:365"
                 },
                 {
                   "status": "Mitigated",
@@ -240,9 +241,9 @@
                   "title": "Broken authentication and session management",
                   "type": "Information disclosure",
                   "threatId": "87cccf9b-4bce-44d8-b500-84caacfd1bcb",
-                  "$$hashKey": "object:385",
                   "description": "Referring to flaws in the way that a web app handles user authentication and session management. This can include things like weak or easily guessable passwords, insecure session cookies, or lack of protection against brute-force attacks.",
-                  "mitigation": "Require strong (long) passwords, secure session cookies."
+                  "mitigation": "Require strong (long) passwords, secure session cookies.",
+                  "$$hashKey": "object:359"
                 }
               ],
               "attrs": {
