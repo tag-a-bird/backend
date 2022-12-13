@@ -39,7 +39,7 @@
                   "mitigation": "Input validation, implementing the Content Security Policy (CSP) header and adding  restrictive Set-Cookie attributes (all 3 partially, as of now).",
                   "description": "XSS could mean unauthorised disclosure of sensitive information. XSS attacks involve injecting malicious JavaScript code into a web page, which is then executed by the victim's browser. This can allow the attacker to steal sensitive information, such as login credentials, from the victim's browser.",
                   "threatId": "ebf87215-9dfc-443b-945c-d9911f87bd20",
-                  "$$hashKey": "object:220"
+                  "$$hashKey": "object:315"
                 },
                 {
                   "status": "Mitigated",
@@ -48,9 +48,9 @@
                   "title": "Man-in-the-Middle attack",
                   "type": "Tampering",
                   "description": "Man-in-the-Middle attack means intercepting the communication between a user's browser and a web application, allowing the attacker to view and modify the data being exchanged.",
-                  "mitigation": "Using HTTPS (on the deployed app)",
+                  "mitigation": "Using HTTPS with TLS (on the deployed app).",
                   "threatId": "e2b0fbbf-f03d-419d-a798-b366a010a9de",
-                  "$$hashKey": "object:234"
+                  "$$hashKey": "object:79"
                 },
                 {
                   "status": "NotApplicable",
@@ -60,7 +60,18 @@
                   "type": "Denial of service",
                   "description": "Malicious extensions can be used to perform actions that disrupt the normal functioning of a web application, such as inserting ads or downloading malware.",
                   "threatId": "8d60af3b-92dd-473b-970c-d98c107ed9fa",
-                  "$$hashKey": "object:269"
+                  "$$hashKey": "object:85"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "modelType": "STRIDE",
+                  "title": "Cross-site request forgery (CSRF)",
+                  "description": "When an attacker tricks a user's web browser into sending a request to a website that the user is currently authenticated with, without the user's knowledge or consent. This can allow the attacker to perform actions on the website on the user's behalf, potentially leading to unauthorised access to sensitive information or the misuse of the user's account.",
+                  "type": "Spoofing",
+                  "mitigation": "Add CSRF Token (to be implemented), use same-site cookie flag (Lax).",
+                  "threatId": "73b865c8-7647-4bf4-9da3-a4392c015343",
+                  "$$hashKey": "object:321"
                 }
               ],
               "attrs": {
@@ -103,7 +114,7 @@
                   "type": "Information disclosure",
                   "mitigation": "Hashing sensitive data such as user password with flask-scrypt.",
                   "threatId": "08cc990b-f3db-4576-b450-7700d9b2e6ee",
-                  "$$hashKey": "object:320"
+                  "$$hashKey": "object:120"
                 },
                 {
                   "ruleId": "dc09cecf-cb06-455d-9e77-b9372bf6c8eb",
@@ -115,7 +126,7 @@
                   "description": "See OWASP Automated Threat #7:\nBrute force, dictionary and guessing attacks used against authentication processes of the application to identify valid account credentials",
                   "mitigation": "Defences include restriction of excessive authentication attempts, control of interaction frequency and enforcement of a single unique action",
                   "threatId": "cb972d57-bf3f-4d63-a23c-869fd2dcd12f",
-                  "$$hashKey": "object:467"
+                  "$$hashKey": "object:126"
                 },
                 {
                   "ruleId": "4fb623f6-2896-4209-8689-ff1b8a932105",
@@ -127,7 +138,40 @@
                   "description": "Out of date encryption algorithms are vulnerable and have known vulnerabilities",
                   "mitigation": "Use up to date cryptography for all signatures and encryption",
                   "threatId": "9e28e255-5269-46a4-9b97-49795d2819a5",
-                  "$$hashKey": "object:504"
+                  "$$hashKey": "object:132"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "modelType": "STRIDE",
+                  "title": "Data breaches",
+                  "type": "Spoofing",
+                  "description": "A data breach occurs when sensitive information is accessed or stolen by unauthorised individuals. This can happen as a result of an attack on the server, or if data is accidentally exposed.",
+                  "mitigation": "Role-based authorisation, data encryption, regular back-ups, keep software up-to-date.",
+                  "threatId": "eefab014-c6b5-4a72-9fa3-31c39601322f",
+                  "$$hashKey": "object:138"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "modelType": "STRIDE",
+                  "title": "Ransomware attacks",
+                  "description": "When an attacker encrypts a victim's data and demands payment in order to unlock it. It may result in the loss of important data.",
+                  "type": "Tampering",
+                  "mitigation": "Encrypting data, regular back-ups, implementing strong security measures.",
+                  "threatId": "c9e9084c-3199-49d5-84be-5073a616f872",
+                  "$$hashKey": "object:144"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "modelType": "STRIDE",
+                  "title": "Denial of service (DoS)",
+                  "description": "Overwhelming a server with traffic in order to make it unavailable to legitimate users. This can cause downtime and loss of access to important data.",
+                  "type": "Denial of service",
+                  "mitigation": "Using trustable hosting provider, strong security measures, network monitoring (to be implemented).",
+                  "threatId": "ade1be53-b394-46a9-a441-2939e4f4b8be",
+                  "$$hashKey": "object:301"
                 }
               ],
               "attrs": {
@@ -166,7 +210,7 @@
                   "description": "Attacker can obtain information on application vulnerabilities from misconfigured, verbose error messages.",
                   "mitigation": "Keep error messages vague",
                   "threatId": "c1aeb8f5-b000-4e84-9dcb-26341a994adf",
-                  "$$hashKey": "object:391"
+                  "$$hashKey": "object:101"
                 },
                 {
                   "status": "Mitigated",
@@ -176,7 +220,7 @@
                   "type": "Tampering",
                   "mitigation": "Using SQLAlchemy that parameterize input data under the hood",
                   "threatId": "3323470f-8a2b-49d5-8c8b-2e70eb29cc84",
-                  "$$hashKey": "object:301"
+                  "$$hashKey": "object:95"
                 },
                 {
                   "status": "Mitigated",
@@ -185,18 +229,20 @@
                   "title": "Brute force attack",
                   "type": "Tampering",
                   "threatId": "932ca7b7-9c58-4bfa-9cb1-155833f860e5",
-                  "$$hashKey": "object:347",
                   "description": "Multiple guesses of credentials by malicious actors",
-                  "mitigation": "Rate limiting failed login attempts"
+                  "mitigation": "Rate limiting failed login attempts",
+                  "$$hashKey": "object:107"
                 },
                 {
                   "status": "Mitigated",
                   "severity": "Medium",
                   "modelType": "STRIDE",
-                  "title": "Broken Authentication",
+                  "title": "Broken authentication and session management",
                   "type": "Information disclosure",
                   "threatId": "87cccf9b-4bce-44d8-b500-84caacfd1bcb",
-                  "$$hashKey": "object:385"
+                  "$$hashKey": "object:385",
+                  "description": "Referring to flaws in the way that a web app handles user authentication and session management. This can include things like weak or easily guessable passwords, insecure session cookies, or lack of protection against brute-force attacks.",
+                  "mitigation": "Require strong (long) passwords, secure session cookies."
                 }
               ],
               "attrs": {
@@ -228,6 +274,10 @@
                 {
                   "x": 260,
                   "y": 171
+                },
+                {
+                  "x": 268,
+                  "y": 193
                 }
               ],
               "id": "64cb83c7-3036-4c58-846f-c28e3b5bedee",
@@ -597,8 +647,8 @@
                 "height": 80
               },
               "position": {
-                "x": 746,
-                "y": 255
+                "x": 486,
+                "y": 437
               },
               "angle": 0,
               "id": "33a15fdc-b52e-49a1-8895-88facbd7373a",
@@ -634,16 +684,16 @@
               },
               "vertices": [
                 {
-                  "x": 672,
-                  "y": 277
+                  "x": 609,
+                  "y": 400
                 }
               ],
               "id": "e45c4cae-b046-482d-b46a-51ad1bc19b93",
               "labels": [
                 {
                   "position": {
-                    "distance": 0.5146693553443314,
-                    "offset": 2.9407920765281865
+                    "distance": 0.6231515733554294,
+                    "offset": 13.931421057104435
                   },
                   "attrs": {
                     "text": {
@@ -682,22 +732,17 @@
               },
               "vertices": [
                 {
-                  "x": 659,
-                  "y": 304
-                },
-                {
-                  "x": 708,
-                  "y": 311
-                },
-                {
-                  "x": 729,
-                  "y": 309
+                  "x": 547,
+                  "y": 385
                 }
               ],
               "id": "da514da9-cbfc-4d35-985e-a0d627390322",
               "labels": [
                 {
-                  "position": 0.5,
+                  "position": {
+                    "distance": 0.4084235759066476,
+                    "offset": 10.890081080301183
+                  },
                   "attrs": {
                     "text": {
                       "text": "Request",
