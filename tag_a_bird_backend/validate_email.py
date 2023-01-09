@@ -1,4 +1,4 @@
-from validate_email import validate_email
+import validate_email
 
 def check_email(email_typed_in):
     return validate_email(
