@@ -1,9 +1,9 @@
 import datetime
 from os import getenv
 import uuid
-from .models import User, Role
-from .db import db_session
-from . import create_app, config
+from tag_a_bird_backend.models import User, Role
+from tag_a_bird_backend.db import db_session
+from tag_a_bird_backend import create_app, config
 
 app = create_app(config.DevConfig)
 

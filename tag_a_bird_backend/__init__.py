@@ -2,8 +2,8 @@ from datetime import timedelta
 from flask import Flask, session, g
 from flask_toastr import Toastr
 from flask_login import LoginManager, current_user
-from . import config
-from .db import configure_engine
+from tag_a_bird_backend import config
+from tag_a_bird_backend.db import configure_engine
 from alembic import config as alembic_config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
