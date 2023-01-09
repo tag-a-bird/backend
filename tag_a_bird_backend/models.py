@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from flask_login import UserMixin
 from datetime import datetime, timezone
 from sqlalchemy.types import Boolean, DateTime, Integer, String, LargeBinary
-from .db import Base
+from tag_a_bird_backend.db import Base
 from flask_scrypt import generate_random_salt, generate_password_hash, check_password_hash
 
 class UserRoles(Base):
