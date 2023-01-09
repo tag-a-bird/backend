@@ -161,15 +161,15 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "filelock"
-version = "3.8.0"
+version = "3.9.0"
 description = "A platform independent file lock."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.extras]
-docs = ["furo (>=2022.6.21)", "sphinx (>=5.1.1)", "sphinx-autodoc-typehints (>=1.19.1)"]
-testing = ["covdefaults (>=2.2)", "coverage (>=6.4.2)", "pytest (>=7.1.2)", "pytest-cov (>=3)", "pytest-timeout (>=2.1)"]
+docs = ["furo (>=2022.12.7)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.19.5)"]
+testing = ["covdefaults (>=2.2.2)", "coverage (>=7.0.1)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)"]
 
 [[package]]
 name = "flask"
@@ -535,17 +535,16 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "py3-validate-email"
-version = "1.0.8"
+version = "1.0.5.post1"
 description = "Email validator with regex, blacklisted domains and SMTP checking."
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-dnspython = ">=2.2,<3.0"
-filelock = ">=3.7,<4.0"
-idna = ">=3.3,<4.0"
-typing_extensions = ">=4.4,<5.0"
+dnspython = ">=2.1,<3.0"
+filelock = ">=3.0,<4.0"
+idna = ">=3.0,<4.0"
 
 [[package]]
 name = "Pygments"
@@ -800,7 +799,7 @@ email = ["email-validator"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7349e6fa110c934c119a10261edfa3dd7d9aa69cd2f4346e9d56efee9f9f3ab4"
+content-hash = "1a48bf8efc2637d9e586ac776aa587da2db72b1adc1df91f94e08e37a66eebb8"
 
 [metadata.files]
 alembic = [
@@ -860,8 +859,8 @@ exceptiongroup = [
     {file = "exceptiongroup-1.0.1.tar.gz", hash = "sha256:73866f7f842ede6cb1daa42c4af078e2035e5f7607f0e2c762cc51bb31bbe7b2"},
 ]
 filelock = [
-    {file = "filelock-3.8.0-py3-none-any.whl", hash = "sha256:617eb4e5eedc82fc5f47b6d61e4d11cb837c56cb4544e39081099fa17ad109d4"},
-    {file = "filelock-3.8.0.tar.gz", hash = "sha256:55447caa666f2198c5b6b13a26d2084d26fa5b115c00d065664b2124680c4edc"},
+    {file = "filelock-3.9.0-py3-none-any.whl", hash = "sha256:f58d535af89bb9ad5cd4df046f741f8553a418c01a7856bf0d173bbc9f6bd16d"},
+    {file = "filelock-3.9.0.tar.gz", hash = "sha256:7b319f24340b51f55a2bf7a12ac0755a9b03e718311dac567a0f4f7fabd2f5de"},
 ]
 flask = [
     {file = "Flask-2.2.2-py3-none-any.whl", hash = "sha256:b9c46cc36662a7949f34b52d8ec7bb59c0d74ba08ba6cb9ce9adc1d8676d9526"},
@@ -1127,7 +1126,7 @@ psycopg2-binary = [
     {file = "psycopg2_binary-2.9.5-cp39-cp39-win_amd64.whl", hash = "sha256:484405b883630f3e74ed32041a87456c5e0e63a8e3429aa93e8714c366d62bd1"},
 ]
 py3-validate-email = [
-    {file = "py3-validate-email-1.0.8.tar.gz", hash = "sha256:f927d69640fb27540acf543046e59a520ec7be21e4a10f15c959dc40ec5bbf2e"},
+    {file = "py3-validate-email-1.0.5.post1.tar.gz", hash = "sha256:2e4eee1c206a2ac874d125f51b07522bb06ccc330ef3b850b66aad24bc88180a"},
 ]
 Pygments = [
     {file = "Pygments-2.13.0-py3-none-any.whl", hash = "sha256:f643f331ab57ba3c9d89212ee4a2dabc6e94f117cf4eefde99a0574720d14c42"},
