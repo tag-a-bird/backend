@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "tag-a-bird-backend"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
-authors = ["Can"]
+authors = ["Can", "Kinga"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
