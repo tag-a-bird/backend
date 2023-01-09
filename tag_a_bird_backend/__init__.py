@@ -12,7 +12,7 @@ from secure import Secure, Server, ContentSecurityPolicy, PermissionsPolicy, Str
 server = Server().set("Secure")
 csp = (ContentSecurityPolicy()
     .base_uri("'self'")
-    .default_src("'self'")
+    # .default_src("'self'")
     # .connect_src("'self'" "coreo.s3.eu-west-1.amazonaws.com")
     .frame_ancestors("'self'")
     .img_src("'self'")
