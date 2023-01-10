@@ -1,15 +1,16 @@
 from os import getenv
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
-from .utils.validate_email import check_email
-from .utils.helpers import populate_db_from_coreo
+from utils.validate_email import check_email
+from utils.helpers import populate_db_from_coreo
 import datetime
 import uuid
+from utils.blueprint import route_blueprint
 from utils.models import Role, User, QueryConfig, Record, Annotation
 from main import login_manager, limiter
 from utils.db import db_session, func
-from static.species import most_possible_birds, other_possible_birds
-from static.flags import flags_list
+from utils.species import most_possible_birds, other_possible_birds
+from utils.flags import flags_list
 from functools import wraps
 
 def admin_access_required():
@@ -82,7 +83,7 @@ def login():
             if not user or not user.verify_password(password):
                 return jsonify({"msg": "Bad email or password"}), 401
             login_user(user)
-            return render_template('about.html')
+            return redirect(url_for('route_blueprint.about'))
         except Exception as e:
             print(e)
             return jsonify({"msg": "Bad email or password"}), 401
