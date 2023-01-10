@@ -1,12 +1,28 @@
 version: '3.9'
-services:
+
+volumes:
+  postgres-db:
+    driver: local
+
+services:    
+    postgres:
+        container_name: postgres_demo
+        image: postgres:latest
+        environment:
+          POSTGRES_USER: super_admin
+          POSTGRES_PASSWORD: SomeSecretPassword
+          PGDATA: /data/postgres
+        volumes:
+          - postgres-db:/data/postgres
+        ports:
+          - "5432:5432"
 
     tab:
       image: kjanossy/tab:latest
       ports:
         - 5000:5000
       environment:
-        FLASK_DATABASE_URI: postgresql://localhost/tab?user=postgres&password=megyenahegyenaturista
+        FLASK_DATABASE_URI: postgresql://super_admin:SomeSecretPassword@postgres_demo
       logging:
         driver: "local"
 
