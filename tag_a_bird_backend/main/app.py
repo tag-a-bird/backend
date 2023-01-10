@@ -2,9 +2,11 @@ import datetime
 from os import getenv
 import uuid
 from utils import models, db
+from .. import routes
 from main import create_app
 
 app = create_app()
+app.register_blueprint(routes.route_blueprint)
 
 if not db.db_session.query(models.User.email == getenv('ADMIN_CREDENTIALS_EMAIL')).first():
     user = models.User(

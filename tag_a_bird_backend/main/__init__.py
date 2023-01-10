@@ -57,7 +57,4 @@ def create_app():
         if app.config != config.TestConfig:
             db.configure_engine(app.config['DATABASE_URI'])
 
-        from tag_a_bird_backend import routes
-        app.register_blueprint(routes.route_blueprint)
-
     return app
