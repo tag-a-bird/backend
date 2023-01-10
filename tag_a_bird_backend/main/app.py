@@ -1,10 +1,8 @@
 import datetime
 from os import getenv
 import uuid
-
-from utils import models
-from utils import db
-from . import create_app, config
+from utils import models, db
+from main import create_app
 
 app = create_app()
 

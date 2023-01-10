@@ -1,6 +1,7 @@
 tag_a_bird_backend/.env
 tag_a_bird_backend/build
 tag_a_bird_backend/.pytest_cache
+.pytest_cache
 .vscode/
 *.log
 *.pot

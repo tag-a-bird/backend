@@ -14,7 +14,7 @@ csp = (ContentSecurityPolicy()
     # .default_src("'self'")
     # .connect_src("'self'" "coreo.s3.eu-west-1.amazonaws.com")
     .frame_ancestors("'self'")
-    .img_src("'self'")
+    # .img_src("'self'")
     .form_action("'self'")
 )
 hsts = StrictTransportSecurity().include_subdomains().preload().max_age(2592000)
@@ -44,10 +44,10 @@ def create_app():
         session.modified = True
         g.user = current_user
 
-    @app.after_request
-    def set_secure_headers(response):
-        secure_headers.framework.flask(response)
-        return response
+    # @app.after_request
+    # def set_secure_headers(response):
+    #     secure_headers.framework.flask(response)
+    #     return response
 
     toastr.init_app(app)
     limiter.init_app(app)
@@ -57,7 +57,7 @@ def create_app():
         if app.config != config.TestConfig:
             db.configure_engine(app.config['DATABASE_URI'])
 
-        from ..utils.routes import route_blueprint
-        app.register_blueprint(route_blueprint)
+        from tag_a_bird_backend import routes
+        app.register_blueprint(routes.route_blueprint)
 
     return app
