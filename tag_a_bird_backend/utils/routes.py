@@ -29,8 +29,8 @@ def load_user(user_id):
     return db_session.query(User).get(user_id)
 
 route_blueprint = Blueprint('route_blueprint', __name__,        
-    template_folder='templates',
-    static_folder='static')
+    template_folder='../templates',
+    static_folder='../static')
 
 @route_blueprint.route('/about')
 def about():
