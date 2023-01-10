@@ -13,7 +13,7 @@ COPY --from=build-stage /app/dist /app
 COPY --from=build-stage /app/requirements.txt /app
 WORKDIR /app
 RUN pip install tag_a_bird_backend-0.0.0-py3-none-any.whl
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install waitress
 EXPOSE 5000
 CMD [ "waitress-serve", "--port=5000","--call", "main:create_app"]
