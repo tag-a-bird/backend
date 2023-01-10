@@ -1,5 +1,5 @@
-from tag_a_bird_backend.helpers import populate_db_from_coreo
-from tag_a_bird_backend.models import Record
+from tag_a_bird_backend.utils.helpers import populate_db_from_coreo
+from tag_a_bird_backend.utils.models import Record
 
 def test_populate_db(setup_test_database, app):
     temp_session = setup_test_database

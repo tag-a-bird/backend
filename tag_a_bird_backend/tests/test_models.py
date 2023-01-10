@@ -7,7 +7,7 @@ QueryConfig,
 Annotation,
 Record, Record.from_json(json, id)
 '''
-from tag_a_bird_backend.models import QueryConfig, User, Record, Annotation
+from tag_a_bird_backend.utils.models import QueryConfig, User, Record, Annotation
 
 def test_user_methods(test_user):
     assert test_user.verify_password('testpassword')
