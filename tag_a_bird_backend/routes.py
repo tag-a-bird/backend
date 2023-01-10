@@ -1,15 +1,15 @@
 from os import getenv
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
-from .validate_email import check_email
-from .helpers import populate_db_from_coreo
+from .utils.validate_email import check_email
+from .utils.helpers import populate_db_from_coreo
 import datetime
 import uuid
-from .models import Role, User, QueryConfig, Record, Annotation
-from ..main import login_manager, limiter
-from .db import db_session, func
-from ..static.species import most_possible_birds, other_possible_birds
-from ..static.flags import flags_list
+from utils.models import Role, User, QueryConfig, Record, Annotation
+from main import login_manager, limiter
+from utils.db import db_session, func
+from static.species import most_possible_birds, other_possible_birds
+from static.flags import flags_list
 from functools import wraps
 
 def admin_access_required():
@@ -29,8 +29,8 @@ def load_user(user_id):
     return db_session.query(User).get(user_id)
 
 route_blueprint = Blueprint('route_blueprint', __name__,        
-    template_folder='../templates',
-    static_folder='../static')
+    template_folder='templates',
+    static_folder='static')
 
 @route_blueprint.route('/about')
 def about():
