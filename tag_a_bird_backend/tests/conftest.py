@@ -1,12 +1,13 @@
 import pytest
 import datetime
 import uuid
-from tag_a_bird_backend import config, create_app
-from tag_a_bird_backend.models import User, Annotation, QueryConfig, Record
+from tag_a_bird_backend.utils import config
+from tag_a_bird_backend.main import create_app
+from tag_a_bird_backend.utils.models import User, Annotation, QueryConfig, Record
 from flask_login import FlaskLoginClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from tag_a_bird_backend.db import Base
+from tag_a_bird_backend.utils.db import Base
 
 @pytest.fixture
 def app():
