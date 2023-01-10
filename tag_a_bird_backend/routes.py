@@ -30,7 +30,7 @@ def load_user(user_id):
 
 route_blueprint = Blueprint('route_blueprint', __name__,        
     template_folder='templates',
-    static_folder='static')
+    static_folder='staticbackup')
 
 @route_blueprint.route('/about')
 def about():
