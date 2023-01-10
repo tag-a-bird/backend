@@ -9,7 +9,7 @@
 {% block content %}
 
 <head>
-    <script type="text/javascript" src="{{url_for('static', filename='dropDown.js')}}"></script>
+    <script type="text/javascript" src="../staticbackup/dropDown.js" ></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.spectrogram.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
@@ -42,7 +42,7 @@
                     data-action="pause">
                     Pause
                 </button>
-                <img class="ml-2 w-6 inline" src="../static/img/speaker-svgrepo-com.svg" alt="Volume" />
+                <img class="ml-2 w-6 inline" src="staticbackup/img/speaker-svgrepo-com.svg" alt="Volume" />
                 <span class="pl-2">
                     <input class="h-2 accent-indigo-500" type="range" min="5" max="10000000" value="1" passive
                         class="slider" id="gain-slider">
