@@ -29,12 +29,13 @@ def admin_access_required():
 def load_user(user_id):
     return db_session.query(User).get(user_id)
 
-route_blueprint = Blueprint('route_blueprint', __name__,        
+route_blueprint = Blueprint('route_blueprint', "notroutes",        
     template_folder='templates',
     static_folder='staticbackup')
 
 @route_blueprint.route('/about')
 def about():
+    print(route_blueprint.root_path)
     return render_template('about.html')
 
 @route_blueprint.route('/api/register', methods=['GET', 'POST'])
