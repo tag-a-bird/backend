@@ -13,3 +13,5 @@ dist/
 tag_a_bird_backend/static/output.css
 .DS_Store
 *.egg-info
+*.txt
+*.yml
