@@ -55,8 +55,11 @@ def create_app():
     with app.app_context():
         login_manager.init_app(app)
         if app.config != config.TestConfig:
+            
             db.configure_engine(app.config['DATABASE_URI'])
-    from notroutes import routes
+            # print("-------------------created-------------------: ", app.config['DATABASE_URI'])
+
+    from routes_module import routes
     app.register_blueprint(routes.route_blueprint)
 
     return app
