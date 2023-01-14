@@ -1,2 +1,2 @@
-recursive-include notroutes/templates *
-recursive-include notroutes/staticbackup *
+recursive-include routes_module/templates *
+recursive-include routes_module/staticbackup *
