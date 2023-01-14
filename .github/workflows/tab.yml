@@ -23,6 +23,6 @@ jobs:
       - name: Build the Docker image
         run: >-
           docker build --output
-             "type=image,push=true" --tag
-             kjanossy/tab ./tag_a_bird_backend/.
+          "type=image,push=true" --tag
+          kjanossy/tab ./tag_a_bird_backend/.
     
