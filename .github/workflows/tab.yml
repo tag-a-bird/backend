@@ -5,8 +5,7 @@ name: Backend build
       closed
   workflow_dispatch:
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
+  buildx:
     runs-on: ubuntu-latest
     steps:
       - name: Inject slug/short variables
