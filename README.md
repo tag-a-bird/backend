@@ -4,7 +4,7 @@ Tag a bird is an audio data annotation tool, focusing on bioacoustics. Audio dat
 # Update January 2023
 The app has been dockerised and [deployed](http://138.68.185.192:5000/about)! 
 
-There are currently two versions of the app online. The setup of the dockerised version can be described by the following architecture:
+There are currently two versions of the app online. The workflows of the dockerised version can be described by the following diagram:
 ![CI/CD](./readme_assets/ci_cd_pipeline_tab.png)
 
 ## Backend Architecture 
