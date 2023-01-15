@@ -7,6 +7,8 @@ The app has been dockerised and [deployed](http://138.68.185.192:5000/about)!
 There are currently two versions of the app online. The workflows of the dockerised version can be described by the following diagram:
 ![CI/CD](./readme_assets/ci_cd_pipeline_tab.png)
 
+Note: currently there are no tests running, `on:push` and `on:pull_request` workflows are not yet implemented, but `pull_request:types:- closed` (when the branch is merged) the app does get built and deployed.
+
 ## Backend Architecture 
 ![Architecture](./readme_assets/tag-a-bird_architecture.png)
 
