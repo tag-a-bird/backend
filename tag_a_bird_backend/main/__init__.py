@@ -44,10 +44,10 @@ def create_app():
         session.modified = True
         g.user = current_user
 
-    # @app.after_request
-    # def set_secure_headers(response):
-    #     secure_headers.framework.flask(response)
-    #     return response
+    @app.after_request
+    def set_secure_headers(response):
+        secure_headers.framework.flask(response)
+        return response
 
     toastr.init_app(app)
     limiter.init_app(app)
