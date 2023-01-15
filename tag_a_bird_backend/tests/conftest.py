@@ -11,7 +11,8 @@ from tag_a_bird_backend.utils.db import Base
 
 @pytest.fixture
 def app():
-    app = create_app(config.TestConfig)
+    app = create_app()
+    app.config.from_object(config.TestConfig)
     app.test_client_class = FlaskLoginClient
 
     yield app
