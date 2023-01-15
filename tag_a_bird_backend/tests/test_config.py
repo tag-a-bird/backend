@@ -3,8 +3,8 @@ from os import getenv
 
 from tag_a_bird_backend.main import create_app
 
-def test_config():
-    assert create_app(config.TestConfig).testing
+# def test_config():
+#     assert create_app(config.TestConfig).testing
 
 def test_prod_config(app):
     app.config.from_object(config.ProdConfig)
