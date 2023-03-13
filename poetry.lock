@@ -537,20 +537,6 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
-name = "py3-validate-email"
-version = "1.0.8"
-description = "Email validator with regex, blacklisted domains and SMTP checking."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-dnspython = ">=2.2,<3.0"
-filelock = ">=3.7,<4.0"
-idna = ">=3.3,<4.0"
-typing_extensions = ">=4.4,<5.0"
-
-[[package]]
 name = "Pygments"
 version = "2.13.0"
 description = "Pygments is a syntax highlighting package written in Python."
