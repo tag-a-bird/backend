@@ -1,15 +1,15 @@
 from os import getenv
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
-from .validate_email import check_email
-from .helpers import populate_db_from_coreo
+#from .validate_email import check_email
+from backend.tag_a_bird_backend.helpers import populate_db_from_coreo
 import datetime
 import uuid
-from .models import Role, User, QueryConfig, Record, Annotation
-from . import login_manager, limiter
-from .db import db_session, func
-from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
-from tag_a_bird_backend.static.flags import flags_list
+from backend.tag_a_bird_backend.models import Role, User, QueryConfig, Record, Annotation
+from backend.tag_a_bird_backend import login_manager, limiter
+from backend.tag_a_bird_backend.db import db_session, func
+from backend.tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
+from backend.tag_a_bird_backend.static.flags import flags_list
 from functools import wraps
 import requests
 
@@ -40,7 +40,7 @@ def about():
 @route_blueprint.route('/api/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST' and len(request.form['password']) > 7:
-        if check_email(request.form['email']):
+        #if check_email(request.form['email']):
             if db_session.query(User).filter(User.email == request.form['email']).first() is None:
                 db_session.rollback()
                 try:
@@ -62,9 +62,9 @@ def register():
             else:
                 flash('Error: User already exists')
                 return render_template('auth/register.html')
-        else:
-            flash("The email seems to be incorrect!")
-            return render_template('auth/register.html') # this clears the entire form, fix later!
+        #else:
+        #    flash("The email seems to be incorrect!")
+        #    return render_template('auth/register.html') # this clears the entire form, fix later!
     elif request.method == 'POST' and len(request.form['password']) < 8:
         flash("The password must be at least 8 characters long!")
         return render_template('auth/register.html') # this clears the entire form, fix later!

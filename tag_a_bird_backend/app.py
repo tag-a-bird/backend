@@ -1,9 +1,9 @@
 import datetime
 from os import getenv
 import uuid
-from .models import User, Role
-from .db import db_session
-from . import create_app, config
+from backend.tag_a_bird_backend.models import User, Role
+from backend.tag_a_bird_backend.db import db_session
+from backend.tag_a_bird_backend import create_app, config
  
 app = create_app()
 
@@ -19,5 +19,7 @@ if not db_session.query(User.email == getenv('ADMIN_CREDENTIALS_EMAIL')).first()
     db_session.add(user)
     db_session.commit()
 
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)
