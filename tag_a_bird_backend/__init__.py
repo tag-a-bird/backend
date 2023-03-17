@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_toastr import Toastr
 from flask_login import LoginManager
-from backend.tag_a_bird_backend.db import configure_engine, db_session, engine
-from backend.tag_a_bird_backend.models import Base
+from tag_a_bird_backend.db import configure_engine, db_session, engine
+from tag_a_bird_backend.models import Base
 from alembic import config as alembic_config
-from backend.tag_a_bird_backend import config
+from tag_a_bird_backend import config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from secure import Secure
@@ -34,7 +34,7 @@ def create_app():
     #alembic_config.main(argv=alembicArgs)
     
 
-    from backend.tag_a_bird_backend.routes import route_blueprint
+    from tag_a_bird_backend.routes import route_blueprint
     app.register_blueprint(route_blueprint)
 
     toastr.init_app(app)
