@@ -1,8 +1,8 @@
 from os import getenv
 import requests
 from json import loads
-from .models import Record
-from .db import db_session
+from tag_a_bird_backend.models import Record
+from tag_a_bird_backend.db import db_session
 
 def populate_db_from_coreo(db_session, country: str) -> str:
     """Populates the database with records from the coreo API"""
