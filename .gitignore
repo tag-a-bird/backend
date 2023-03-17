@@ -1,4 +1,4 @@
-tag_a_bird_backend/.env
+*.env
 tag_a_bird_backend/.pytest_cache
 .vscode/
 *.log
