@@ -1,0 +1,84 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - can-cicd
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
+
+    - name: Set up environment variables
+      run: |
+        echo "FLASK_APP=${{ secrets.FLASK_APP }}" >> $GITHUB_ENV
+        echo "FLASK_DATABASE_URI=${{ secrets.FLASK_DATABASE_URI }}" >> $GITHUB_ENV
+        echo "FLASK_SQLALCHEMY_TRACK_MODIFICATIONS=${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }}" >> $GITHUB_ENV
+        echo "FLASK_DEBUG=${{ secrets.FLASK_DEBUG }}" >> $GITHUB_ENV
+        echo "FLASK_TESTING=${{ secrets.FLASK_TESTING }}" >> $GITHUB_ENV
+        echo "FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "COREO_API_KEY=${{ secrets.COREO_API_KEY }}" >> $GITHUB_ENV
+        echo "ADMIN_CREDENTIALS_EMAIL=${{ secrets.ADMIN_CREDENTIALS_EMAIL }}" >> $GITHUB_ENV
+        echo "ADMIN_CREDENTIALS_PW=${{ secrets.ADMIN_CREDENTIALS_PW }}" >> $GITHUB_ENV
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-
+
+    - name: Install dependencies
+      run: |
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        poetry install
+
+    - name: Build .whl package
+      run: poetry build
+
+    - name: Run tests
+      run: |
+        cd tag_a_bird_backend
+        pytest
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/tag-a-bird/backend:latest
+
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Decode SSL certificates
+      run: |
+        echo "${{ secrets.SSL_CERT }}" | base64 -d > nginx/ssl/certificate.crt
+        echo "${{ secrets.SSL_KEY }}" | base64 -d > nginx/ssl/private.key
+
+    - name: Deploy to DigitalOcean VM
+      run: |
+        scp docker-compose.yml root@46.101.107.0:/root/
+        scp nginx/nginx.conf root@46.101.107.0:/root/nginx/
+        scp nginx/ssl/cert.pem root@46.101.107.0:/root/nginx/ssl/
+        scp nginx/ssl/key.pem root@46.101.107.0:/root/nginx/ssl/
+        ssh root@46.101.107.0 "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.CR_PAT }}"
+        ssh root@46.101.107.0 "docker-compose -f /root/docker-compose.yml pull"
+        ssh root@46.101.107.0 "docker-compose -f /root/docker-compose.yml up -d"
