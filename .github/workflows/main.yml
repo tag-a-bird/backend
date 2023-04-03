@@ -66,15 +66,21 @@ jobs:
         echo '#!/bin/sh' > ssh-add-pass.sh
         echo 'echo $PRIVATE_KEY_PASSPHRASE' >> ssh-add-pass.sh
         chmod +x ssh-add-pass.sh
+    - name: Start SSH agent
+      run: |
+        eval "$(ssh-agent -s)"
+        echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+        echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
 
-    - name: Install SSH key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      env: 
-        PRIVATE_KEY_PASSPHRASE: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
-        SSH_ASKPASS: ./ssh-add-pass.sh
-
+    - name: Add SSH key to agent
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        PASSPHRASE: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key
+        chmod 600 private_key
+        printf "%s\n" "$PASSPHRASE" | ssh-add private_key
+        rm -f private_key
     - name: Decode SSL certificates
       run: |
         echo "${{ secrets.SSL_CERT }}" | base64 -d > nginx/ssl/certificate.crt
