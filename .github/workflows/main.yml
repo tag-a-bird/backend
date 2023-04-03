@@ -94,7 +94,7 @@ jobs:
 
     - name: Deploy to DigitalOcean VM
       run: |
-        scp -r -o StrictHostKeyChecking=no -i private_key -P 22 tag_a_bird_backend/nginx ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
+        scp -r -o StrictHostKeyChecking=no -i private_key -P 22 /nginx ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
         scp -o StrictHostKeyChecking=no -i private_key -P 22 docker-compose.yml ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
         scp -o StrictHostKeyChecking=no -i private_key -P 22 Dockerfile ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
         ssh -o StrictHostKeyChecking=no -i private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'cd /root && docker-compose up -d'
