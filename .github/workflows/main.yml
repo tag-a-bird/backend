@@ -100,7 +100,6 @@ jobs:
         scp -r -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 dist ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/dist
         scp -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 docker-compose.yml ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
         scp -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 dockerfile ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'docker-compose down'
         ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'sudo fuser -k 443/tcp'
         ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'cd /root && docker-compose up -d'
         rm -f /tmp/private_key
