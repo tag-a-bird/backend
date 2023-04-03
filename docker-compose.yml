@@ -1,22 +1,12 @@
-version: '3'
+version: '3.8'
 
 services:
   app:
-    build: .
+    image: ghcr.io/tag-a-bird/backend:latest
     ports:
       - "8000:8000"
     depends_on:
       - nginx
-    environment:
-      - FLASK_APP
-      - FLASK_DATABASE_URI
-      - FLASK_SQLALCHEMY_TRACK_MODIFICATIONS
-      - FLASK_DEBUG
-      - FLASK_SECRET_KEY
-      - FLASK_TESTING
-      - COREO_API_KEY
-      - ADMIN_CREDENTIALS_EMAIL
-      - ADMIN_CREDENTIALS_PW
 
   nginx:
     image: nginx:latest
