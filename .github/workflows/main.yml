@@ -95,9 +95,7 @@ jobs:
     - name: Deploy to DigitalOcean VM
       run: |
         scp docker-compose.yml root@${{ secrets.DIGITALOCEAN_IP }}:/root/
-        scp nginx/nginx.conf root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/
-        scp nginx/ssl/cert.pem root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/ssl/
-        scp nginx/ssl/key.pem root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/ssl/
+        scp -r nginx root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/
         ssh root@${{ secrets.DIGITALOCEAN_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.CR_PAT }}"
         ssh root@${{ secrets.DIGITALOCEAN_IP }} "docker-compose -f /root/docker-compose.yml pull"
         ssh root@${{ secrets.DIGITALOCEAN_IP }} "docker-compose -f /root/docker-compose.yml up -d"
