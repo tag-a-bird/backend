@@ -88,6 +88,8 @@ jobs:
 
     - name: Add remote server to known hosts
       run: |
+        mkdir -p ~/.ssh
+        touch ~/.ssh/known_hosts
         echo "$(echo ${{ secrets.DIGITALOCEAN_IP }}) $(ssh-keyscan ${{ secrets.DIGITALOCEAN_IP }})" >> ~/.ssh/known_hosts
 
     - name: Deploy to DigitalOcean VM
