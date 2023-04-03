@@ -51,21 +51,12 @@ jobs:
     - name: Build .whl package
       run: poetry build
 
-    - name: Log in to GitHub Container Registry
-      run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ghcr.io/tag-a-bird/backend:latest
-
     - name: Create ssh-add-pass.sh script
       run: |
         echo '#!/bin/sh' > ssh-add-pass.sh
         echo 'echo $PRIVATE_KEY_PASSPHRASE' >> ssh-add-pass.sh
         chmod +x ssh-add-pass.sh
+
     - name: Start SSH agent
       run: |
         eval "$(ssh-agent -s)"
@@ -81,11 +72,7 @@ jobs:
         chmod 600 private_key
         printf "%s\n" "$PASSPHRASE" | ssh-add private_key
         rm -f private_key
-    - name: Decode SSL certificates
-      run: |
-        echo "${{ secrets.SSL_CERT }}" | base64 -d > nginx/ssl/certificate.crt
-        echo "${{ secrets.SSL_KEY }}" | base64 -d > nginx/ssl/private.key
-
+    
     - name: Add remote server to known hosts
       run: |
         mkdir -p ~/.ssh
@@ -96,10 +83,10 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > /tmp/private_key
         chmod 600 /tmp/private_key
-        scp -r -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 nginx ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx
-        scp -r -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 dist ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/dist
-        scp -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 docker-compose.yml ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
-        scp -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 dockerfile ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/root/
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'sudo fuser -k 443/tcp'
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'cd /root && docker-compose up -d'
-        rm -f /tmp/private_key
+        scp -r -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 dist ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/home/annotate/dist/
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'source /opt/annotate/envs/tag-a-bird/bin/activate'
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'pip uninstall tag-a-bird-backend'
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'pip install /home/annotate/dist/tag_a_bird_backend-0.1.0-py3-none-any.whl'
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'sudo systemctl restart tag-a-bird.service'
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'sudo systemctl restart nginx'
+
