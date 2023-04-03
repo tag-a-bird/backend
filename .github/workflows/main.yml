@@ -84,9 +84,10 @@ jobs:
         echo "$PRIVATE_KEY" > /tmp/private_key
         chmod 600 /tmp/private_key
         scp -r -o StrictHostKeyChecking=no -i /tmp/private_key -P 22 dist ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }}:/home/annotate/dist/
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'source /opt/annotate/envs/tag-a-bird/bin/activate'
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'pip uninstall tag-a-bird-backend'
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'pip install /home/annotate/dist/tag_a_bird_backend-0.1.0-py3-none-any.whl'
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'sudo systemctl restart tag-a-bird.service'
-        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} 'sudo systemctl restart nginx'
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} '
+          source /opt/annotate/envs/tag-a-bird/bin/activate &&
+          pip uninstall tag-a-bird-backend &&
+          pip install /home/annotate/dist/tag_a_bird_backend-0.1.0-py3-none-any.whl &&
+          sudo systemctl restart tag-a-bird.service &&
+          sudo systemctl restart nginx'
 
