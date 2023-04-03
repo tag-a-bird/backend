@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    image: ghcr.io/tag-a-bird/backend:latest
+    ports:
+      - "8000:8000"
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl

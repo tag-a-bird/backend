@@ -1,7 +1,6 @@
 from os import getenv
 from flask import request, jsonify, render_template, flash, url_for, redirect, Blueprint, session
 from flask_login import login_user, login_required, logout_user, current_user
-from .validate_email import check_email
 from .helpers import populate_db_from_coreo
 import datetime
 import uuid
@@ -40,31 +39,27 @@ def about():
 @route_blueprint.route('/api/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST' and len(request.form['password']) > 7:
-        if check_email(request.form['email']):
-            if db_session.query(User).filter(User.email == request.form['email']).first() is None:
+        if db_session.query(User).filter(User.email == request.form['email']).first() is None:
+            db_session.rollback()
+            try:
+                user = User(
+                        id  = uuid.uuid4(),
+                        username = request.form['username'],
+                        email = request.form['email'],
+                        created_on = datetime.datetime.now()
+                        )
+                user.set_password(request.form['password'])
+                db_session.add(user)
+                db_session.commit()
+                login_user(user)
+                return render_template('about.html')
+            except Exception as e:
                 db_session.rollback()
-                try:
-                    user = User(
-                            id  = uuid.uuid4(),
-                            username = request.form['username'],
-                            email = request.form['email'],
-                            created_on = datetime.datetime.now()
-                            )
-                    user.set_password(request.form['password'])
-                    db_session.add(user)
-                    db_session.commit()
-                    login_user(user)
-                    return render_template('about.html')
-                except Exception as e:
-                    db_session.rollback()
-                    flash('Error: ' + str(e))
-                    return render_template('auth/register.html')
-            else:
-                flash('Error: User already exists')
+                flash('Error: ' + str(e))
                 return render_template('auth/register.html')
         else:
-            flash("The email seems to be incorrect!")
-            return render_template('auth/register.html') # this clears the entire form, fix later!
+            flash('Error: User already exists')
+            return render_template('auth/register.html')
     elif request.method == 'POST' and len(request.form['password']) < 8:
         flash("The password must be at least 8 characters long!")
         return render_template('auth/register.html') # this clears the entire form, fix later!
