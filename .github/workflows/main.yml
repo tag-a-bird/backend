@@ -71,8 +71,9 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      env: PRIVATE_KEY_PASSPHRASE: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
-      SSH_ASKPASS: ./ssh-add-pass.sh
+      env: 
+        PRIVATE_KEY_PASSPHRASE: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
+        SSH_ASKPASS: ./ssh-add-pass.sh
 
     - name: Decode SSL certificates
       run: |
