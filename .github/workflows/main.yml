@@ -88,14 +88,14 @@ jobs:
 
     - name: Add remote server to known hosts
       run: |
-        echo "$(echo 46.101.107.0) $(ssh-keyscan 46.101.107.0)" >> ~/.ssh/known_hosts
+        echo "$(echo ${{ secrets.DIGITALOCEAN_IP }}) $(ssh-keyscan ${{ secrets.DIGITALOCEAN_IP }})" >> ~/.ssh/known_hosts
 
     - name: Deploy to DigitalOcean VM
       run: |
-        scp docker-compose.yml root@46.101.107.0:/root/
-        scp nginx/nginx.conf root@46.101.107.0:/root/nginx/
-        scp nginx/ssl/cert.pem root@46.101.107.0:/root/nginx/ssl/
-        scp nginx/ssl/key.pem root@46.101.107.0:/root/nginx/ssl/
-        ssh root@46.101.107.0 "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.CR_PAT }}"
-        ssh root@46.101.107.0 "docker-compose -f /root/docker-compose.yml pull"
-        ssh root@46.101.107.0 "docker-compose -f /root/docker-compose.yml up -d"
+        scp docker-compose.yml root@${{ secrets.DIGITALOCEAN_IP }}:/root/
+        scp nginx/nginx.conf root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/
+        scp nginx/ssl/cert.pem root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/ssl/
+        scp nginx/ssl/key.pem root@${{ secrets.DIGITALOCEAN_IP }}:/root/nginx/ssl/
+        ssh root@${{ secrets.DIGITALOCEAN_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.CR_PAT }}"
+        ssh root@${{ secrets.DIGITALOCEAN_IP }} "docker-compose -f /root/docker-compose.yml pull"
+        ssh root@${{ secrets.DIGITALOCEAN_IP }} "docker-compose -f /root/docker-compose.yml up -d"
