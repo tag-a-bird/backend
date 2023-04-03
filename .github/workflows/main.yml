@@ -86,6 +86,10 @@ jobs:
         echo "${{ secrets.SSL_CERT }}" | base64 -d > nginx/ssl/certificate.crt
         echo "${{ secrets.SSL_KEY }}" | base64 -d > nginx/ssl/private.key
 
+    - name: Add remote server to known hosts
+      run: |
+        echo "$(echo 46.101.107.0) $(ssh-keyscan 46.101.107.0)" >> ~/.ssh/known_hosts
+
     - name: Deploy to DigitalOcean VM
       run: |
         scp docker-compose.yml root@46.101.107.0:/root/
