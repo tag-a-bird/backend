@@ -11,10 +11,10 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="$HOME/.local/bin:$PATH"
 
 # Copy the .whl package file
-COPY dist/*.whl /tmp/
+COPY dist/ /tmp/dist
 
 # Install the .whl package
-RUN pip install /tmp/*.whl
+RUN pip install /tmp/dist/tag_a_bird_backend-0.1.0-py3-none-any.whl
 
 # Install Gunicorn
 RUN pip install gunicorn
