@@ -53,7 +53,7 @@ jobs:
 
     - name: Log in to GitHub Container Registry
       run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
@@ -61,10 +61,18 @@ jobs:
         push: true
         tags: ghcr.io/tag-a-bird/backend:latest
 
+    - name: Create ssh-add-pass.sh script
+      run: |
+        echo '#!/bin/sh' > ssh-add-pass.sh
+        echo 'echo $PRIVATE_KEY_PASSPHRASE' >> ssh-add-pass.sh
+        chmod +x ssh-add-pass.sh
+
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      env: PRIVATE_KEY_PASSPHRASE: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
+      SSH_ASKPASS: ./ssh-add-pass.sh
 
     - name: Decode SSL certificates
       run: |
