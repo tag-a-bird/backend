@@ -34,6 +34,49 @@ ADMIN_CREDENTIALS_EMAIL=<admin_email>" > .env
 flask run
 ```
 
+## Deployment Pipeline
+Developer's Computer
+
+1. Developer commits code changes and pushes to the GitHub repository (e.g., main or can-cicd branch).
+GitHub Repository
+
+2. Code changes trigger the GitHub Actions CI/CD pipeline.
+3. GitHub Actions CI/CD Pipeline
+a. Check out repository
+b. Set up Python 3.10
+c. Set up environment variables
+d. Install Poetry
+e. Cache dependencies
+f. Install dependencies
+g. Run Alembic migrations
+h. Build .whl package
+i. Create ssh-add-pass.sh script
+j. Start SSH agent
+k. Add SSH key to agent
+l. Add remote server to known hosts
+
+4. Deployment to DigitalOcean VM
+a. Copy the .whl package to the VM
+b. SSH into the VM
+c. Activate the virtual environment
+d. Uninstall the old package
+e. Install the new .whl package
+f. Restart the application service
+g. Restart the Nginx web server
+
+5. Production Environment
+The updated application is now live and serving traffic.
+
+Here's a diagram to represent the process visually:
++-----------------+       +-----------------+       +-----------------------+       +---------------------+       +------------------+
+| Developer's     |------>| GitHub          |------>| GitHub Actions       |------>| DigitalOcean VM     |------>| Production       |
+| Computer        |       | Repository      |       | CI/CD Pipeline       |       | (Deployment Server) |       | Environment      |
++-----------------+       +-----------------+       +-----------------------+       +---------------------+       +------------------+
+  Code Changes                                             |               |                                      |
+                                                           |               |                                      |
+                                                           v               v                                      v
+                                                      Alembic Migrations      .whl Package Deployment     Live Application
+
 ## Endpoints
 `GET /about` unprotected route that explains a bit more about the project
 

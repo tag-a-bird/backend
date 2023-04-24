@@ -48,6 +48,10 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
         poetry install
 
+#     - name: Run Alembic migrations
+#      run: |
+#        alembic -c alembic.ini -x "uri=${{ secrets.FLASK_DATABASE_URI }}" upgrade head
+
     - name: Build .whl package
       run: poetry build
 
