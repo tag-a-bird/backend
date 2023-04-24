@@ -91,7 +91,11 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i /tmp/private_key -p 22 ${{ secrets.DIGITALOCEAN_USER }}@${{ secrets.DIGITALOCEAN_IP }} '
           source /opt/annotate/envs/tag-a-bird/bin/activate &&
           pip uninstall -y tag-a-bird-backend &&
+          sleep 5 &&
           pip install /home/annotate/dist/tag_a_bird_backend-0.1.0-py3-none-any.whl &&
+          sleep 5 &&
           sudo systemctl restart tag-a-bird.service &&
-          sudo systemctl restart nginx'
+          sudo systemctl restart nginx &&
+          sleep 5 &&
+          sudo systemctl status tag-a-bird.service --no-pager -l'
 
