@@ -68,38 +68,41 @@ g. Restart the Nginx web server
 The updated application is now live and serving traffic.
 
 Here's a diagram to represent the process visually:
-Developer's Computer
-       |
-       v
-GitHub Repository
-       |
-       v
-GitHub Actions CI/CD Pipeline
-  ├───> Check out repository
-  ├───> Set up Python 3.10
-  ├───> Set up environment variables
-  ├───> Install Poetry
-  ├───> Cache dependencies
-  ├───> Install dependencies
-  ├───> Run Alembic migrations
-  ├───> Build .whl package (Artifact)
-  ├───> Create ssh-add-pass.sh script
-  ├───> Start SSH agent
-  ├───> Add SSH key to agent
-  └───> Add remote server to known hosts
-       |
-       v
-Deployment to DigitalOcean VM
-  ├───> Copy the .whl package (Artifact) to the VM
-  ├───> SSH into the VM
-  ├───> Activate the virtual environment
-  ├───> Uninstall the old package
-  ├───> Install the new .whl package (Artifact)
-  ├───> Restart the application service
-  └───> Restart the Nginx web server
-       |
-       v
-Production Environment (Live Application)
+
+Developer's Computer  
+       |  
+       v  
+GitHub Repository  
+       |  
+       v  
+GitHub Actions CI/CD Pipeline  
+  ├───> Check out repository  
+  ├───> Set up Python 3.10  
+  ├───> Set up environment variables  
+  ├───> Install Poetry  
+  ├───> Cache dependencies  
+  ├───> Install dependencies  
+  ├───> Run Alembic migrations  
+  ├───> Build .whl package (Artifact)  
+  ├───> Create ssh-add-pass.sh script  
+  ├───> Start SSH agent  
+  ├───> Add SSH key to agent  
+  └───> Add remote server to known hosts  
+       |  
+       v  
+Deployment to DigitalOcean VM  
+  ├───> Copy the .whl package (Artifact) to the VM  
+  ├───> SSH into the VM  
+  ├───> Activate the virtual environment  
+  ├───> Uninstall the old package  
+  ├───> Install the new .whl package (Artifact)  
+  ├───> Restart the application service  
+  └───> Restart the Nginx web server  
+       |  
+       v  
+Production Environment (Live Application)  
+
+
 
 ## Endpoints
 `GET /about` unprotected route that explains a bit more about the project
