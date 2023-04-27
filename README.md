@@ -136,3 +136,31 @@ pytest -v
 ```
 ## Threat model
 ![Threat model](./readme_assets/threat_model_owasp.png)
+
+### Security measures
+Implemented Security Headers with [secure.py](https://secure.readthedocs.io/en/latest/)
+ 
+Prevent SQL Injection
+  * Parameterizing sensitive query inputs (SQLAlchemy)
+
+  
+Secure Authentication
+  * Requiring long passwords (min. 8 characters) 
+  * Rate limiting failed login attempts (5 per hour)
+  * Secure password storage with hashing
+  * Email validation
+  
+
+Protect Sensitive Data
+  * Password hashing and salting (currently using flask-scrypt)
+  *	Encrypted database in production
+  * Encrypt data transmission with secure TLS protocol
+
+Deployment Pipeline
+  * Secrets: The workflow uses GitHub Secrets to store sensitive information, such as API keys, environment variables, SSH private keys, and other credentials. This helps protect sensitive data from exposure in logs or hard-coded values in the repository. Secrets are encrypted and can only be accessed by the specific GitHub Actions workflow running within the same repository.
+  * SSH Key Management: The workflow uses an SSH private key to establish a secure connection with the DigitalOcean VM. The private key is stored as a GitHub Secret (secrets.SSH_PRIVATE_KEY), and the corresponding public key should be added to the authorized_keys file on the DigitalOcean VM. This allows for secure communication between the GitHub Actions runner and the DigitalOcean VM during deployment.
+  * StrictHostKeyChecking: The ssh-keyscan command is used to add the remote server's public key to the known hosts file. This is done to prevent MITM 
+
+Secure Configurations
+  * Keep error messages vague
+  * Session timeout after 1 minute of inactivity
