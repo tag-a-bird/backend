@@ -10,3 +10,4 @@ tag_a_bird_backend/.pytest_cache
 dist/
 tag_a_bird_backend/static/output.css
 .DS_Store
+nginx/ssl/
