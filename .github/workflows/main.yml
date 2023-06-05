@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - can-cicd
 
 jobs:
   build_and_test:
