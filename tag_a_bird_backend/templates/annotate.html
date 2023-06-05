@@ -9,12 +9,13 @@
 {% block content %}
 
 <head>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.3"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.3/dist/plugin/wavesurfer.spectrogram.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.3/dist/plugin/wavesurfer.regions.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.3/dist/plugin/wavesurfer.timeline.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.3/dist/plugin/wavesurfer.minimap.min.js"></script>
+
     <script type="text/javascript" src="{{url_for('static', filename='dropDown.js')}}"></script>
-    <script src="https://unpkg.com/wavesurfer.js@6/dist/wavesurfer.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js@6/dist/plugin/wavesurfer.spectrogram.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js@6/dist/plugin/wavesurfer.regions.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js@6/dist/plugin/wavesurfer.timeline.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js@6/dist/plugin/wavesurfer.minimap.js"></script>
 </head>
 
 <body>
