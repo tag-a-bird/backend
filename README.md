@@ -35,6 +35,8 @@ flask run
 ```
 
 ## Deployment Pipeline
+![CICD_Pipeline](./readme_assets/Tag-a-Bird_CI_CD_Pipeline.png)
+
 Developer's Computer
 
 1. Developer commits code changes and pushes to the GitHub repository (e.g., main or can-cicd branch).
