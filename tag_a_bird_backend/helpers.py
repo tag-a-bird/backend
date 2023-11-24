@@ -7,7 +7,7 @@ from .db import db_session
 def populate_db_from_coreo(db_session, country: str) -> str:
     """Populates the database with records from the coreo API"""
 
-    limit = 10
+    limit = 100
     offset = 0
     total_count = 0
 
