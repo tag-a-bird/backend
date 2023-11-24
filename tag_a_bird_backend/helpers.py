@@ -17,7 +17,9 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         query = f"""{{
             records(where:{{
                 projectId: 462,
-                data:{{country: {country}}}
+                data:{{country: {country}, species: {
+        'ne': 'null'
+    }}}
                 }},
                 limit:{limit},
                 offset:{offset},
@@ -43,37 +45,70 @@ def populate_db_from_coreo(db_session, country: str) -> str:
 
     # find the record in response that matches the last record in the database from the same country and add all records after that one to the database
     # if there are no records in the database from that country, add all records from that country to the database
-    while True:
-        response = coreo_request(limit=limit, offset=offset)
-        records_to_add = response.get("data", {}).get("records", [])
-        if not records_to_add:
-            break  # No more records to process
-
+    if db_session.query(Record).filter_by(country=country).first() is None:
         count = 0
-        for record_data in records_to_add:
+        response = coreo_request(limit=limit, offset=offset)
+        
+        while len(response["data"]["records"]) == limit:
             try:
-                # Check if the record already exists
-                if not db_session.query(Record).filter_by(id=record_data['id']).first():
-                    new_record = Record.from_json(json=record_data["data"], id=record_data["id"])
+                for record in response["data"]["records"]:
+                    new_record = Record.from_json(json=record["data"], id=record["id"])
                     db_session.add(new_record)
                     count += 1
-                else:
-                    print(f"Record with id {record_data['id']} already exists. Skipping.")
             except Exception as e:
                 db_session.rollback()
-                print(f"Error: {e}")
+                count = 0
+                print(e)
                 return f"Error: {e}"
-
+            db_session.commit()
+            # print(f"Added {count} records to the database")
+            offset += count
+            # print(offset)
+            total_count += count
+            count = 0
+            response = coreo_request(limit=limit, offset=offset)
+            
         try:
-            if count > 0:
-                db_session.commit()  # Commit outside the loop to minimize database transactions
-                print(f"Added {count} records to the database")
-                total_count += count
-        except IntegrityError as e:
+            for record in response["data"]["records"]:
+                new_record = Record.from_json(json=record["data"], id=record["id"])
+                db_session.add(new_record)
+                count += 1
+            db_session.commit()
+            print(f"Added {count} records to the database")
+            total_count += count
+            count = 0
+        except Exception as e:
             db_session.rollback()
-            print(f"A record with this ID already exists. Error: {e}")
-            continue  # Continue with the next batch of records
-
-        offset += limit  # Increase the offset to fetch the next batch of records
-
+            count = 0
+            print(e)
+            return f"Error: {e}"   
+        
+    else:
+        db_last_record = db_session.query(Record).filter_by(country=country).order_by(Record.created_at.desc()).first()
+        count = 0
+        # print(f'there are already some records from {country}')
+        print(limit, offset)
+        response = coreo_request(limit=limit, offset=offset)
+        
+        while len(response["data"]["records"]) == limit:
+            try:
+                for record in response["data"]["records"]:
+                    if record["id"] == db_last_record.id:
+                        break
+                    new_record =Record.from_json(json=record["data"], id=record["id"])
+                    db_session.add(new_record)
+                    count += 1
+            except Exception as e:
+                db_session.rollback()
+                count = 0
+                print(e)
+                return f"Error: {e}"
+            db_session.commit()
+            print(f"Added {count} records to the database")
+            offset += count
+            # print(offset)
+            total_count += count
+            count = 0
+            response = coreo_request(limit=limit, offset=offset)
+            
     return f"Database populated with {total_count} records from {country}"
