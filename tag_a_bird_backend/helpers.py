@@ -17,9 +17,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         query = f"""{{
             records(where:{{
                 projectId: 462,
-                data:{{country: {country}, species: {
-        'ne': 'null'
-    }}}
+                data:{{country: {country}, species: {{ne: null}}}},
                 }},
                 limit:{limit},
                 offset:{offset},
