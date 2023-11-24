@@ -82,7 +82,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             return f"Error: {e}"   
         
     else:
-        db_last_record = Record.query.filter_by(country=country).order_by(Record.created_at.desc()).first()
+        db_last_record = db_session.query(Record).filter_by(country=country).order_by(Record.created_at.desc()).first()
         count = 0
         # print(f'there are already some records from {country}')
         print(limit, offset)
