@@ -86,7 +86,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         count = 0
         # print(f'there are already some records from {country}')
         print(limit, offset)
-        response = coreo_request(offset=offset)
+        response = coreo_request(limit=limit, offset=offset)
         
         while len(response["data"]["records"]) == limit:
             try:
@@ -107,6 +107,6 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             # print(offset)
             total_count += count
             count = 0
-            response = coreo_request(offset=offset)
+            response = coreo_request(limit=limit, offset=offset)
             
     return f"Database populated with {total_count} records from {country}"
