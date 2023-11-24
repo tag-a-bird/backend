@@ -155,7 +155,7 @@ def set_parameters():
 async def annotate():
     async def get_record(countries, with_annotation: bool=True, not_in_status: list = ['draft', 'reported'], in_status: list = ['questioned']):
         try:
-            record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != None).order_by(func.random()).first()
+            record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species.length > 0).order_by(func.random()).first()
             users_annotations = db_session.query(User).filter(current_user.id == User.id).first().annotations
             if users_annotations:
                 related_records = [ db_session.query(Record).filter(Record.id == annotation.recording_id).first() for annotation in users_annotations]
