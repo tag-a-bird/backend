@@ -11,3 +11,4 @@ dist/
 tag_a_bird_backend/static/output.css
 .DS_Store
 nginx/ssl/
+.env
