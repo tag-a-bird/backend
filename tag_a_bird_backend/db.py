@@ -13,6 +13,7 @@ def configure_engine(url):
     db_session.remove()
     Session.configure(bind=engine)
     db_session.configure(bind=engine)
+    Base.metadata.bind = engine  # Bind the metadata to the engine
     Base.metadata.create_all(engine)
 
 def get_engine():
