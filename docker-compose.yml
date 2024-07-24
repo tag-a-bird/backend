@@ -1,6 +1,8 @@
 services:
   app:
-    image: ghcr.io/tag-a-bird/backend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     depends_on:
@@ -8,8 +10,8 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app # Mount the current directory to /app in the container
-    platform: linux/amd64 # Specify the platform
+      - .:/tag_a_bird_backend
+    platform: linux/amd64
 
   nginx:
     image: nginx:latest
@@ -21,7 +23,7 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl
     depends_on:
       - app
-    platform: linux/amd64 # Specify the platform
+    platform: linux/amd64
 
   db:
     image: postgres:latest
@@ -31,7 +33,7 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    platform: linux/amd64 # Specify the platform
+    platform: linux/amd64
 
 volumes:
   postgres_data:

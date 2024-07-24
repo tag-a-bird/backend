@@ -8,7 +8,7 @@ class Config:
     SECRET_KEY = getenv('FLASK_SECRET_KEY')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
-    # FLASK_SQLALCHEMY_TRACK_MODIFICATIONS= False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False  
 
 
 class ProdConfig(Config):
@@ -16,6 +16,7 @@ class ProdConfig(Config):
     DEBUG = False
     TESTING = False
     DATABASE_URI = getenv('PROD_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = DATABASE_URI  
 
 
 class DevConfig(Config):
@@ -24,6 +25,7 @@ class DevConfig(Config):
     TESTING = False
     LOGIN_DISABLED = False
     DATABASE_URI = getenv('FLASK_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = DATABASE_URI  
 
 
 class TestConfig(Config):
@@ -32,3 +34,4 @@ class TestConfig(Config):
     TESTING = True
     LOGIN_DISABLED = True
     DATABASE_URI = getenv('FLASK_TEST_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = DATABASE_URI  
