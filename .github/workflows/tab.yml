@@ -55,4 +55,5 @@ jobs:
           docker build --output
           "type=image,push=true" --tag
           ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-$GITHUB_RUN_NUMBER  --tag
-          ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-latest ./tag_a_bird_backend/.
+          ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-latest .
+        working-directory: .
