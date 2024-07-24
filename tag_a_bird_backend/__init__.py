@@ -21,11 +21,19 @@ def create_app():
 
     configure_engine(app.config['DATABASE_URI'])
 
-    from tag_a_bird_backend.models import Base
+    from .models import Base
     Base.metadata.create_all(bind=engine)
 
-    from tag_a_bird_backend.routes import route_blueprint
-    app.register_blueprint(route_blueprint)
+    # Register blueprints
+    from .blueprints.auth.routes import auth_bp
+    from .blueprints.admin.routes import admin_bp
+    from .blueprints.annotation.routes import annotation_bp
+    from .blueprints.general.routes import general_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(annotation_bp)
+    app.register_blueprint(general_bp)
 
     toastr.init_app(app)
     limiter.init_app(app)
