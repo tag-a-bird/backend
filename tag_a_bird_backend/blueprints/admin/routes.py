@@ -4,6 +4,7 @@ from functools import wraps
 from ...models import Role, QueryConfig
 from ...db import db_session
 from ...helpers import populate_db_from_coreo
+from flask import jsonify
 
 admin_bp = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 

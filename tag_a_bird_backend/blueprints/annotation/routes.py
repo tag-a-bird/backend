@@ -4,6 +4,7 @@ from ...models import Record, User, Annotation, QueryConfig
 from ...db import db_session, func
 from tag_a_bird_backend.static.species import most_possible_birds, other_possible_birds
 from tag_a_bird_backend.static.flags import flags_list
+from flask import redirect, url_for
 
 annotation_bp = Blueprint('annotation', __name__, template_folder='templates', static_folder='static')
 

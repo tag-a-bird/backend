@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for, session
 from flask_login import login_user, logout_user, current_user
 import uuid, datetime
-from ...models import User
+from ...models import User, Role
 from ...db import db_session
 from ... import login_manager, limiter
+from os import getenv
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
