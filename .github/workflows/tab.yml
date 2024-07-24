@@ -10,6 +10,9 @@ jobs:
   buildimage:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
@@ -26,9 +29,11 @@ jobs:
         run: |
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           poetry install
+        working-directory: .
 
       - name: Build .whl package
         run: poetry build
+        working-directory: .
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
