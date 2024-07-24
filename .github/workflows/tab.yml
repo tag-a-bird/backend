@@ -29,11 +29,11 @@ jobs:
         run: |
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           poetry install
-        working-directory: .
+        working-directory: ./tag_a_bird_backend # Set the working directory to where your pyproject.toml is
 
       - name: Build .whl package
         run: poetry build
-        working-directory: .
+        working-directory: ./tag_a_bird_backend # Set the working directory to where your pyproject.toml is
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -48,12 +48,9 @@ jobs:
           install: true
 
       - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and Push Docker image
-        run: >
-          docker build --output
-          "type=image,push=true" --tag
-          ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-$GITHUB_RUN_NUMBER  --tag
-          ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-latest .
-        working-directory: .
+        run: |
+          docker build --output "type=image,push=true" --tag ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-$GITHUB_RUN_NUMBER --tag ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-latest .
+        working-directory: ./tag_a_bird_backend # Set the working directory to where your Dockerfile is
