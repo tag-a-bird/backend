@@ -1185,10 +1185,19 @@ endblock %} {% endblock %} {% set active_page = "annotate" %} {% block content
           <p>Alle Segmente dieser Audiodatei annotiert und überprüft?</p>
           <input
             type="button"
-            onclick="location.href='{{ url_for('auth.logout') }}';"
+            id="logout-button"
             value="Ja, ausloggen"
             class="p-2 mb-1 w-[190px] text-back font-bold rounded bg-emerald-200 hover:bg-emerald-400 transition-colors duration-300"
           />
+
+          <script>
+            document.getElementById("logout-button").onclick = function () {
+              location.href = "{{ url_for('auth.logout') }}";
+            };
+          </script>
+          value="Ja, ausloggen" class="p-2 mb-1 w-[190px] text-back font-bold
+          rounded bg-emerald-200 hover:bg-emerald-400 transition-colors
+          duration-300" />
           <button
             onclick="confirmNo()"
             class="p-2 w-[190px] text-back font-bold rounded bg-red-200 hover:bg-red-400 transition-colors duration-300"
@@ -1333,5 +1342,4 @@ endblock %} {% endblock %} {% set active_page = "annotate" %} {% block content
     </div>
   </div>
 </body>
-
 {% endblock %}
