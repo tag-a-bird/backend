@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Deploy
 
 on:
   push:
@@ -6,10 +6,8 @@ on:
       - can-backend-24
 
 jobs:
-  deploy:
-    runs-on: self-hosted
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -20,30 +18,25 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Set up Docker Buildx
+      - name: Create .env file from secrets
         run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          docker buildx create --use
+          echo "FLASK_CONFIG_TYPE=production" >> .env
+          echo "FLASK_APP=${{ secrets.FLASK_APP }}" >> .env
+          echo "FLASK_DATABASE_URI=${{ secrets.FLASK_DATABASE_URI }}" >> .env
+          echo "FLASK_SQLALCHEMY_TRACK_MODIFICATIONS=${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }}" >> .env
+          echo "FLASK_DEBUG=${{ secrets.FLASK_DEBUG }}" >> .env
+          echo "FLASK_TESTING=${{ secrets.FLASK_TESTING }}" >> .env
+          echo "FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}" >> .env
+          echo "COREO_API_KEY=${{ secrets.COREO_API_KEY }}" >> .env
+          echo "ADMIN_CREDENTIALS_EMAIL=${{ secrets.ADMIN_CREDENTIALS_EMAIL }}" >> .env
+          echo "ADMIN_CREDENTIALS_PW=${{ secrets.ADMIN_CREDENTIALS_PW }}" >> .env
 
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build and push Docker image
+      - name: Install Docker Compose
         run: |
-          docker buildx build \
-              --build-arg FLASK_APP="${{ secrets.FLASK_APP }}" \
-              --build-arg FLASK_DATABASE_URI="${{ secrets.FLASK_DATABASE_URI }}" \
-              --build-arg FLASK_SQLALCHEMY_TRACK_MODIFICATIONS="${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }}" \
-              --build-arg FLASK_DEBUG="${{ secrets.FLASK_DEBUG }}" \
-              --build-arg FLASK_TESTING="${{ secrets.FLASK_TESTING }}" \
-              --build-arg FLASK_SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}" \
-              --build-arg COREO_API_KEY=$"{{ secrets.COREO_API_KEY }}" \
-              --build-arg ADMIN_CREDENTIALS_EMAIL="${{ secrets.ADMIN_CREDENTIALS_EMAIL }}" \
-              --build-arg ADMIN_CREDENTIALS_PW="${{ secrets.ADMIN_CREDENTIALS_PW }}" \
-              --tag ghcr.io/tag-a-bird/backend:"${{ github.ref_name }}-${{ github.run_number }}" \
-              --tag ghcr.io/tag-a-bird/backend:"${{ github.ref_name }}-latest" \
-              --push \
-              .
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
-      - name: Log out from GitHub Container Registry
-        run: docker logout ghcr.io
+      - name: Build and deploy
+        run: |
+          docker-compose down
+          docker-compose up -d --build

@@ -1,6 +1,7 @@
+version: "3.8"
+
 services:
   app:
-    image: ghcr.io/<your-github-repo>/my-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,12 +26,6 @@ services:
       - COREO_API_KEY=${COREO_API_KEY}
       - ADMIN_CREDENTIALS_EMAIL=${ADMIN_CREDENTIALS_EMAIL}
       - ADMIN_CREDENTIALS_PW=${ADMIN_CREDENTIALS_PW}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.role == manager]
 
   nginx:
     image: nginx:latest
