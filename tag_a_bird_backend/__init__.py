@@ -26,8 +26,6 @@ def create_app():
     else:
         app.config.from_object(config.DevConfig)
     
-    app.config['SECRET_KEY'] = getenv('FLASK_SECRET_KEY', 'your-default-secret-key')
-
     configure_engine(app.config['DATABASE_URI'])
 
 
