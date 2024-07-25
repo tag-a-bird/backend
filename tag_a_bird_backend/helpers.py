@@ -5,13 +5,12 @@ from .models import Record
 from .db import db_session
 
 def populate_db_from_coreo(db_session, country: str) -> str:
-    """Populates the database with records from the coreo API"""
+    """Populates the database with the last 100 records from the coreo API"""
 
     limit = 100
-    offset = 0
     total_count = 0
 
-    def coreo_request(limit, offset) -> dict:
+    def coreo_request(limit) -> dict:
         api_url = "https://api.coreo.io/graphql"
         request_header = {
             "Authorization": getenv("COREO_API_KEY"),
@@ -26,8 +25,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
                 data: {{country: "{country}"}}
             }},
             limit: {limit},
-            offset: {offset},
-            order: "createdAt") {{
+            order: "createdAt desc") {{
                 id
                 state
                 lat
@@ -65,62 +63,24 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             print(f"Request failed with status code {response.status_code}")
             return {}
 
-    if db_session.query(Record).filter_by(country=country).first() is None:
-        count = 0
-        response = coreo_request(limit=limit, offset=offset)
-        
-        while response and "data" in response and "records" in response["data"] and len(response["data"]["records"]) == limit:
-            try:
-                for record in response["data"]["records"]:
+    count = 0
+    response = coreo_request(limit=limit)
+    
+    if response and "data" in response and "records" in response["data"]:
+        try:
+            for record in response["data"]["records"]:
+                if not db_session.query(Record).filter_by(id=record["id"]).first():
                     new_record = Record.from_json(json=record["data"], id=record["id"])
                     db_session.add(new_record)
                     count += 1
-            except Exception as e:
-                db_session.rollback()
-                count = 0
-                print(e)
-                return f"Error: {e}"
             db_session.commit()
-            offset += count
             total_count += count
-            count = 0
-            response = coreo_request(limit=limit, offset=offset)
-            
-        if response and "data" in response and "records" in response["data"]:
-            try:
-                for record in response["data"]["records"]:
-                    new_record = Record.from_json(json=record["data"], id=record["id"])
-                    db_session.add(new_record)
-                    count += 1
-                db_session.commit()
-                print(f"Added {count} records to the database")
-                total_count += count
-            except Exception as e:
-                db_session.rollback()
-                print(e)
-                return f"Error: {e}"
+            print(f"Added {count} records to the database")
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            return f"Error: {e}"
     else:
-        db_last_record = db_session.query(Record).filter_by(country=country).order_by(Record.created_at.desc()).first()
-        count = 0
-        response = coreo_request(limit=limit, offset=offset)
-        
-        while response and "data" in response and "records" in response["data"] and len(response["data"]["records"]) == limit:
-            try:
-                for record in response["data"]["records"]:
-                    if record["id"] == db_last_record.id:
-                        break
-                    new_record = Record.from_json(json=record["data"], id=record["id"])
-                    db_session.add(new_record)
-                    count += 1
-            except Exception as e:
-                db_session.rollback()
-                count = 0
-                print(e)
-                return f"Error: {e}"
-            db_session.commit()
-            offset += count
-            total_count += count
-            count = 0
-            response = coreo_request(limit=limit, offset=offset)
-            
+        print("No records found or API request failed.")
+    
     return f"Database populated with {total_count} records from {country}"
