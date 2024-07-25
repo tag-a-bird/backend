@@ -15,7 +15,7 @@ class ProdConfig(Config):
     FLASK_ENV = 'production'
     DEBUG = False
     TESTING = False
-    DATABASE_URI = getenv('PROD_DATABASE_URI')
+    DATABASE_URI = getenv('FLASK_DATABASE_URI')
     SQLALCHEMY_DATABASE_URI = DATABASE_URI  
 
 
@@ -33,5 +33,5 @@ class TestConfig(Config):
     DEBUG = False
     TESTING = True
     LOGIN_DISABLED = True
-    DATABASE_URI = getenv('FLASK_TEST_DATABASE_URI')
+    DATABASE_URI = getenv('FLASK_DATABASE_URI')
     SQLALCHEMY_DATABASE_URI = DATABASE_URI  
