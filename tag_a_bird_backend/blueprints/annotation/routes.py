@@ -11,7 +11,7 @@ annotation_bp = Blueprint('annotation', __name__, template_folder='templates', s
 @annotation_bp.route('/annotate', methods=["GET", "POST"])
 @login_required
 async def annotate():
-    async def get_record(countries, with_annotation: bool=True, not_in_status: list=['draft', 'reported'], in_status: list=['questioned']):
+    async def get_record(countries, with_annotation: bool=False, not_in_status: list=['draft', 'reported'], in_status: list=[]):
         try:
             record = db_session.query(Record).filter(Record.country == func.any(countries)).filter(Record.species != []).order_by(func.random()).first()
             users_annotations = db_session.query(User).filter(current_user.id == User.id).first().annotations
@@ -22,6 +22,7 @@ async def annotate():
             return record
         except AttributeError as e:
             flash("No records found")
+            print(e)
             record = str(e)
             return record
 
@@ -30,7 +31,9 @@ async def annotate():
         with_annotation = db_session.query(QueryConfig).filter_by(parameter='with_annotation').first().value
         not_in_status = db_session.query(QueryConfig).filter_by(parameter='not_in_status').first().value.split(',')
         in_status = db_session.query(QueryConfig).filter_by(parameter='in_status').first().value.split(',')
+        print(countries, with_annotation, not_in_status, in_status)
         new_record = await get_record(countries, with_annotation, not_in_status, in_status)
+        print(new_record)
         return render_template('annotate.html', record=new_record, most_possible_birds=most_possible_birds, other_possible_birds=other_possible_birds)
 
     elif request.method == "POST":

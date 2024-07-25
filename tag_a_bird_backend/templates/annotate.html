@@ -907,6 +907,7 @@ endblock %} {% endblock %} {% set active_page = "annotate" %} {% block content
         });
 
         const birdAudio = new Audio("{{ record.audio_url }}");
+        console.log(birdAudio);
         birdAudio.crossOrigin = "anonymous";
 
         wavesurfer.load(birdAudio);

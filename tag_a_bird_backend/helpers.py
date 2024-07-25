@@ -25,27 +25,9 @@ def populate_db_from_coreo(db_session, country: str) -> str:
                 data: {{country: "{country}"}}
             }},
             limit: {limit},
-            order: "createdAt desc") {{
+            order: "createdAt") {{
                 id
-                state
-                lat
-                lng
-                createdAt
-                updatedAt
-                deletedAt
-                updatedAtPrecise
-                commentsCount
-                title
-                description
-                associatesCount
-                liked
-                likesCount
-                deleted
-                requestId
-                anonymous
                 data
-                verificationState
-                verified
             }}
         }}"""
 
