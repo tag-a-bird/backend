@@ -19,13 +19,17 @@ migrate = Migrate()
 def create_app():
     app = Flask(__name__)
 
-    config_type = getenv('FLASK_CONFIG_TYPE', 'development')
-
+    config_type = getenv('FLASK_CONFIG_TYPE')
+    
     if config_type == 'production':
         app.config.from_object(config.ProdConfig)
     else:
         app.config.from_object(config.DevConfig)
+    
+    app.config['SECRET_KEY'] = getenv('FLASK_SECRET_KEY', 'your-default-secret-key')
+
     configure_engine(app.config['DATABASE_URI'])
+
 
     from .models import Base
     Base.metadata.create_all(bind=engine)
