@@ -1,4 +1,4 @@
-name: Deploy
+name: Build and Push Docker Image
 
 on:
   push:
@@ -6,31 +6,37 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Create .env file from secrets
+      - name: Build and push Docker image
         run: |
-          echo "FLASK_CONFIG_TYPE=production" >> .env
-          echo "FLASK_APP=${{ secrets.FLASK_APP }}" >> .env
-          echo "FLASK_DATABASE_URI=${{ secrets.FLASK_DATABASE_URI }}" >> .env
-          echo "FLASK_SQLALCHEMY_TRACK_MODIFICATIONS=${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }}" >> .env
-          echo "FLASK_DEBUG=${{ secrets.FLASK_DEBUG }}" >> .env
-          echo "FLASK_TESTING=${{ secrets.FLASK_TESTING }}" >> .env
-          echo "FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}" >> .env
-          echo "COREO_API_KEY=${{ secrets.COREO_API_KEY }}" >> .env
-          echo "ADMIN_CREDENTIALS_EMAIL=${{ secrets.ADMIN_CREDENTIALS_EMAIL }}" >> .env
-          echo "ADMIN_CREDENTIALS_PW=${{ secrets.ADMIN_CREDENTIALS_PW }}" >> .env
+          docker build --build-arg FLASK_APP=${{ secrets.FLASK_APP }} \
+                       --build-arg FLASK_DATABASE_URI=${{ secrets.FLASK_DATABASE_URI }} \
+                       --build-arg FLASK_SQLALCHEMY_TRACK_MODIFICATIONS=${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }} \
+                       --build-arg FLASK_DEBUG=${{ secrets.FLASK_DEBUG }} \
+                       --build-arg FLASK_TESTING=${{ secrets.FLASK_TESTING }} \
+                       --build-arg FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }} \
+                       --build-arg COREO_API_KEY=${{ secrets.COREO_API_KEY }} \
+                       --build-arg ADMIN_CREDENTIALS_EMAIL=${{ secrets.ADMIN_CREDENTIALS_EMAIL }} \
+                       --build-arg ADMIN_CREDENTIALS_PW=${{ secrets.ADMIN_CREDENTIALS_PW }} \
+                       --tag ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-$GITHUB_RUN_NUMBER \
+                       --tag ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-latest .
 
-      - name: Pull and run Docker Compose
-        run: |
-          docker-compose down
-          docker-compose pull app
-          docker-compose up -d
+          docker push ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-$GITHUB_RUN_NUMBER
+          docker push ghcr.io/tag-a-bird/backend:$GITHUB_REF_SLUG-latest
+
+      - name: Log out from GitHub Container Registry
+        run: docker logout ghcr.io
