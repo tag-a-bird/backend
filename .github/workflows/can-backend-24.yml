@@ -6,6 +6,8 @@ on:
       - can-backend-24
 
 jobs:
+  deploy:
+    runs-on: self-hosted
   build:
     runs-on: ubuntu-latest
 
