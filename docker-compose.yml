@@ -11,6 +11,7 @@ services:
       - .env
     volumes:
       - .:/tag_a_bird_backend
+    command: gunicorn --bind 0.0.0.0:8000 tag_a_bird_backend.app:app
     platform: linux/amd64
 
   nginx:

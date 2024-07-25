@@ -1,32 +1,33 @@
-# Use the official Python base image
-FROM python:3.10
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
 
-# Set the working directory
-WORKDIR /tag_a_bird_backend
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the content of the root and subfolders to the working directory
+COPY . .
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN pip install poetry
 
-# Add Poetry to PATH
-ENV PATH="/root/.local/bin:$PATH"
-
-# Copy pyproject.toml and poetry.lock
+# Copy pyproject.toml and poetry.lock files
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies using Poetry
-RUN poetry config virtualenvs.create false && poetry install --no-root
+# Install Python dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-ansi
 
-# Copy the rest of the application code
-COPY tag_a_bird_backend /tag_a_bird_backend
-
-# Install Gunicorn
-RUN pip install gunicorn
-
-# Set the FLASK_APP environment variable
-ENV FLASK_APP=tag_a_bird_backend.app
+# Set environment variables from the .env file
+COPY .env .env
 
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Start Gunicorn with Flask-Migrate upgrade
-CMD ["sh", "-c", "flask db upgrade && gunicorn --bind 0.0.0.0:8000 --workers 4 'tag_a_bird_backend.app:app'"]
+# Run the application with Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "tag_a_bird_backend.app:app"]
