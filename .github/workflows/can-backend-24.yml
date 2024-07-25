@@ -28,8 +28,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker buildx build . \
-              
+          docker buildx build \
               --build-arg FLASK_APP="${{ secrets.FLASK_APP }}" \
               --build-arg FLASK_DATABASE_URI="${{ secrets.FLASK_DATABASE_URI }}" \
               --build-arg FLASK_SQLALCHEMY_TRACK_MODIFICATIONS="${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }}" \
@@ -41,7 +40,8 @@ jobs:
               --build-arg ADMIN_CREDENTIALS_PW="${{ secrets.ADMIN_CREDENTIALS_PW }}" \
               --tag ghcr.io/tag-a-bird/backend:"${{ github.ref_name }}-${{ github.run_number }}" \
               --tag ghcr.io/tag-a-bird/backend:"${{ github.ref_name }}-latest" \
-              --push
+              --push \
+              .
 
       - name: Log out from GitHub Container Registry
         run: docker logout ghcr.io
