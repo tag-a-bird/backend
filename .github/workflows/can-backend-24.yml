@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Create .env file from secrets
+        run: |
+          echo "FLASK_CONFIG_TYPE=production" >> .env
+          echo "FLASK_APP=${{ secrets.FLASK_APP }}" >> .env
+          echo "FLASK_DATABASE_URI=${{ secrets.FLASK_DATABASE_URI }}" >> .env
+          echo "FLASK_SQLALCHEMY_TRACK_MODIFICATIONS=${{ secrets.FLASK_SQLALCHEMY_TRACK_MODIFICATIONS }}" >> .env
+          echo "FLASK_DEBUG=${{ secrets.FLASK_DEBUG }}" >> .env
+          echo "FLASK_TESTING=${{ secrets.FLASK_TESTING }}" >> .env
+          echo "FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}" >> .env
+          echo "COREO_API_KEY=${{ secrets.COREO_API_KEY }}" >> .env
+          echo "ADMIN_CREDENTIALS_EMAIL=${{ secrets.ADMIN_CREDENTIALS_EMAIL }}" >> .env
+          echo "ADMIN_CREDENTIALS_PW=${{ secrets.ADMIN_CREDENTIALS_PW }}" >> .env
+
+      - name: Pull and run Docker Compose
+        run: |
+          docker-compose down
+          docker-compose pull app
+          docker-compose up -d

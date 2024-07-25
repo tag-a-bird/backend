@@ -7,6 +7,7 @@ from . import config
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from secure import Secure
+from os import getenv
 
 secure_headers = Secure()
 
@@ -17,8 +18,13 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(config.DevConfig)
 
+    config_type = getenv('FLASK_CONFIG_TYPE', 'development')
+
+    if config_type == 'production':
+        app.config.from_object(config.ProdConfig)
+    else:
+        app.config.from_object(config.DevConfig)
     configure_engine(app.config['DATABASE_URI'])
 
     from .models import Base
