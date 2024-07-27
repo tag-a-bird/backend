@@ -43,9 +43,9 @@ def populate_db_from_coreo(db_session, country: str) -> str:
 
     try:
         response = coreo_request(limit=limit)
-        if response.response and "data" in response.response and "records" in response.response["data"]:
+        if response["response"] and "data" in response["response"] and "records" in response["response"]["data"]:
             count = 0
-            records = response.response["data"]["records"]
+            records = response["response"]["data"]["records"]
             if not records:
                 return f"No records found or API request failed. { response }"
             for record in records:
@@ -56,7 +56,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             db_session.commit()
             total_count += count
         else:
-            if "error" in response.response:
+            if "error" in response["response"]:
                 return f"API request failed: {response['error']}"
             return "No records found or API request failed."
     except Exception as e:
