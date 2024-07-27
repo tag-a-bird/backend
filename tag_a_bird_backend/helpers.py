@@ -47,7 +47,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             count = 0
             records = response["data"]["records"]
             if not records:
-                return f"No records found or API request failed. { records }"
+                return f"No records found or API request failed. { response }"
             for record in records:
                 if not db_session.query(Record).filter_by(id=record["id"]).first():
                     new_record = Record.from_json(json=record["data"], id=record["id"])
