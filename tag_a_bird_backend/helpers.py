@@ -33,7 +33,9 @@ def populate_db_from_coreo(db_session, country: str) -> str:
 
         request_body = {"query": query}
         response = requests.post(api_url, headers=request_header, json=request_body)
-        print('Request made')
+        print('Request made:', request_body)
+        print('Status code:', response.status_code)
+        print('Response:', response.text)
         if response.status_code == 200:
             try:
                 response_json = loads(response.text)
