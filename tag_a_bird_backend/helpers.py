@@ -32,26 +32,24 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         }}"""
 
         request_body = {"query": query}
-        response = requests.post(api_url, headers=request_header, json=request_body)
-        print('Request made:', request_body)
-        print('Status code:', response.status_code)
-        print('Response:', response.text)
-        if response.status_code == 200:
-            try:
-                response_json = loads(response.text)
-                return response_json
-            except Exception as e:
-                print(f"Error parsing response JSON: {e}")
-                return {}
-        else:
-            print(f"Request failed with status code {response.status_code}")
+        try:
+            response = requests.post(api_url, headers=request_header, json=request_body)
+            print('Request made:', request_body)
+            print('Status code:', response.status_code)
+            print('Response:', response.text)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            print(f"Request failed: {e}")
+            return {}
+        except ValueError as e:
+            print(f"Error parsing response JSON: {e}")
             return {}
 
-    count = 0
-    response = coreo_request(limit=limit)
-    
-    if response and "data" in response and "records" in response["data"]:
-        try:
+    try:
+        response = coreo_request(limit=limit)
+        if response and "data" in response and "records" in response["data"]:
+            count = 0
             for record in response["data"]["records"]:
                 if not db_session.query(Record).filter_by(id=record["id"]).first():
                     new_record = Record.from_json(json=record["data"], id=record["id"])
@@ -60,11 +58,13 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             db_session.commit()
             total_count += count
             print(f"Added {count} records to the database")
-        except Exception as e:
-            db_session.rollback()
-            print(e)
-            return f"Error: {e}"
-    else:
-        print("No records found or API request failed.")
-    
+        else:
+            print("No records found or API request failed.")
+    except Exception as e:
+        db_session.rollback()
+        print(f"Error during database operation: {e}")
+        return f"Error: {e}"
+    finally:
+        db_session.close()
+
     return f"Database populated with {total_count} records from {country}"
