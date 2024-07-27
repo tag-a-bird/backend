@@ -43,7 +43,8 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         except requests.RequestException as e:
             return {"error": f"Request failed: {e}"}
         except ValueError as e:
-            return(f"Error parsing response JSON: {e}")
+            return {"error": f"Error parsing response JSON: {e}"}
+
     try:
         response = coreo_request(limit=limit)
         if response and "data" in response and "records" in response["data"]:
@@ -56,10 +57,11 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             db_session.commit()
             total_count += count
         else:
+            if "error" in response:
+                return f"API request failed: {response['error']}"
             return "No records found or API request failed."
     except Exception as e:
         db_session.rollback()
-        print(f"Error during database operation: {e}")
-        return f"Error: {e}"
+        return f"rror during database operation: {e}"
 
     return f"Database populated with {total_count} records from {country}"
