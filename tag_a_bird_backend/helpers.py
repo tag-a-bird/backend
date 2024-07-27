@@ -32,6 +32,7 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         }}"""
 
         request_body = {"query": query}
+        print('Request body:', request_body)
         try:
             response = requests.post(api_url, headers=request_header, json=request_body)
             print('Request made:', request_body)

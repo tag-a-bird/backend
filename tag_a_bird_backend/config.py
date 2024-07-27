@@ -17,7 +17,7 @@ class Config:
 
 class ProdConfig(Config):
     FLASK_ENV = 'production'
-    DEBUG = False
+    DEBUG = True
     TESTING = False
 
 
