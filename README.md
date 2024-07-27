@@ -13,6 +13,20 @@ data that could potentially assist in expanding the capability of these machine 
 or training new ones, especially in terms of their performance under various environmental
 conditions and recording scenarios.
 
+## For SE_46 Web Backend Technologies_Reassesment
+
+Since this is an assesment for the module book upgrade and I provided an ssl deployment with NGINX in last assesment and this application is not being actively used anymore, I did not take the time to issue new certificates this time. I hope that is ok. A live version of the application is hosted on a DigitalOcan virtualmachine, it is deployed with a self hosted github runner utilizing /.github/can-backend-24-yml, and can be visitde at:
+
+http://209.38.201.24:8000/about
+
+I mainly used the feedback from last assesment which I passed with level 0 as guidance while working on this version. Here is a list of changes:
+
+- migrations with alembic now working
+- routes modularized with blueprints and functions for GET and POST methods seperated
+- application and database and tests have been dockerized
+- better error handing
+- logging with sentry
+
 ## Interaction Flow
 
 ![Flow](./readme_assets/flow_chart.png)
@@ -21,111 +35,19 @@ conditions and recording scenarios.
 
 0. prerequisites
 
-you have [poetry](https://python-poetry.org/docs/#installation) and python3.10 installed
+docker and docker-compose
 
 1. clone the repository
 
 ```
 git clone https://github.com/tag-a-bird/backend.git
-cd backend
 ```
 
-2. ctivate the virtual environment and install dependencies
+2. set required env vars listed in example.env then run
 
 ```
-poetry shell
-poetry install
+docker-compose up --build
 ```
-
-3. create an .env file according to example.env
-
-```
-cd tag_a_bird_backend
-echo "FLASK_APP=app.py
-FLASK_DATABASE_URI=<uri_to_local_database>
-FLASK_TEST_DATABASE_URI=<uri_to_local_test_database>
-FLASK_SECRET_KEY=<a_secret_key>
-COREO_API_KEY=<api_key>
-ADMIN_CREDENTIALS_PW=<admin_pw>
-ADMIN_CREDENTIALS_EMAIL=<admin_email>" > .env
-```
-
-4. start local dev server on http://localhost:5000/about
-
-```
-flask run
-```
-
-## Deployment Pipeline
-
-![CICD_Pipeline](./readme_assets/Tag-a-Bird_CI_CD_Pipeline.png)
-
-Developer's Computer
-
-1. Developer commits code changes and pushes to the GitHub repository (e.g., main or can-cicd branch).
-   GitHub Repository
-
-2. Code changes trigger the GitHub Actions CI/CD pipeline.
-3. GitHub Actions CI/CD Pipeline
-   a. Check out repository
-   b. Set up Python 3.10
-   c. Set up environment variables
-   d. Install Poetry
-   e. Cache dependencies
-   f. Install dependencies
-   g. Run Alembic migrations
-   h. Build .whl package
-   i. Create ssh-add-pass.sh script
-   j. Start SSH agent
-   k. Add SSH key to agent
-   l. Add remote server to known hosts
-
-4. Deployment to DigitalOcean VM
-   a. Copy the .whl package to the VM
-   b. SSH into the VM
-   c. Activate the virtual environment
-   d. Uninstall the old package
-   e. Install the new .whl package
-   f. Restart the application service
-   g. Restart the Nginx web server
-
-5. Production Environment
-   The updated application is now live and serving traffic.
-
-Here's a diagram to represent the process visually:
-
-Developer's Computer  
- |  
- v  
-GitHub Repository  
- |  
- v  
-GitHub Actions CI/CD Pipeline  
- ├───> Check out repository  
- ├───> Set up Python 3.10  
- ├───> Set up environment variables  
- ├───> Install Poetry  
- ├───> Cache dependencies  
- ├───> Install dependencies  
- ├───> Run Alembic migrations  
- ├───> Build .whl package (Artifact)  
- ├───> Create ssh-add-pass.sh script  
- ├───> Start SSH agent  
- ├───> Add SSH key to agent  
- └───> Add remote server to known hosts  
- |  
- v  
-Deployment to DigitalOcean VM  
- ├───> Copy the .whl package (Artifact) to the VM  
- ├───> SSH into the VM  
- ├───> Activate the virtual environment  
- ├───> Uninstall the old package  
- ├───> Install the new .whl package (Artifact)  
- ├───> Restart the application service  
- └───> Restart the Nginx web server  
- |  
- v  
-Production Environment (Live Application)
 
 ## Endpoints
 
@@ -153,46 +75,6 @@ Production Environment (Live Application)
 
 `POST /annotate` saves selected labels to the database
 
-## Testing
-
-for running tests, type
-
-```
-pytest -v
-```
-
 ## Threat model
 
 ![Threat model](./readme_assets/threat_model_owasp.png)
-
-### Security measures
-
-Implemented Security Headers with [secure.py](https://secure.readthedocs.io/en/latest/)
-
-Prevent SQL Injection
-
-- Parameterizing sensitive query inputs (SQLAlchemy)
-
-Secure Authentication
-
-- Requiring long passwords (min. 8 characters)
-- Rate limiting failed login attempts (5 per hour)
-- Secure password storage with hashing
-- Email validation
-
-Protect Sensitive Data
-
-- Password hashing and salting (currently using flask-scrypt)
-- Encrypted database in production
-- Encrypt data transmission with secure TLS protocol
-
-Deployment Pipeline
-
-- Secrets: The workflow uses GitHub Secrets to store sensitive information, such as API keys, environment variables, SSH private keys, and other credentials. This helps protect sensitive data from exposure in logs or hard-coded values in the repository. Secrets are encrypted and can only be accessed by the specific GitHub Actions workflow running within the same repository.
-- SSH Key Management: The workflow uses an SSH private key to establish a secure connection with the DigitalOcean VM. The private key is stored as a GitHub Secret (secrets.SSH_PRIVATE_KEY), and the corresponding public key should be added to the authorized_keys file on the DigitalOcean VM. This allows for secure communication between the GitHub Actions runner and the DigitalOcean VM during deployment.
-- StrictHostKeyChecking: The ssh-keyscan command is used to add the remote server's public key to the known hosts file. This is done to prevent MITM
-
-Secure Configurations
-
-- Keep error messages vague
-- Session timeout after 1 minute of inactivity
