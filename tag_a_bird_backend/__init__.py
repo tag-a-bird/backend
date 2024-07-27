@@ -16,18 +16,19 @@ login_manager = LoginManager()
 limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
 migrate = Migrate()
 
-def create_app():
+def create_app(config_object=None):
     app = Flask(__name__)
 
-    config_type = getenv('FLASK_CONFIG_TYPE')
-    
-    if config_type == 'production':
-        app.config.from_object(config.ProdConfig)
+    if config_object:
+        app.config.from_object(config_object)
     else:
-        app.config.from_object(config.DevConfig)
+        config_type = getenv('FLASK_CONFIG_TYPE')
+        if config_type == 'production':
+            app.config.from_object(config.ProdConfig)
+        else:
+            app.config.from_object(config.DevConfig)
     
     configure_engine(app.config['DATABASE_URI'])
-
 
     from .models import Base
     Base.metadata.create_all(bind=engine)

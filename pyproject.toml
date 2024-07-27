@@ -29,6 +29,7 @@ scrypt = "^0.8.24"
 flask-scrypt = "^0.1.3.6"
 flask-migrate = "^4.0.7"
 gunicorn = "^22.0.0"
+pytest = "^8.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

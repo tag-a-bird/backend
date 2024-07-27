@@ -37,5 +37,19 @@ services:
       - postgres_data:/var/lib/postgresql/data
     platform: linux/amd64
 
+  test:
+    build:
+      context: .
+      dockerfile: dockerfile
+    depends_on:
+      - app
+      - db
+    env_file:
+      - .env
+    volumes:
+      - .:/tag_a_bird_backend
+    command:
+      ["sh", "-c", "poetry install && pytest --maxfail=1 --disable-warnings -v"]
+
 volumes:
   postgres_data:
