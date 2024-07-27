@@ -8,6 +8,9 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from secure import Secure
 from os import getenv
+import sentry_sdk
+
+
 
 secure_headers = Secure()
 
@@ -17,6 +20,18 @@ limiter = Limiter(key_func=get_remote_address, headers_enabled=True)
 migrate = Migrate()
 
 def create_app(config_object=None):
+
+    sentry_sdk.init(
+    dsn=getenv("FLASK_SENTRY_DSN"),
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+    )
+    
     app = Flask(__name__)
 
     if config_object:

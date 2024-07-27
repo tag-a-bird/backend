@@ -30,6 +30,7 @@ jobs:
           echo "COREO_API_KEY=${{ secrets.COREO_API_KEY }}" >> .env
           echo "ADMIN_CREDENTIALS_EMAIL=${{ secrets.ADMIN_CREDENTIALS_EMAIL }}" >> .env
           echo "ADMIN_CREDENTIALS_PW=${{ secrets.ADMIN_CREDENTIALS_PW }}" >> .env
+          echo "FLASK_SENTRY_DSN=${{ secrets.FLASK_SENTRY_DSN }}" >> .env
 
       - name: Install Docker Compose
         run: |

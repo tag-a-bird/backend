@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     build:
@@ -11,8 +9,6 @@ services:
       - db
     env_file:
       - .env
-    volumes:
-      - .:/tag_a_bird_backend
     command: gunicorn --bind 0.0.0.0:8000 tag_a_bird_backend.app:app
     platform: linux/amd64
     environment:
@@ -26,6 +22,7 @@ services:
       - COREO_API_KEY=${COREO_API_KEY}
       - ADMIN_CREDENTIALS_EMAIL=${ADMIN_CREDENTIALS_EMAIL}
       - ADMIN_CREDENTIALS_PW=${ADMIN_CREDENTIALS_PW}
+      - FLASK_SENTRY_DSN=${FLASK_SENTRY_DSN}
 
   db:
     image: postgres:latest

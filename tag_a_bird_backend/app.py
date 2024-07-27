@@ -3,7 +3,7 @@ from os import getenv
 import uuid
 from .models import User, Role
 from .db import db_session
-from . import create_app, config
+from . import create_app
 
 app = create_app()
 
