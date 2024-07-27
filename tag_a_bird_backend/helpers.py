@@ -64,7 +64,5 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         db_session.rollback()
         print(f"Error during database operation: {e}")
         return f"Error: {e}"
-    finally:
-        db_session.close()
 
     return f"Database populated with {total_count} records from {country}"
