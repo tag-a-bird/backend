@@ -70,7 +70,7 @@ def login_post():
 def logout():
     session.clear()
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.login_get'))
 
 @login_manager.user_loader
 def load_user(user_id):
