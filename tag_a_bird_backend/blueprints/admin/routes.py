@@ -29,8 +29,8 @@ def populate_db():
     elif request.method == "POST":
         try:
             country = request.form['country']
-            populate_db_from_coreo(db_session=db_session, country=country)
-            flash("Database populated successfully")
+            result = populate_db_from_coreo(db_session=db_session, country=country)
+            flash(result)
         except Exception as e:
             flash('Error: ' + str(e))
             print(e)
