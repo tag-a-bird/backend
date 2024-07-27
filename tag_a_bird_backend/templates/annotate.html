@@ -1164,7 +1164,7 @@ endblock %} {% endblock %} {% set active_page = "annotate" %} {% block content
           var json = JSON.stringify(groupedElements);
           // send JSON to server
           var xhr = new XMLHttpRequest();
-          xhr.open("POST", "{{ url_for('annotation.annotate') }}", true);
+          xhr.open("POST", "{{ url_for('annotation.annotate_post') }}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(json);
           // redirect to response value

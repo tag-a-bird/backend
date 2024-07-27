@@ -36,19 +36,19 @@
           {% if current_user.username == "admin" %}
 
           <a
-            href="{{ url_for('admin.set_parameters') }}"
+            href="{{ url_for('admin.set_parameters_get') }}"
             class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300"
           >
             Admin</a
           >
           <a
-            href="{{ url_for('admin.populate_db') }}"
+            href="{{ url_for('admin.populate_db_get') }}"
             class="p-2 lg:px-4 md:mx-2 text-gray-600 rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300"
           >
             Populate db</a
           >
           <a
-            href="{{ url_for('annotation.annotate') }}"
+            href="{{ url_for('annotation.annotate_get') }}"
             class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300"
           >
             Annotieren</a
@@ -62,7 +62,7 @@
 
           {% elif current_user.username %} {% if active_page == "about" %}
           <a
-            href="{{ url_for('annotation.annotate') }}"
+            href="{{ url_for('annotation.annotate_get') }}"
             target="_blank"
             class="bg-indigo-500 hover:bg-indigo-700 text-white p-2 lg:px-4 md:mx-2 rounded transition-colors duration-300"
             >Annotieren</a
@@ -81,13 +81,13 @@
           {% endif %} {% else %}
 
           <a
-            href=" {{ url_for('auth.register') }}"
+            href=" {{ url_for('auth.register_get') }}"
             class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
             >Registrieren</a
           >
 
           <a
-            href="{{ url_for('auth.login') }}"
+            href="{{ url_for('auth.login_get') }}"
             class="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center border border-transparent rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-300"
             >Einloggen</a
           >
