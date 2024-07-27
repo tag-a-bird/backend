@@ -49,7 +49,13 @@ def populate_db_from_coreo(db_session, country: str) -> str:
         response = coreo_request(limit=limit)
         if response and "data" in response and "records" in response["data"]:
             count = 0
-            for record in response["data"]["records"]:
+            records = response["data"]["records"]
+            print(f"Records received: {records}")
+            if not records:
+                return "No records found or API request failed."
+
+            for record in records:
+                print(f"Processing record: {record}")
                 if not db_session.query(Record).filter_by(id=record["id"]).first():
                     new_record = Record.from_json(json=record["data"], id=record["id"])
                     db_session.add(new_record)
@@ -62,6 +68,6 @@ def populate_db_from_coreo(db_session, country: str) -> str:
             return "No records found or API request failed."
     except Exception as e:
         db_session.rollback()
-        return f"rror during database operation: {e}"
+        return f"Error: {e}"
 
     return f"Database populated with {total_count} records from {country}"
